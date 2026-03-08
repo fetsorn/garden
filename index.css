@@ -1,0 +1,195 @@
+:root {
+  --warm: #f5eadc;
+  --ink: #2c2418;
+  --faded: #7a6e5f;
+  --glow: #c9a95f;
+  --parchment: #efe4d0;
+  --shadow: #1a150e;
+  --dim: #5a5047;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  background: var(--ink);
+  color: var(--warm);
+  max-width: 38rem;
+  margin: 0 auto;
+  padding: 1rem;
+  line-height: 1.6;
+}
+
+/* --- language toggle (pure CSS) --- */
+.lang-ru { display: none; }
+#ru:target ~ .lang-en { display: none; }
+#ru:target ~ .lang-ru { display: block; }
+
+/* --- header --- */
+header { margin-bottom: 1.5rem; }
+
+header img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  opacity: 0.85;
+}
+
+/* --- nav --- */
+nav {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--faded);
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+nav a {
+  color: var(--glow);
+  text-decoration: none;
+}
+
+nav a:hover { text-decoration: underline; }
+
+.lang-toggle {
+  margin-left: auto;
+  color: var(--faded);
+}
+
+.lang-toggle .active {
+  color: var(--warm);
+  font-weight: bold;
+}
+
+/* --- room description --- */
+.room-description {
+  font-style: italic;
+  color: var(--faded);
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--shadow);
+}
+
+/* --- landmarks --- */
+.landmark {
+  margin-bottom: 2.5rem;
+}
+
+.landmark h2 {
+  font-size: 1.1rem;
+  color: var(--glow);
+  margin-bottom: 0.3rem;
+  font-weight: normal;
+  letter-spacing: 0.04em;
+}
+
+.landmark-description {
+  font-style: italic;
+  color: var(--faded);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+/* --- status: draft/pending landmarks --- */
+.landmark.status-draft,
+.landmark.status-pending {
+  opacity: 0.45;
+}
+
+.landmark.status-draft h2::after {
+  content: " (coming soon)";
+  font-size: 0.75rem;
+  color: var(--dim);
+  font-style: italic;
+  letter-spacing: normal;
+}
+
+.landmark.status-pending h2::after {
+  content: " (in progress)";
+  font-size: 0.75rem;
+  color: var(--dim);
+  font-style: italic;
+  letter-spacing: normal;
+}
+
+.landmark.status-draft a,
+.landmark.status-pending a {
+  pointer-events: none;
+  color: var(--dim);
+}
+
+/* --- item landmark — single link --- */
+.landmark-item > a {
+  color: var(--warm);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--faded);
+}
+
+.landmark-item > a:hover {
+  color: var(--glow);
+}
+
+/* --- feed landmark — quarry items with dates --- */
+.feed {
+  list-style: none;
+}
+
+.feed li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--shadow);
+}
+
+.feed a {
+  color: var(--warm);
+  text-decoration: none;
+}
+
+.feed a:hover {
+  color: var(--glow);
+}
+
+.feed time {
+  color: var(--faded);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+/* --- entry landmark — TTL-native external links --- */
+.entries {
+  list-style: none;
+}
+
+.entries li {
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--shadow);
+}
+
+.entries a {
+  color: var(--warm);
+  text-decoration: none;
+}
+
+.entries a:hover {
+  color: var(--glow);
+}
+
+/* --- footer --- */
+footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--faded);
+  font-size: 0.85rem;
+  color: var(--faded);
+}
+
+footer a {
+  color: var(--glow);
+  text-decoration: none;
+}
+
+footer a:hover { text-decoration: underline; }
