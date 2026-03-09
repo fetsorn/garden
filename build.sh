@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# turtle in ~/mm/lodes/crater/garden.ttl
+# turtle in _data/garden.ttl
 # turned to json in _data/garden.json
 npx @frogcat/ttl2jsonld _data/garden.ttl > _data/garden.json
 

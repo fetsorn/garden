@@ -23,10 +23,8 @@ index.html redirects to the default room (study.html).
 
 ## Architecture
 
-Three repos:
+Two repos:
 
-- **crater** (private) — TTL ontology, plans, decisions, focus.
-  Defines what rooms exist, how they connect, what they hold.
 - **garden** (public, codeberg.org/fetsorn/garden) — static HTML,
   CSS, media. Source and output are the same repo.
 - **quarry** (public, git.nexusnest.link/fetsorn/quarry) — csvs

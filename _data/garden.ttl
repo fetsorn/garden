@@ -1,11 +1,7 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix g: <urn:crater:garden/> .
+@prefix g: <urn:garden/> .
 @prefix p: <urn:crater:project/> .
-@prefix r: <urn:crater:rel/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-
-<urn:crater:graph/paths> a owl:Ontology ;
-    owl:imports <urn:crater:graph/core> .
 
 # --- rooms ---
 

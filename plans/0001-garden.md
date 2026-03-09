@@ -11,10 +11,8 @@ Served at fetsorn.codeberg.page.
 
 ## Architecture
 
-Three repos:
+Two repos:
 
-- **crater** (private) — TTL ontology graph, plans, decisions, focus.
-  Defines what areas exist, how they connect, what concepts they hold.
 - **quarry** (public, codeberg.org/fetsorn/quarry) — CSVs, markdowns,
   media. Public dataset. Standalone — usable with evenor or any tool
   that reads the CSV tablet format.
@@ -26,7 +24,7 @@ Three repos:
 
 ## Data flow
 
-crater (TTL)  +  quarry (CSVs/media)
+graph (TTL)  +  quarry (CSVs/media)
          \          /
           orrery build
               |
@@ -36,7 +34,7 @@ crater (TTL)  +  quarry (CSVs/media)
 
 ## Concept
 
-Each area is defined in crater's TTL (structure, connections),
+Each area is defined in garden's TTL (structure, connections),
 filled from quarry's CSVs (content), and rendered by orrery into
 a page with an illustrated header image and text navigation.
 
@@ -84,9 +82,3 @@ Patreon / Boosty. One funnel. Publications as products.
 ## Bilingual
 
 RU/EN. Narratives and pins in both languages. Dev blog in mixed form.
-
-## Out of scope
-
-Evenor dev branch refactor, TotalBattle, Aetherion, Aipassana,
-Ledger. These remain independent crater projects. The garden gives
-them a potential future area if they need public visibility.

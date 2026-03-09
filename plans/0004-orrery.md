@@ -121,7 +121,7 @@ added by hand, they automatically expand the test suite.
 ## Milestones
 
 1. TTL parser + validator — read garden.ttl, run validation
-checks, report errors. Usable immediately in crater sessions.
+checks, report errors. 
 2. Room page generator — TTL + JSON → room HTML. Test against
 study.html and stage.html.
 3. Item page generator — category templates for legend and

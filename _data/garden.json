@@ -1,19 +1,11 @@
 {
   "@context": {
     "owl": "http://www.w3.org/2002/07/owl#",
-    "g": "urn:crater:garden/",
+    "g": "urn:garden/",
     "p": "urn:crater:project/",
-    "r": "urn:crater:rel/",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
   },
   "@graph": [
-    {
-      "@id": "urn:crater:graph/paths",
-      "@type": "owl:Ontology",
-      "owl:imports": {
-        "@id": "urn:crater:graph/core"
-      }
-    },
     {
       "@id": "g:stage",
       "@type": "g:Room",
