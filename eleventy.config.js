@@ -6,4 +6,6 @@ export default async function(eleventyConfig) {
     // static assets → _site/
     eleventyConfig.addPassthroughCopy("index.css");
     eleventyConfig.addPassthroughCopy("img");
+    eleventyConfig.addPassthroughCopy({ 'robots.txt': '/robots.txt' });
+    eleventyConfig.addPassthroughCopy({ '.domains': '/.domains' });
 };

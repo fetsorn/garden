@@ -10,7 +10,7 @@ rm -R _site
 
 git worktree remove ./_site
 
-git worktree add ./_site _site
+git worktree add ./_site pages
 
 npx @11ty/eleventy
 
