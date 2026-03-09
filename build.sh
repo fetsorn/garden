@@ -2,6 +2,7 @@
 
 # turtle in ~/mm/lodes/crater/garden.ttl
 # turned to json in _data/garden.json
+npx @frogcat/ttl2jsonld _data/garden.ttl > _data/garden.json
 
 # csvs in ~/mm/lodes/quarry
 # turned to _data/quarry.json

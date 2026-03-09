@@ -82,7 +82,7 @@ Codeberg Pages serves it directly.
 ### Structure: TTL → garden.json
 
 The site structure is defined in TTL (Turtle RDF) and converted to
-JSON-LD with [ttl2jsonld](https://github.com/niclas-2109/ttl2jsonld).
+JSON-LD with [ttl2jsonld](https://github.com/frogcat/ttl2jsonld).
 The JSON-LD lands in `_data/garden.json`.
 
 Key types in the graph:
@@ -146,6 +146,6 @@ their `lang` array — no fallback, no placeholder.
 
 - [Node.js](https://nodejs.org/) (for 11ty)
 - [11ty v3](https://www.11ty.dev/) (`npm install`)
-- [ttl2jsonld](https://github.com/niclas-2109/ttl2jsonld) (TTL → JSON-LD, upstream of this repo)
-- [csvs-cli](https://github.com/niclas-2109/csvs-cli) (CSVS → JSON, upstream of this repo)
+- [ttl2jsonld](https://github.com/frogcat/ttl2jsonld) (TTL → JSON-LD, upstream of this repo)
+- [csvs-cli](https://github.com/fetsorn/csvs-rs) (CSVS → JSON, upstream of this repo)
 - [jq](https://jqlang.github.io/jq/) (optional, for assembling quarry.json from multiple queries)

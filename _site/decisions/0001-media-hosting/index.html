@@ -1,0 +1,38 @@
+<h1>Media hosting</h1>
+<h2>Context and Problem Statement</h2>
+<p>Public media files (audio, images) need a stable, publicly
+accessible home. Multiple projects produce media: Norcivilian
+Reads (poem audio), City Limits (legend audio), Aetherion
+(video assets). Telegram CDN requires auth tokens — not public.
+Git repos shouldn't carry binary in regular objects.</p>
+<h2>Decision Drivers</h2>
+<ul>
+<li>Must be publicly accessible without auth</li>
+<li>Must work for RU and EN audiences</li>
+<li>Must not bloat csvs dataset clones</li>
+<li>Should support evenor-introspects-quarry story (LFS in browser)</li>
+<li>Should be manageable with current tooling (csvs, panrec, AI)</li>
+</ul>
+<h2>Considered Options</h2>
+<ol>
+<li>LFS inside csvs quarry</li>
+<li>External file host (S3, Nextcloud)</li>
+<li>Separate media git repo</li>
+<li>IPFS</li>
+</ol>
+<h2>Decision Outcome</h2>
+<p>Option 1 — LFS inside csvs quarry.</p>
+<p>LFS stores pointers in git, binary on github's LFS backend.
+Cloning quarry stays light. Evenor already handles LFS pulls
+in-browser — this makes the quarry landmark a demo of that
+capability. Media and metadata live in one logical dataset.</p>
+<p>Past dread about LFS management came from doing it without
+AI assistance and before csvs tooling matured. Revisit if
+LFS backend maintenance becomes a burden.</p>
+<h2>Consequences</h2>
+<ul>
+<li>Quarry gains .gitattributes for LFS-tracked extensions</li>
+<li>panrec export pipeline includes media files</li>
+<li>Evenor LFS browser code gets exercised on real data at self-hosted mirror of github</li>
+<li>If github LFS quota fills up, need a migration plan</li>
+</ul>
