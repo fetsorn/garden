@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="{{ item.lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{ item.landmarkLabel[item.lang] }} — {{ item.title }}">
+  <meta name="author" content="{{ site.author }}">
+  <title>{{ item.title }}</title>
+  <link rel="stylesheet" href="../index.css">
+</head>
+<body class="room-{{ item.room.slug }}">
+
+  <header>
+    <img src="../img/{{ item.room.slug }}.jpg"
+         alt="{{ item.room.label[item.lang] }}">
+  </header>
+
+  <nav>
+    {% for door in item.room.doors %}
+    {% if item.lang == "ru" %}
+    <a href="../{{ door.targetSlug }}.html#ru">{{ door.label.ru }}</a>
+    {% else %}
+    <a href="../{{ door.targetSlug }}.html">{{ door.label.en }}</a>
+    {% endif %}
+    {% endfor %}
+    <span class="lang-toggle">
+      {% if item.hasOtherLang %}
+      {% if item.lang == "en" %}
+      <span class="active">EN</span> / <a href="../{{ item.otherLang }}/{{ item.slug }}.html">RU</a>
+      {% else %}
+      <a href="../{{ item.otherLang }}/{{ item.slug }}.html">EN</a> / <span class="active">RU</span>
+      {% endif %}
+      {% else %}
+      {% if item.lang == "ru" %}
+      <span class="active">RU</span>
+      {% else %}
+      <span class="active">EN</span>
+      {% endif %}
+      {% endif %}
+    </span>
+  </nav>
+
+  <p class="item-context">{{ item.landmarkLabel[item.lang] }} · {{ item.room.label[item.lang] }}</p>
+  {% if item.lang == "ru" %}
+  <p class="item-back"><a href="../{{ item.room.slug }}.html#ru">← назад</a></p>
+  {% else %}
+  <p class="item-back"><a href="../{{ item.room.slug }}.html">← back</a></p>
+  {% endif %}
+
+  {% if item.category == "legend" %}
+  {% include "items/legend.njk" %}
+  {% elif item.category == "poem-reading" %}
+  {% include "items/poem-reading.njk" %}
+  {% else %}
+  {% include "items/default.njk" %}
+  {% endif %}
+
+  <footer>
+    {% if item.lang == "en" %}
+    <a href="https://patreon.com/fetsorn">Support this work on Patreon</a>
+    {% else %}
+    <a href="https://boosty.to/fetsorn">Поддержать проект на Boosty</a>
+    {% endif %}
+  </footer>
+
+</body>
+</html>

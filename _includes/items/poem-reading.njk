@@ -1,0 +1,21 @@
+<article class="item-body">
+  <h1>{{ item.title }}</h1>
+  {% if item.lang == "en" %}
+  <p class="item-meta">Read by {{ item.event.sayname }} · {{ item.event.saydate }}</p>
+  {% if item.event.actname %}
+  <p class="item-meta">{{ item.event.actname | join(", ") }} · {{ item.event.actcopyright }}</p>
+  {% endif %}
+  <p class="item-meta">Reading licensed {{ item.event.saycopyright }}</p>
+  {% else %}
+  <p class="item-meta">Читает {{ item.event.sayname }} · {{ item.event.saydate }}</p>
+  {% if item.event.actname %}
+  <p class="item-meta">{{ item.event.actname | join(", ") }} · {{ item.event.actcopyright }}</p>
+  {% endif %}
+  <p class="item-meta">Озвучка — {{ item.event.saycopyright }}</p>
+  {% endif %}
+  {% if item.audio %}
+  <audio controls>
+    <source src="{{ site.lfsBase }}/{{ item.audio.hash }}.{{ item.audio.extension }}" type="audio/{{ item.audio.extension }}">
+  </audio>
+  {% endif %}
+</article>

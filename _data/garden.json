@@ -1,0 +1,681 @@
+{
+  "@context": {
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "g": "urn:crater:garden/",
+    "p": "urn:crater:project/",
+    "r": "urn:crater:rel/",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+  },
+  "@graph": [
+    {
+      "@id": "urn:crater:graph/paths",
+      "@type": "owl:Ontology",
+      "owl:imports": {
+        "@id": "urn:crater:graph/core"
+      }
+    },
+    {
+      "@id": "g:stage",
+      "@type": "g:Room",
+      "rdfs:label": "The Stage",
+      "g:description": [
+        {
+          "@value": "A small theatre stage seen from the wings. Velvet curtains hang heavy on either side. A single spotlight cuts through dust motes, landing on an empty stool at center stage.",
+          "@language": "en"
+        },
+        {
+          "@value": "Бархатные шторы обрамляют маленькую сцену. В воздухе пахнет пылью и канифолью. Где-то за кулисами работает магнитофон.",
+          "@language": "ru"
+        }
+      ],
+      "rdfs:comment": "art — songs, poems, stories, game rules, audio, video"
+    },
+    {
+      "@id": "g:study",
+      "@type": "g:Room",
+      "g:default": true,
+      "rdfs:label": "The Study",
+      "g:description": [
+        {
+          "@value": "Warm light falls across a desk covered in papers. Bookshelves line the walls.",
+          "@language": "en"
+        },
+        {
+          "@value": "Тёплый свет падает на стол, заваленный бумагами. Вдоль стен — книжные полки.",
+          "@language": "ru"
+        }
+      ],
+      "rdfs:comment": "articles, dev blog, qualified self, aipassana, documentation"
+    },
+    {
+      "@id": "g:map-room",
+      "@type": "g:Room",
+      "rdfs:label": "The Map Room",
+      "g:description": [
+        {
+          "@value": "A dim room lit by a single brass lamp. A large table dominates the center, covered by a hand-drawn map with colored pins pressed into it. Rolled charts lean against the walls.",
+          "@language": "en"
+        },
+        {
+          "@value": "Тёмная комната с большим столом посередине. Поверхность покрыта рисованной от руки картой, булавки отмечают места, где вы были и куда собираетесь.",
+          "@language": "ru"
+        }
+      ],
+      "rdfs:comment": "embedded map of places and events"
+    },
+    {
+      "@id": "g:stage-reads",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:stage"
+      },
+      "g:status": "live",
+      "rdfs:label": "Norcivilian Reads",
+      "g:description": [
+        {
+          "@value": "A shelf of well-worn poetry volumes, some lying open, bookmarks tucked between pages. A microphone rests on top.",
+          "@language": "en"
+        },
+        {
+          "@value": "Полка зачитанных поэтических сборников, некоторые лежат раскрытыми, между страницами торчат закладки. Сверху лежит микрофон.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "poem-reading",
+      "g:order-by": "saydate",
+      "g:order-direction": "descending",
+      "g:presents": {
+        "@id": "p:norcivilian-reads"
+      }
+    },
+    {
+      "@id": "g:stage-songs",
+      "@type": "g:Feed",
+      "g:status": "draft",
+      "g:in-room": {
+        "@id": "g:stage"
+      },
+      "rdfs:label": "Songs",
+      "g:description": [
+        {
+          "@value": "A guitar leans against a stool under a single spotlight.",
+          "@language": "en"
+        },
+        {
+          "@value": "Гитара прислонена к табурету под единственным прожектором.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "song",
+      "g:order-by": "date_published",
+      "g:order-direction": "descending"
+    },
+    {
+      "@id": "g:stage-poems",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:stage"
+      },
+      "g:status": "draft",
+      "rdfs:label": "Poems",
+      "g:description": [
+        {
+          "@value": "A microphone stands at center stage, a crumpled page at its feet.",
+          "@language": "en"
+        },
+        {
+          "@value": "Микрофон стоит в центре сцены, у его ног — смятый листок.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "poem",
+      "g:order-by": "date_published",
+      "g:order-direction": "descending"
+    },
+    {
+      "@id": "g:stage-stories",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:stage"
+      },
+      "g:status": "draft",
+      "rdfs:label": "Stories",
+      "g:description": [
+        {
+          "@value": "A worn armchair faces the audience, a reading lamp beside it.",
+          "@language": "en"
+        },
+        {
+          "@value": "Потёртое кресло повёрнуто к зрителям, рядом — торшер.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "story",
+      "g:order-by": "date_published",
+      "g:order-direction": "descending"
+    },
+    {
+      "@id": "g:stage-audio",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:stage"
+      },
+      "g:status": "draft",
+      "rdfs:label": "Audio",
+      "g:description": [
+        {
+          "@value": "A reel-to-reel tape recorder hums quietly in the wings.",
+          "@language": "en"
+        },
+        {
+          "@value": "За кулисами тихо гудит катушечный магнитофон.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "audio",
+      "g:order-by": "date_published",
+      "g:order-direction": "descending"
+    },
+    {
+      "@id": "g:stage-video",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:stage"
+      },
+      "g:status": "draft",
+      "rdfs:label": "Video",
+      "g:description": [
+        {
+          "@value": "A projector throws a pale rectangle of light onto the back wall.",
+          "@language": "en"
+        },
+        {
+          "@value": "Проектор бросает бледный прямоугольник света на заднюю стену.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "video",
+      "g:order-by": "date_published",
+      "g:order-direction": "descending"
+    },
+    {
+      "@id": "g:stage-aetherion",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:stage"
+      },
+      "g:status": "live",
+      "rdfs:label": "Aetherion Horizon",
+      "g:description": [
+        {
+          "@value": "A crystal ball flickers with moving images from another world.",
+          "@language": "en"
+        },
+        {
+          "@value": "Хрустальный шар мерцает движущимися образами из другого мира.",
+          "@language": "ru"
+        }
+      ],
+      "g:entry": [
+        {
+          "rdfs:label": "Episode 1",
+          "g:url": "https://youtu.be/_FdjI2xmjH8"
+        },
+        {
+          "rdfs:label": "Episode 2",
+          "g:url": "https://youtu.be/P9cbaTZozyM"
+        }
+      ]
+    },
+    {
+      "@id": "g:stage-city-limits",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:stage"
+      },
+      "g:status": "live",
+      "rdfs:label": "City Limits",
+      "g:description": [
+        {
+          "@value": "A table with a city map spread across it, figurines placed at intersections.",
+          "@language": "en"
+        },
+        {
+          "@value": "Стол с картой города, на перекрёстках расставлены фигурки.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "legend",
+      "g:order-by": "date",
+      "g:order-direction": "descending",
+      "g:presents": {
+        "@id": "p:city-limits"
+      }
+    },
+    {
+      "@id": "g:stage-to-study",
+      "@type": "g:Door",
+      "g:status": "live",
+      "g:in-room": {
+        "@id": "g:stage"
+      },
+      "rdfs:label": "To the Study",
+      "g:target": {
+        "@id": "g:study"
+      }
+    },
+    {
+      "@id": "g:stage-to-map-room",
+      "@type": "g:Door",
+      "g:status": "live",
+      "g:in-room": {
+        "@id": "g:stage"
+      },
+      "rdfs:label": "To the Map Room",
+      "g:target": {
+        "@id": "g:map-room"
+      }
+    },
+    {
+      "@id": "g:study-thesis",
+      "@type": "g:Item",
+      "g:status": "draft",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "rdfs:label": "Thesis",
+      "g:description": [
+        {
+          "@value": "A framed diploma hangs on the wall, its edges curling slightly in the lamplight.",
+          "@language": "en"
+        },
+        {
+          "@value": "На стене висит диплом в рамке, его края чуть загибаются в свете лампы.",
+          "@language": "ru"
+        }
+      ],
+      "g:presents": {
+        "@id": "p:legal-entities"
+      }
+    },
+    {
+      "@id": "g:study-articles",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "g:status": "draft",
+      "rdfs:label": "Academic Articles",
+      "g:description": [
+        {
+          "@value": "A stack of journals, flagged with colored tabs, sits at the corner of the desk.",
+          "@language": "en"
+        },
+        {
+          "@value": "На углу стола лежит стопка журналов, заложенных цветными закладками.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "article",
+      "g:order-by": "date_published",
+      "g:order-direction": "descending",
+      "g:presents": [
+        {
+          "@id": "p:legal-entities"
+        },
+        {
+          "@id": "p:saleilles"
+        },
+        {
+          "@id": "p:orphan-works"
+        },
+        {
+          "@id": "p:soccer-regulation"
+        }
+      ]
+    },
+    {
+      "@id": "g:study-blog",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "g:status": "draft",
+      "rdfs:label": "Dev Blog",
+      "g:description": [
+        {
+          "@value": "A notebook lies open near the lamp, its pages covered in half-finished diagrams and scrawled reminders.",
+          "@language": "en"
+        },
+        {
+          "@value": "У лампы лежит раскрытая тетрадь, её страницы испещрены незаконченными схемами и торопливыми пометками.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "blog",
+      "g:order-by": "date_published",
+      "g:order-direction": "descending",
+      "g:presents": [
+        {
+          "@id": "p:evenor"
+        },
+        {
+          "@id": "p:csvs"
+        },
+        {
+          "@id": "p:crater"
+        },
+        {
+          "@id": "p:glider-cli"
+        }
+      ]
+    },
+    {
+      "@id": "g:study-qs",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "g:status": "draft",
+      "rdfs:label": "Qualified Self",
+      "g:description": [
+        {
+          "@value": "A shelf of slim pamphlets, each one a manifesto for seeing your own data clearly.",
+          "@language": "en"
+        },
+        {
+          "@value": "Полка тонких брошюр, каждая — манифест о том, как ясно видеть свои данные.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "qualified-self",
+      "g:order-by": "date_published",
+      "g:order-direction": "descending",
+      "g:presents": [
+        {
+          "@id": "p:evenor"
+        },
+        {
+          "@id": "p:csvs"
+        },
+        {
+          "@id": "p:panrec"
+        }
+      ]
+    },
+    {
+      "@id": "g:study-aipassana",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "g:status": "draft",
+      "rdfs:label": "Aipassana",
+      "g:description": [
+        {
+          "@value": "A rolled-up mat leans against the bookshelf. A small timer sits beside it.",
+          "@language": "en"
+        },
+        {
+          "@value": "У книжной полки прислонён свёрнутый коврик. Рядом стоит маленький таймер.",
+          "@language": "ru"
+        }
+      ],
+      "g:category": "aipassana",
+      "g:presents": [
+        {
+          "@id": "p:aipassana"
+        },
+        {
+          "@id": "p:qigon"
+        }
+      ]
+    },
+    {
+      "@id": "g:study-docs",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "g:status": "live",
+      "rdfs:label": "Documentation",
+      "g:description": [
+        {
+          "@value": "A heavy technical manual lies open on the reading stand, its table of contents marked with ribbon bookmarks.",
+          "@language": "en"
+        },
+        {
+          "@value": "На подставке для чтения лежит тяжёлый технический справочник, его оглавление заложено ленточными закладками.",
+          "@language": "ru"
+        }
+      ],
+      "g:entry": [
+        {
+          "rdfs:label": [
+            {
+              "@value": "CSVS — Plain-Text Database",
+              "@language": "en"
+            },
+            {
+              "@value": "CSVS — База данных в формате простого текста",
+              "@language": "ru"
+            }
+          ],
+          "g:url": "https://norcivilianlabs.org/csvs/"
+        },
+        {
+          "rdfs:label": [
+            {
+              "@value": "Evenor — Event Editor",
+              "@language": "en"
+            },
+            {
+              "@value": "Evenor — Редактор мероприятий",
+              "@language": "ru"
+            }
+          ],
+          "g:url": "https://norcivilianlabs.org/evenor/"
+        },
+        {
+          "rdfs:label": [
+            {
+              "@value": "Panrec — Recording Utility",
+              "@language": "en"
+            },
+            {
+              "@value": "Panrec — Утилита записи",
+              "@language": "ru"
+            }
+          ],
+          "g:url": "https://norcivilianlabs.org/panrec/"
+        },
+        {
+          "rdfs:label": [
+            {
+              "@value": "Guanbo — Music Programming",
+              "@language": "en"
+            },
+            {
+              "@value": "Guanbo — Программирование музыки",
+              "@language": "ru"
+            }
+          ],
+          "g:url": "https://norcivilianlabs.org/guanbo/"
+        },
+        {
+          "rdfs:label": [
+            {
+              "@value": "Morio — Syndication Viewer",
+              "@language": "en"
+            },
+            {
+              "@value": "Morio — Программа для просмотра синдикации",
+              "@language": "ru"
+            }
+          ],
+          "g:url": "https://norcivilianlabs.org/morio/"
+        },
+        {
+          "rdfs:label": [
+            {
+              "@value": "Retina — Retina Detector",
+              "@language": "en"
+            },
+            {
+              "@value": "Retina — Детектор сетчатки",
+              "@language": "ru"
+            }
+          ],
+          "g:url": "https://norcivilianlabs.org/retina/"
+        }
+      ]
+    },
+    {
+      "@id": "g:study-quarry",
+      "@type": "g:Item",
+      "g:status": "live",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "rdfs:label": "Quarry",
+      "g:description": [
+        {
+          "@value": "A glass case beside the reading stand. Inside, the garden's own ledger — every entry, every link, laid open for inspection.",
+          "@language": "en"
+        },
+        {
+          "@value": "Стеклянная витрина рядом с подставкой для чтения. Внутри — реестр самого сада: каждая запись, каждая связь, открытые для изучения.",
+          "@language": "ru"
+        }
+      ],
+      "g:url": "https://evenor.norcivilianlabs.org/#?~=https://git.nexusnest.link/fetsorn/quarry"
+    },
+    {
+      "@id": "g:study-resume",
+      "@type": "g:Item",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "g:status": "draft",
+      "rdfs:label": "Resume",
+      "g:description": [
+        {
+          "@value": "A leather portfolio, closed but within reach.",
+          "@language": "en"
+        },
+        {
+          "@value": "Кожаная папка, закрытая, но под рукой.",
+          "@language": "ru"
+        }
+      ],
+      "g:presents": {
+        "@id": "p:resume"
+      }
+    },
+    {
+      "@id": "g:study-cards",
+      "@type": "g:Feed",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "g:status": "live",
+      "rdfs:label": "Calling Cards",
+      "g:description": [
+        {
+          "@value": "A small drawer of calling cards, each one a different hand.",
+          "@language": "en"
+        },
+        {
+          "@value": "Маленький ящик визитных карточек, каждая — другим почерком.",
+          "@language": "ru"
+        }
+      ],
+      "g:entry": [
+        {
+          "rdfs:label": "LinkedIn",
+          "g:url": "https://www.linkedin.com/in/fetsorn/"
+        },
+        {
+          "rdfs:label": "GitHub",
+          "g:url": "https://github.com/fetsorn"
+        },
+        {
+          "rdfs:label": "Codeberg",
+          "g:url": "https://codeberg.org/fetsorn"
+        },
+        {
+          "rdfs:label": "Liberapay",
+          "g:url": "https://liberapay.com/fetsorn"
+        },
+        {
+          "rdfs:label": "StartPlaying",
+          "g:url": "https://startplaying.games/gm/fetsorn"
+        }
+      ]
+    },
+    {
+      "@id": "g:study-to-stage",
+      "@type": "g:Door",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "g:status": "live",
+      "rdfs:label": "To the Stage",
+      "g:target": {
+        "@id": "g:stage"
+      }
+    },
+    {
+      "@id": "g:study-to-map-room",
+      "@type": "g:Door",
+      "g:in-room": {
+        "@id": "g:study"
+      },
+      "g:status": "live",
+      "rdfs:label": "To the Map Room",
+      "g:target": {
+        "@id": "g:map-room"
+      }
+    },
+    {
+      "@id": "g:map-room-map",
+      "@type": "g:Item",
+      "g:in-room": {
+        "@id": "g:map-room"
+      },
+      "g:status": "draft",
+      "rdfs:label": "Map",
+      "g:description": {
+        "@value": "A large map spread across the table, pins marking places you've been.",
+        "@language": "en"
+      },
+      "g:presents": {
+        "@id": "p:city-limits"
+      }
+    },
+    {
+      "@id": "g:map-room-to-stage",
+      "@type": "g:Door",
+      "g:in-room": {
+        "@id": "g:map-room"
+      },
+      "g:status": "live",
+      "rdfs:label": "To the Stage",
+      "g:target": {
+        "@id": "g:stage"
+      }
+    },
+    {
+      "@id": "g:map-room-to-study",
+      "@type": "g:Door",
+      "g:in-room": {
+        "@id": "g:map-room"
+      },
+      "g:status": "live",
+      "rdfs:label": "To the Study",
+      "g:target": {
+        "@id": "g:study"
+      }
+    }
+  ]
+}

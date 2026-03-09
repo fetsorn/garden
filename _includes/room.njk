@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "partials/head.njk" %}
+</head>
+<body class="room-{{ room.slug }}">
+
+  <div id="ru"></div>
+
+  <header>
+    <img src="img/{{ room.slug }}.jpg"
+         alt="{{ room.description.en }}">
+  </header>
+
+  {% for lang in ["en", "ru"] %}
+  <div class="lang-{{ lang }}">
+    {% include "partials/navbar.njk" %}
+
+    <section class="room-description">
+      <p>{{ room.description[lang] }}</p>
+    </section>
+
+    {% for lm in room.landmarks %}
+
+    {% if lm.type == "Item" %}
+    <section id="{{ lm.slug }}{% if lang == 'ru' %}-ru{% endif %}" class="landmark landmark-item status-{{ lm.status }}">
+      <h2>{{ lm.label[lang] }}</h2>
+      <p class="landmark-description">{{ lm.description[lang] }}</p>
+      {% if lm.url %}
+      <a href="{{ lm.url }}">{{ lm.label[lang] }}</a>
+      {% else %}
+      <a href="{{ lang }}/{{ lm.slug }}.html">{{ lm.label[lang] }}</a>
+      {% endif %}
+    </section>
+
+    {% elif lm.entries %}
+    <section id="{{ lm.slug }}{% if lang == 'ru' %}-ru{% endif %}" class="landmark landmark-entries status-{{ lm.status }}">
+      <h2>{{ lm.label[lang] }}</h2>
+      <p class="landmark-description">{{ lm.description[lang] }}</p>
+      <ul class="entries">
+        {% for entry in lm.entries %}
+        <li><a href="{{ entry.url }}">{{ entry.label[lang] }}</a></li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    {% elif lm.category %}
+    <section id="{{ lm.slug }}{% if lang == 'ru' %}-ru{% endif %}" class="landmark landmark-feed status-{{ lm.status }}">
+      <h2>{{ lm.label[lang] }}</h2>
+      <p class="landmark-description">{{ lm.description[lang] }}</p>
+      {% if lm.items and lm.items[lang] | length %}
+      <ul class="feed">
+        {% for item in lm.items[lang] %}
+        <li><a href="{{ lang }}/{{ item.slug }}.html">{{ item.title }}</a> <time>{{ item.date }}</time></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </section>
+
+    {% endif %}
+
+    {% endfor %}
+
+    {% include "partials/footer.njk" %}
+  </div>
+  {% endfor %}
+
+</body>
+</html>
