@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Limits - rules</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --warm: #f7f3ee;
+            --ink: #2c2825;
+            --faded: #6b6460;
+            --accent: #8b6f4e;
+            --line: #d9d0c7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: var(--warm);
+            color: var(--ink);
+            line-height: 1.7;
+        }
+
+        .page {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 60px 24px 80px;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8em;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.15em;
+            color: var(--faded);
+            margin-bottom: 48px;
+        }
+
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6em;
+            font-weight: 600;
+            margin-top: 48px;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 14px;
+            font-size: 1.05em;
+        }
+
+        .rule-block {
+            border-left: 3px solid var(--accent);
+            padding: 16px 20px;
+            margin: 20px 0;
+            background: rgba(139, 111, 78, 0.04);
+        }
+
+        .rule-block p {
+            margin-bottom: 8px;
+        }
+
+        .rule-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        .example {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.08em;
+            color: var(--faded);
+            padding: 16px 0;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            margin: 24px 0;
+        }
+
+        .steps {
+            counter-reset: step;
+            margin: 16px 0;
+        }
+
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            align-items: baseline;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--accent);
+            min-width: 24px;
+        }
+
+        .diagram {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 24px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .stage {
+            background: white;
+            border: 2px solid var(--line);
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 0.9em;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .stage.active {
+            border-color: var(--accent);
+            background: rgba(139, 111, 78, 0.08);
+        }
+
+        .arrow {
+            color: var(--line);
+            font-size: 1.2em;
+        }
+
+        .sheet {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin: 24px 0;
+        }
+
+        .sheet-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        .sheet-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .sheet-label {
+            font-weight: 600;
+            min-width: 160px;
+            color: var(--faded);
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--line);
+            margin: 48px 0;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--faded);
+            font-size: 0.95em;
+            margin-top: 48px;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2.2em; }
+            .page { padding: 40px 18px 60px; }
+            .sheet-row { flex-direction: column; gap: 2px; }
+            .sheet-label { min-width: auto; }
+        }
+        .lang-switch {
+            text-align: right;
+            margin-bottom: 16px;
+            font-size: 0.9em;
+        }
+        .lang-switch a {
+            color: var(--accent);
+            text-decoration: none;
+            padding: 4px 10px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+        }
+        .lang-switch a:hover {
+            background: rgba(139, 111, 78, 0.08);
+        }
+        .lang-switch span {
+            padding: 4px 10px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="lang-switch"><a href="ru.html">RU</a> <span>EN</span></div>
+        <h1>City Limits</h1>
+        <p class="tagline">A storytelling game in real cities. No dice, no prep.</p>
+
+        <h2>To play you need</h2>
+        <p>At least two people. A video call or a table. Access to city maps and the internet. No dice, no numbers, no character sheets.</p>
+
+        <h2>One of you is the facilitator</h2>
+        <p>The facilitator is responsible for the world. If a character decides to cross the road, the facilitator decides whether a car hits them or an old friend appears along the way. If a character goes to a shop, the facilitator is the shopkeeper and everyone else who works there.</p>
+        <p>The world is kind. Doors open, people smile. But the world follows real rules - the boundary is what is physically and socially possible, not what the player assumes is possible for them. Players often expect barriers that are not there. The part of their brain that rarely turns on because of real-life obstacles - turns on here.</p>
+
+        <h2>Character creation</h2>
+        <p>Takes two minutes. Come up with a name, a profession, a backstory. Then add two things:</p>
+
+        <div class="rule-block">
+            <p><strong>Goal</strong> - a short-term desire, a whim. "Buy a car", "get a promotion", "find a lollipop". The facilitator rewards the goal for passing challenges.</p>
+            <p><strong>Line of development</strong> - five stages of personal growth your character will move through during the game. It might be a path from addiction to sobriety, from shyness to confidence, from loneliness to trust.</p>
+        </div>
+
+        <div class="diagram">
+            <div class="stage active">Stage 1</div>
+            <span class="arrow">→</span>
+            <div class="stage">Stage 2</div>
+            <span class="arrow">→</span>
+            <div class="stage">Stage 3</div>
+            <span class="arrow">→</span>
+            <div class="stage">Stage 4</div>
+            <span class="arrow">→</span>
+            <div class="stage">Stage 5</div>
+        </div>
+
+        <h2>Example character</h2>
+        <div class="sheet">
+            <div class="sheet-title">Character sheet</div>
+            <div class="sheet-row">
+                <span class="sheet-label">Name</span>
+                <span>Marina</span>
+            </div>
+            <div class="sheet-row">
+                <span class="sheet-label">Profession</span>
+                <span>Architect</span>
+            </div>
+            <div class="sheet-row">
+                <span class="sheet-label">Backstory</span>
+                <span>Returned to her hometown after ten years away</span>
+            </div>
+            <div class="sheet-row">
+                <span class="sheet-label">Goal</span>
+                <span>Open her own studio</span>
+            </div>
+            <div class="sheet-row">
+                <span class="sheet-label">Line of development</span>
+                <span>From alienation to belonging</span>
+            </div>
+            <div class="sheet-row">
+                <span class="sheet-label">Stages</span>
+                <span>Stranger → Curious → Involved → Needed → Home</span>
+            </div>
+        </div>
+
+        <h2>The game cycle</h2>
+        <div class="steps">
+            <div class="step">
+                <p>The facilitator describes a place in the city. Players describe what their characters do.</p>
+            </div>
+            <div class="step">
+                <p>The facilitator poses a challenge tied to the character's line of development. If a character is working on generosity - a homeless person asks for help on the road. If on courage - a stranger needs assistance.</p>
+            </div>
+            <div class="step">
+                <p>The character responds. If they pass the challenge - the goal moves closer and they advance toward the next stage of development. If not - the goal moves further away, but new opportunities appear.</p>
+            </div>
+            <div class="step">
+                <p>The group votes: have enough challenges been passed to move to the next stage? Sometimes the player themselves votes against it - it means they need to play more at this level.</p>
+            </div>
+        </div>
+
+        <h2>The place</h2>
+        <p>Alongside the character, the group chooses a place in the city - a real place, often abandoned or forgotten. The place also has five stages of development. The higher the character's level, the easier it is to develop the place - they are a more capable citizen, more productive.</p>
+
+        <div class="diagram">
+            <div class="stage active">Ruins</div>
+            <span class="arrow">→</span>
+            <div class="stage">Clearing</div>
+            <span class="arrow">→</span>
+            <div class="stage">Repair</div>
+            <span class="arrow">→</span>
+            <div class="stage">Life</div>
+            <span class="arrow">→</span>
+            <div class="stage">Heritage</div>
+        </div>
+
+        <div class="example">
+            Players chose an abandoned city park that many bemoan as forgotten by the municipality. In its centre stands a concert hall with Dorian columns, three meter doorways, wide floors inside. It used to host concerts from across the nation but when the park was abandoned, the doors were sealed shut. Players went into the building, found an old wise man with a lantern who lives there waiting for a chance to restore the place, and who was friends with one of their parents. They called for help from friends and started cleaning the building, designing its interior, discussing how they could rent the place out. They expected pushback from the city. The city was all for it.
+        </div>
+
+        <h2>End of session</h2>
+        <p>When a character reaches the fifth stage, they can change their line of development or the player creates a new character. The place can also take on a new line or give way to a new one.</p>
+        <p>The game is finished at the end of each session. It already changed you and the city as you know it. Players tell me it makes their brains nimble, that they discuss city architecture with their colleagues afterward, that they drive around the city and see their false memories from the game.</p>
+
+        <hr class="divider">
+
+        <h2>Changing the facilitator</h2>
+        <p>Players rotate as facilitator, because to host the world they need to both love the location and want to change it. Love allows them to describe the world in detail, and the desire for change gives them courage to let players realize their dreams. Two players in one group kept discussing a centuries-old house across the street from where they grew up. For that scene, they became facilitators and helped describe an area of the city that I could only follow with street view.</p>
+
+        <h2>Safety</h2>
+        <p>City Limits is set in real cities and modern life - sensitive subjects come up naturally. Check in before and during sessions for comfort. The X sign with hands flags when unsafe subjects are broached - the story shifts immediately, no explanation needed. Anyone can step away at any time.</p>
+
+        <h2>Who is this for</h2>
+        <p>No experience with tabletop games needed. Many of my players had never played an RPG before. This is for someone who has spare wisdom and creativity, and wants an outlet harder than dreams but easier than volunteering in a dog shelter or going into politics. If you love conversation, real places, and stories that stay with you after the session ends - this is your game.</p>
+
+        <div class="footer">
+            <p><a href="https://fetsorn.codeberg.page">fetsorn.codeberg.page</a> · <a href="https://patreon.com/fetsorn">patreon.com/fetsorn</a> · <a href="https://fetsorn.itch.io/city-limits">itch.io</a></p>
+        </div>
+    </div>
+</body>
+</html>

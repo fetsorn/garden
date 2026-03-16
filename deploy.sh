@@ -6,11 +6,13 @@ git worktree remove ./pages
 
 git worktree add ./pages pages
 
-yarn build
+./build.sh
 
-mkdir -p pages
+cp -r 11ty/_site/* ./pages/
 
-cp -r dist/* ./pages/
+cp -r theme/.domains ./pages/
+
+cp -r theme/* ./pages/
 
 git --git-dir ./.git/worktrees/pages --work-tree ./pages add .
 

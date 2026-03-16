@@ -75,7 +75,7 @@ links), but in practice most feeds will be one or the other.
 │ g:Entry│ inline on Feed via g:entry    │ link on room page, no item page │
 └────────┴───────────────────────────────┴────────────────────────────┘
 
-g:presents links to project nodes in core.ttl.
+g:presents links to project nodes in index.ttl.
 Every non-Door landmark has g:description per language.
 Feeds specify g:order-by (CSV branch name) and g:order-direction
 ("ascending" or "descending") for sort order.
