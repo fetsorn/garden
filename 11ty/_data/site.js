@@ -19,6 +19,6 @@ export default function () {
     defaultRoom: defaultSlug,
     author: 'fetsorn',
     title: "fetsorn's garden",
-    lfsBase: 'https://git.nexusnest.link/fetsorn/quarry/media/branch/main/lfs',
+    lfsBase: 'https://media.githubusercontent.com/media/fetsorn/quarry/refs/heads/main/lfs/',
   };
 }

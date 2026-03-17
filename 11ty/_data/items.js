@@ -39,7 +39,7 @@ function itemSlug(name, uuid) {
 function itemTitle(category, ev) {
   switch (category) {
     case 'legend': {
-      const date = ev.date || '';
+      const date = ev.actdate || '';
       const city = ev.city || '';
       return date && city ? `${date} — ${city}` : city || date;
     }
@@ -63,6 +63,12 @@ function audioRef(ev) {
     }
   }
   return null;
+}
+
+/** Normalize a value to an array (handles singleton strings from panrec) */
+function asArray(val) {
+  if (!val) return [];
+  return Array.isArray(val) ? val : [val];
 }
 
 /** Resolve g:presents to a set of project IDs */
@@ -125,11 +131,13 @@ export default function () {
     }
 
     for (const ev of events) {
-      const langs = ev.lang || ['en'];
+      const langs = asArray(ev.lang);
+      if (!langs.length) langs.push('en');
       const displayName = ev.city || ev.datum || '';
       const slug = itemSlug(displayName, ev.event || '');
       const title = itemTitle(category, ev);
       const audio = audioRef(ev);
+      const normEv = { ...ev, lang: langs, actname: asArray(ev.actname) };
 
       for (const lang of langs) {
         items.push({
@@ -137,7 +145,7 @@ export default function () {
           lang,
           category,
           title,
-          event: ev,
+          event: normEv,
           audio,
           room: {
             slug: roomSlug,

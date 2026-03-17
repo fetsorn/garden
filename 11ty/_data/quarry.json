@@ -1,79 +1,116 @@
 {
   "legend": [
     {
-      "event": "7f085dc2-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      "_": "event",
+      "event": "19b64cf7-c287-4291-8f96-1d7981bca222",
+      "actcopyright": "CC-BY-NC-SA",
+      "actdate": "2026-03-02",
+      "actname": [
+        "jack",
+        "maya"
+      ],
       "category": "legend",
-      "date": "2026-03-06",
-      "city": "Manhattan",
-      "lang": ["ru"],
-      "datum": "Группа Манхеттен посетила книжный клуб, обсуждали открытый океан, Urbine - Outlaw Ocean и Карла шмитта",
-      "actname": ["jack", "maya"],
-      "project": "city-limits"
-    },
-    {
-      "event": "5008fb3d-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-      "category": "legend",
-      "date": "2026-03-06",
-      "city": "Miami",
-      "lang": ["ru"],
-      "datum": "В Майами Декстер Морган кормил себя и своего кота стейком из мраморного мяса, ловил волны на доске для серфинга и боролся с акулами",
-      "actname": ["morgan"],
-      "project": "city-limits"
-    },
-    {
-      "event": "e2f402e9-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-      "category": "legend",
-      "date": "2026-03-05",
-      "city": "Miami",
-      "lang": ["ru"],
-      "datum": "вчера в майами декстер морган расследовал историю любви и предательства, а потом объелся в баре у моря",
-      "actname": ["morgan"],
-      "project": "city-limits"
-    },
-    {
-      "event": "19b64cf7-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-      "category": "legend",
-      "date": "2026-03-02",
-      "city": "Manhattan",
-      "lang": ["ru"],
+      "city": "manhattan",
       "datum": "Группа манхеттен сегодня посещала итальянский ресторан в бронксе и разгадывала тайны заложенные там в начале прошлого века",
-      "actname": ["jack", "maya"],
+      "lang": "ru",
       "project": "city-limits"
     },
     {
-      "event": "394bbdba-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      "_": "event",
+      "event": "394bbdba-24c6-447e-a3d1-7449e9b29623",
+      "actcopyright": "CC-BY-NC-SA",
+      "actdate": "2026-03-02",
+      "actname": "misha",
       "category": "legend",
-      "date": "2026-03-02",
-      "city": "Volgograd",
-      "lang": ["ru"],
+      "city": "volgograd",
       "datum": "Группа второго Влг сегодня поела чизкейки с врагами и превратила их в друзей",
-      "actname": ["misha"],
+      "lang": "ru",
+      "project": "city-limits"
+    },
+    {
+      "_": "event",
+      "event": "5008fb3d-5e77-4151-a327-3f63e3789db1",
+      "actcopyright": "CC-BY-NC-SA",
+      "actdate": "2026-03-06",
+      "actname": "morgan",
+      "category": "legend",
+      "city": "miami",
+      "datum": "В Майами Декстер Морган кормил себя и своего кота стейком из мраморного мяса, ловил волны на доске для серфинга и боролся с акулами",
+      "lang": "ru",
+      "project": "city-limits"
+    },
+    {
+      "_": "event",
+      "event": "7f085dc2-aeb5-4344-8c63-97a333b06036",
+      "actcopyright": "CC-BY-NC-SA",
+      "actdate": "2026-03-06",
+      "actname": [
+        "jack",
+        "maya"
+      ],
+      "category": "legend",
+      "city": "manhattan",
+      "datum": "Группа Манхеттен посетила книжный клуб, обсуждали открытый океан, Urbine - Outlaw Ocean и Карла шмитта",
+      "lang": "ru",
+      "project": "city-limits"
+    },
+    {
+      "_": "event",
+      "event": "e2f402e9-417f-4899-94cc-0f6f8a7d38d1",
+      "actcopyright": "CC-BY-NC-SA",
+      "actdate": "2026-03-05",
+      "actname": "morgan",
+      "category": "legend",
+      "city": "miami",
+      "datum": "вчера в майами декстер морган расследовал историю любви и предательства, а потом объелся в баре у моря",
+      "lang": "ru",
+      "project": "city-limits"
+    },
+    {
+      "_": "event",
+      "event": "ec82508b-056f-4b64-9bcc-04a1e377206b",
+      "actcopyright": "CC-BY-NC-SA",
+      "actdate": "2026-03-16",
+      "actname": [
+        "jack",
+        "maya"
+      ],
+      "category": "legend",
+      "city": "manhattan",
+      "datum": "вчера группа Манхеттен играла в маджонг",
+      "lang": "ru",
       "project": "city-limits"
     }
   ],
   "poem-reading": [
     {
-      "event": "96a6e0f6-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      "_": "event",
+      "event": "96a6e0f6-7e6d-4f77-a688-3c128f3938ff",
+      "actcopyright": "public domain",
       "category": "poem-reading",
-      "lang": ["en", "ru"],
-      "datum": "Wanwei",
-      "sayname": "fetsorn",
-      "saydate": "2026-02-20",
-      "saycopyright": "CC-BY-NC-SA",
-      "actname": ["Ancient Chinese poem"],
-      "actcopyright": "Public domain",
-      "project": "norcivilian-reads",
-      "file": [
-        {
-          "reference": [
-            {
-              "hash": "171736ae26f42ec48f32c13f7e1b838b362b25b8750a1f7dbd8550f34bc74960",
-              "extension": "ogg",
-              "name": "wanwei"
-            }
-          ]
+      "datum": "fetsorn's reading of wanwei",
+      "file": {
+        "_": "file",
+        "file": "c0a9b3df-7590-47ba-8597-c2578494233e",
+        "date": "2026-02-20",
+        "description": "wanwei",
+        "reference": {
+          "_": "reference",
+          "reference": "0451aee0-20cd-4080-902a-ef29c4e2eff5",
+          "extension": "ogg",
+          "hash": "171736ae26f42ec48f32c13f7e1b838b362b25b8750a1f7dbd8550f34bc74960",
+          "name": "voice_20-02-2026_23-38-11.ogg"
         }
-      ]
+      },
+      "lang": [
+        "en",
+        "ru",
+        "zh"
+      ],
+      "project": "norcivilian-reads",
+      "saycopyright": "CC-BY-NC-SA",
+      "saydate": "2026-02-20",
+      "sayname": "fetsorn"
     }
   ]
 }

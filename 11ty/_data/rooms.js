@@ -40,6 +40,12 @@ function itemSlug(name, uuid) {
   return `${readable}-${prefix}`;
 }
 
+/** Normalize a value to an array (handles singleton strings from panrec) */
+function asArray(val) {
+  if (!val) return [];
+  return Array.isArray(val) ? val : [val];
+}
+
 /** Resolve g:presents to a flat set of project IDs (strips "p:" prefix) */
 function presentsSet(presents) {
   if (!presents) return null;
@@ -144,7 +150,8 @@ export default function () {
             // build per-language item arrays
             lm.items = { en: [], ru: [] };
             for (const ev of events) {
-              const langs = ev.lang || ['en'];
+              const langs = asArray(ev.lang);
+              if (!langs.length) langs.push('en');
               const dateVal = field ? (ev[field] || '') : '';
               // display name: city for legend, datum for others
               const displayName = ev.city || ev.datum || '';
