@@ -8,8 +8,9 @@ export default async function(eleventyConfig) {
     eleventyConfig.setOutputDirectory("11ty/_site");
 
     // static assets → _site/
-    eleventyConfig.addPassthroughCopy("index.css");
-    eleventyConfig.addPassthroughCopy("img");
-    eleventyConfig.addPassthroughCopy({ 'robots.txt': '/robots.txt' });
-    eleventyConfig.addPassthroughCopy({ '.domains': '/.domains' });
+    eleventyConfig.addPassthroughCopy("theme/index.css");
+    eleventyConfig.addPassthroughCopy("theme/img");
+    eleventyConfig.addPassthroughCopy({ 'theme/robots.txt': '/robots.txt' });
+    eleventyConfig.addPassthroughCopy({ 'theme/.domains': '/.domains' });
+    eleventyConfig.addPassthroughCopy({ 'theme/rules': '/rules' });
 };
