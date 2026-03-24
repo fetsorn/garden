@@ -1,16 +1,30 @@
 <nav>
-  {% for door in room.doors %}
-  {% if lang == "ru" %}
-    <a href="{{ door.targetSlug }}.html#ru">{{ door.label.ru }}</a>
+  {% for door in navDoors %}
+  {% if navLang == "ru" %}
+    <a href="{{ navPrefix }}{{ door.targetSlug }}.html#ru">{{ door.label.ru }}</a>
   {% else %}
-    <a href="{{ door.targetSlug }}.html">{{ door.label.en }}</a>
+    <a href="{{ navPrefix }}{{ door.targetSlug }}.html">{{ door.label.en }}</a>
   {% endif %}
   {% endfor %}
   <span class="lang-toggle">
-    {% if lang == "en" %}
-    <span class="active">EN</span> / <a href="#ru">RU</a>
+    {% if navLangMode == "hash" %}
+      {% if navLang == "en" %}
+      <span class="active">EN</span> / <a href="#ru">RU</a>
+      {% else %}
+      <a href="#en">EN</a> / <span class="active">RU</span>
+      {% endif %}
+    {% elif navHasOtherLang %}
+      {% if navLang == "en" %}
+      <span class="active">EN</span> / <a href="{{ navPrefix }}{{ navOtherLang }}/{{ navSlug }}.html">RU</a>
+      {% else %}
+      <a href="{{ navPrefix }}{{ navOtherLang }}/{{ navSlug }}.html">EN</a> / <span class="active">RU</span>
+      {% endif %}
     {% else %}
-    <a href="#en">EN</a> / <span class="active">RU</span>
+      {% if navLang == "ru" %}
+      <span class="active">RU</span>
+      {% else %}
+      <span class="active">EN</span>
+      {% endif %}
     {% endif %}
   </span>
 </nav>

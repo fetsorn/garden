@@ -1,7 +1,3 @@
 <footer>
-  {% if lang == "en" %}
-  <a href="en/prices.html">Support this work</a>
-  {% else %}
-  <a href="ru/prices.html">Услуги и цены</a>
-  {% endif %}
+  <a href="{{ navPrefix }}{{ navLang }}/{{ site.supportUrl }}.html">{{ site.supportLabel[navLang] }}</a>
 </footer>

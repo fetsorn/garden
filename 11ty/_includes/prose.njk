@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="{{ doc.lang }}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="{{ doc.label[doc.lang] }} — {{ site.title }}">
-  <meta name="author" content="{{ site.author }}">
-  <title>{{ doc.label[doc.lang] }}</title>
-  <link rel="stylesheet" href="../index.css">
+  {% set pageTitle = doc.label[doc.lang] %}
+  {% set pageDescription = doc.label[doc.lang] + " — " + site.title %}
+  {% set cssPath = "../index.css" %}
+  {% include "partials/head.njk" %}
 </head>
 <body class="room-{{ doc.room.slug }}">
 
@@ -15,22 +13,14 @@
          alt="{{ doc.room.label[doc.lang] }}">
   </header>
 
-  <nav>
-    {% for door in doc.room.doors %}
-    {% if doc.lang == "ru" %}
-    <a href="../{{ door.targetSlug }}.html#ru">{{ door.label.ru }}</a>
-    {% else %}
-    <a href="../{{ door.targetSlug }}.html">{{ door.label.en }}</a>
-    {% endif %}
-    {% endfor %}
-    <span class="lang-toggle">
-      {% if doc.lang == "ru" %}
-      <a href="#en">EN</a> / <span class="active">RU</span>
-      {% else %}
-      <span class="active">EN</span> / <a href="#ru">RU</a>
-      {% endif %}
-    </span>
-  </nav>
+  {% set navDoors = doc.room.doors %}
+  {% set navLang = doc.lang %}
+  {% set navPrefix = "../" %}
+  {% set navLangMode = "page" %}
+  {% set navHasOtherLang = doc.hasOtherLang %}
+  {% set navOtherLang = doc.otherLang %}
+  {% set navSlug = doc.slug %}
+  {% include "partials/navbar.njk" %}
 
   <p class="item-context">{{ doc.contextLabel[doc.lang] }} · {{ doc.room.label[doc.lang] }}</p>
   {% if doc.lang == "ru" %}
@@ -43,13 +33,7 @@
     {{ doc.content | safe }}
   </article>
 
-  <footer>
-    {% if doc.lang == "en" %}
-    <a href="../en/prices.html">Support this work</a>
-    {% else %}
-    <a href="../ru/prices.html">Услуги и цены</a>
-    {% endif %}
-  </footer>
+  {% include "partials/footer.njk" %}
 
 </body>
 </html>

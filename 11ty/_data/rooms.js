@@ -1,218 +1,132 @@
-import { readFileSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+/**
+ * Layer 3 — Room view models
+ *
+ * Composes graph (structure) + quarry (content) into the shape
+ * that room.njk templates expect.
+ */
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { getText, getLangMap, itemSlug, asArray, presentsSet, LANGUAGES } from './lib.js';
+import { getRooms, getLandmarks, getDoors } from './graph.js';
+import { getEvents } from './quarry.js';
 
-/** Extract bilingual { en, ru } from JSON-LD value (string, array, or lang-tagged object) */
-function getText(val) {
-  let result = { en: '', ru: '' };
+/** Build the entries array for a TTL-defined entry-based feed. */
+function buildEntries(node) {
+  const raw = Array.isArray(node['g:entry']) ? node['g:entry'] : [node['g:entry']];
 
-  if (!val) return result;
+  return raw.map(e => {
+    const label = getText(e['rdfs:label']);
+    const url = e['g:url'] || null;
+    const proseVal = e['g:prose'] || null;
+    const date = e['g:date'] || '';
 
-  if (typeof val === 'string') {
-    result = { en: val, ru: val };
-  } else if (Array.isArray(val)) {
-    for (const item of val) {
-      if (item['@language'] === 'en') result.en = item['@value'];
-      if (item['@language'] === 'ru') result.ru = item['@value'];
+    let proseSlug = null;
+    const prosePaths = getLangMap(proseVal);
+    const hasProse = LANGUAGES.some(l => prosePaths[l]);
+
+    if (hasProse) {
+      const text = label.en || label.ru;
+      proseSlug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     }
-  } else if (val['@value']) {
-    const lang = val['@language'] || 'en';
-    if (lang === 'en') result.en = val['@value'];
-    if (lang === 'ru') result.ru = val['@value'];
+
+    return {
+      label,
+      url,
+      prose: hasProse,
+      proseLangs: Object.fromEntries(LANGUAGES.map(l => [l, !!prosePaths[l]])),
+      slug: proseSlug,
+      date,
+    };
+  });
+}
+
+/** Build per-language item lists for a quarry-backed feed. */
+function buildFeedItems(node) {
+  const category = node['g:category'];
+  const orderBy = node['g:order-by'] || null;
+  const orderDirection = node['g:order-direction'] || 'ascending';
+
+  const events = getEvents(category, {
+    projects: presentsSet(node['g:presents']),
+    orderBy,
+    orderDirection,
+  });
+
+  if (!events.length) return null;
+
+  const items = Object.fromEntries(LANGUAGES.map(l => [l, []]));
+
+  for (const ev of events) {
+    const langs = asArray(ev.lang);
+    if (!langs.length) langs.push('en');
+
+    const dateVal = orderBy ? (ev[orderBy] || '') : '';
+    const displayName = ev.city || ev.datum || '';
+    const title = dateVal && displayName
+      ? `${dateVal} — ${displayName}`
+      : displayName || dateVal;
+    const slug = itemSlug(displayName, ev.event || '');
+
+    for (const l of LANGUAGES) {
+      if (langs.includes(l)) {
+        items[l].push({ slug, title, date: dateVal });
+      }
+    }
   }
 
-  // fallback: fill empty language from the other
-  if (!result.ru) result.ru = result.en;
-  if (!result.en) result.en = result.ru;
-
-  return result;
+  return items;
 }
 
-/** Build a feed-item slug: lowercase name + 8-char UUID prefix */
-function itemSlug(name, uuid) {
-  const readable = (name || 'item')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-  const prefix = uuid.slice(0, 8);
-  return `${readable}-${prefix}`;
-}
+/** Shape a single landmark node into a template-ready object. */
+function buildLandmark(node, roomSlug) {
+  const lmId = node['@id'];
+  const lmSlug = lmId.replace(`g:${roomSlug}-`, '');
+  const type = node['@type'].replace('g:', '');
 
-/** Normalize a value to an array (handles singleton strings from panrec) */
-function asArray(val) {
-  if (!val) return [];
-  return Array.isArray(val) ? val : [val];
-}
+  const lm = {
+    id: lmId,
+    slug: lmSlug,
+    type,
+    status: node['g:status'] || 'live',
+    label: getText(node['rdfs:label']),
+    description: getText(node['g:description']),
+  };
 
-/** Resolve g:presents to a flat set of project IDs (strips "p:" prefix) */
-function presentsSet(presents) {
-  if (!presents) return null;
-  const arr = Array.isArray(presents) ? presents : [presents];
-  return new Set(arr.map(p => (p['@id'] || p).replace('p:', '')));
+  if (type === 'Feed') {
+    lm.category = node['g:category'] || null;
+    lm.orderBy = node['g:order-by'] || null;
+    lm.orderDirection = node['g:order-direction'] || 'ascending';
+
+    if (node['g:entry']) {
+      lm.entries = buildEntries(node);
+    }
+
+    if (lm.category) {
+      const items = buildFeedItems(node);
+      if (items) lm.items = items;
+    }
+  }
+
+  if (type === 'Item') {
+    lm.url = node['g:url'] || null;
+    lm.presents = node['g:presents']?.['@id'] || null;
+  }
+
+  return lm;
 }
 
 export default function () {
-  const garden = JSON.parse(readFileSync(join(__dirname, 'garden.json'), 'utf8'));
-  const graph = garden['@graph'];
-
-  // quarry data keyed by category — may not exist yet
-  let quarry = {};
-  try {
-    quarry = JSON.parse(readFileSync(join(__dirname, 'quarry.json'), 'utf8'));
-  } catch { /* no quarry data yet, feeds will be empty */ }
-
-  // index every node by @id
-  const byId = {};
-  for (const node of graph) {
-    if (node['@id']) byId[node['@id']] = node;
-  }
-
-  // collect landmarks (Feed / Item / Door) grouped by room @id
-  // preserving @graph order
-  const landmarksByRoom = {};
-  for (const node of graph) {
-    const type = node['@type'];
-    if (!type || !['g:Feed', 'g:Item', 'g:Door'].includes(type)) continue;
-    const roomId = node['g:in-room']?.['@id'];
-    if (!roomId) continue;
-    if (!landmarksByRoom[roomId]) landmarksByRoom[roomId] = [];
-    landmarksByRoom[roomId].push(node);
-  }
-
-  const rooms = graph.filter(n => n['@type'] === 'g:Room');
-
-  return rooms.map(room => {
+  return getRooms().map(room => {
     const id = room['@id'];
     const slug = id.replace('g:', '');
-    const label = getText(room['rdfs:label']);
-    const description = getText(room['g:description']);
-    const isDefault = room['g:default'] === true;
 
-    const allLandmarks = landmarksByRoom[id] || [];
-
-    // non-Door landmarks in @graph order
-    const landmarks = allLandmarks
-      .filter(n => n['@type'] !== 'g:Door')
-      .map(node => {
-        const lmId = node['@id'];
-        const lmSlug = lmId.replace(`g:${slug}-`, '');
-        const type = node['@type'].replace('g:', ''); // "Feed" or "Item"
-
-        const lm = {
-          id: lmId,
-          slug: lmSlug,
-          type,
-          status: node['g:status'] || 'live',
-          label: getText(node['rdfs:label']),
-          description: getText(node['g:description']),
-        };
-
-        if (type === 'Feed') {
-          lm.category = node['g:category'] || null;
-          lm.orderBy = node['g:order-by'] || null;
-          lm.orderDirection = node['g:order-direction'] || 'ascending';
-
-          // entry-based feed (links defined in TTL, not quarry)
-          if (node['g:entry']) {
-            const raw = Array.isArray(node['g:entry'])
-              ? node['g:entry']
-              : [node['g:entry']];
-            lm.entries = raw.map(e => {
-              const label = getText(e['rdfs:label']);
-              const url = e['g:url'] || null;
-              const proseVal = e['g:prose'] || null;
-              const date = e['g:date'] || '';
-              let proseSlug = null;
-              // determine which languages have prose
-              const proseLangs = { en: false, ru: false };
-              if (proseVal) {
-                const text = label.en || label.ru;
-                proseSlug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-                if (typeof proseVal === 'string') {
-                  proseLangs.en = true;
-                  proseLangs.ru = true;
-                } else if (Array.isArray(proseVal)) {
-                  for (const p of proseVal) {
-                    if (p['@language'] === 'en') proseLangs.en = true;
-                    if (p['@language'] === 'ru') proseLangs.ru = true;
-                  }
-                } else if (proseVal['@value']) {
-                  const lang = proseVal['@language'] || 'en';
-                  if (lang === 'en') proseLangs.en = true;
-                  if (lang === 'ru') proseLangs.ru = true;
-                }
-              }
-              return { label, url, prose: !!proseVal, proseLangs, slug: proseSlug, date };
-            });
-          }
-
-          // quarry-backed feed: attach items from quarry.json
-          if (lm.category && quarry[lm.category]) {
-            let events = quarry[lm.category];
-
-            // filter by project if the feed has g:presents
-            const projects = presentsSet(node['g:presents']);
-            if (projects) {
-              events = events.filter(e => e.project && projects.has(e.project));
-            }
-
-            // sort by orderBy field
-            const field = lm.orderBy;
-            if (field) {
-              events = [...events].sort((a, b) => {
-                const va = a[field] || '';
-                const vb = b[field] || '';
-                return lm.orderDirection === 'descending'
-                  ? vb.localeCompare(va)
-                  : va.localeCompare(vb);
-              });
-            }
-
-            // build per-language item arrays
-            lm.items = { en: [], ru: [] };
-            for (const ev of events) {
-              const langs = asArray(ev.lang);
-              if (!langs.length) langs.push('en');
-              const dateVal = field ? (ev[field] || '') : '';
-              // display name: city for legend, datum for others
-              const displayName = ev.city || ev.datum || '';
-              const title = dateVal && displayName
-                ? `${dateVal} — ${displayName}`
-                : displayName || dateVal;
-              const slug = itemSlug(displayName, ev.event || '');
-
-              for (const l of ['en', 'ru']) {
-                if (langs.includes(l)) {
-                  lm.items[l].push({ slug, title, date: dateVal });
-                }
-              }
-            }
-          }
-        }
-
-        if (type === 'Item') {
-          lm.url = node['g:url'] || null;
-          lm.presents = node['g:presents']?.['@id'] || null;
-        }
-
-        return lm;
-      });
-
-    // Doors → target room info for nav
-    const doors = allLandmarks
-      .filter(n => n['@type'] === 'g:Door')
-      .map(node => {
-        const targetId = node['g:target']?.['@id'];
-        const targetRoom = byId[targetId];
-        const targetSlug = targetId?.replace('g:', '') || '';
-        return {
-          targetSlug,
-          label: getText(targetRoom?.['rdfs:label']),
-        };
-      });
-
-    return { id, slug, label, description, isDefault, landmarks, doors };
+    return {
+      id,
+      slug,
+      label: getText(room['rdfs:label']),
+      description: getText(room['g:description']),
+      isDefault: room['g:default'] === true,
+      landmarks: getLandmarks(id).map(n => buildLandmark(n, slug)),
+      doors: getDoors(id),
+    };
   });
 }

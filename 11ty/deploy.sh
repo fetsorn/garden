@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 
-rm -R ../pages
-
-git worktree remove ../pages
+git worktree remove ../pages 2>/dev/null || true
 
 git worktree add ../pages pages
 

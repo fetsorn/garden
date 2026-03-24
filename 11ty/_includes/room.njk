@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {% set pageTitle = room.label.en %}
+  {% set pageDescription = room.label.en + " / " + room.label.ru + " — " + site.title %}
+  {% set cssPath = "index.css" %}
   {% include "partials/head.njk" %}
 </head>
+{# The empty #ru anchor must be the first child of <body> —
+   the CSS :target toggle uses ~ (general sibling combinator) to show/hide
+   .lang-en / .lang-ru blocks. Moving this element will break the toggle. #}
 <body class="room-{{ room.slug }}">
 
   <div id="ru"></div>
@@ -14,6 +20,10 @@
            alt="{{ room.description[lang] }}">
     </header>
 
+    {% set navDoors = room.doors %}
+    {% set navLang = lang %}
+    {% set navPrefix = "" %}
+    {% set navLangMode = "hash" %}
     {% include "partials/navbar.njk" %}
 
     <section class="room-description">
@@ -77,12 +87,13 @@
   <script>
     (function() {
       var titles = { en: {{ room.label.en | dump | safe }}, ru: {{ room.label.ru | dump | safe }} };
-      function setTitle() {
+      function update() {
         var lang = location.hash === '#ru' ? 'ru' : 'en';
         document.title = titles[lang];
+        document.documentElement.lang = lang;
       }
-      setTitle();
-      window.addEventListener('hashchange', setTitle);
+      update();
+      window.addEventListener('hashchange', update);
     })();
   </script>
 

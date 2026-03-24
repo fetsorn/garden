@@ -1,16 +1,8 @@
-import { readFileSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { getRooms } from './graph.js';
 
 export default function () {
-  const garden = JSON.parse(readFileSync(join(__dirname, 'garden.json'), 'utf8'));
-  const graph = garden['@graph'];
-
-  const defaultRoom = graph.find(
-    n => n['@type'] === 'g:Room' && n['g:default'] === true
-  );
+  const rooms = getRooms();
+  const defaultRoom = rooms.find(r => r['g:default'] === true);
   const defaultSlug = defaultRoom
     ? defaultRoom['@id'].replace('g:', '')
     : 'study';
@@ -19,6 +11,8 @@ export default function () {
     defaultRoom: defaultSlug,
     author: 'fetsorn',
     title: "fetsorn's garden",
-    lfsBase: 'https://media.githubusercontent.com/media/fetsorn/quarry/refs/heads/main/lfs/',
+    lfsBase: 'https://media.githubusercontent.com/media/fetsorn/garden/refs/heads/main/lfs',
+    supportUrl: 'prices',
+    supportLabel: { en: 'Support this work', ru: 'Услуги и цены' },
   };
 }

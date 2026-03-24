@@ -15,7 +15,7 @@
   {% endif %}
   {% if item.audio %}
   <audio controls>
-    <source src="{{ site.lfsBase }}/{{ item.audio.hash }}.{{ item.audio.extension }}" type="audio/{{ item.audio.extension }}">
+    <source src="{{ site.lfsBase }}/{{ item.audio.hash }}.{{ item.audio.extension }}" type="{{ item.audio.mime }}">
   </audio>
   {% endif %}
 </article>

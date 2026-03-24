@@ -87,7 +87,7 @@ g:stage-city-limits
     g:description "A table with a city map spread across it, figurines placed at intersections."@en ;
     g:description "Стол с картой города, на перекрёстках расставлены фигурки."@ru ;
     g:category "legend" ;
-    g:order-by "date" ;
+    g:order-by "actdate" ;
     g:order-direction "descending" ;
     g:presents p:city-limits .
 

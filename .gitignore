@@ -1,3 +1,5 @@
 */node_modules/
 11ty/_site/
+11ty/_data/quarry.json
+11ty/_data/garden.json
 /pages/

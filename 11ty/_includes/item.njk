@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="{{ item.lang }}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="{{ item.landmarkLabel[item.lang] }} — {{ item.title }}">
-  <meta name="author" content="{{ site.author }}">
-  <title>{{ item.title }}</title>
-  <link rel="stylesheet" href="../index.css">
+  {% set pageTitle = item.title %}
+  {% set pageDescription = item.landmarkLabel[item.lang] + " — " + item.title %}
+  {% set cssPath = "../index.css" %}
+  {% include "partials/head.njk" %}
 </head>
 <body class="room-{{ item.room.slug }}">
 
@@ -15,30 +13,14 @@
          alt="{{ item.room.label[item.lang] }}">
   </header>
 
-  <nav>
-    {% for door in item.room.doors %}
-    {% if item.lang == "ru" %}
-    <a href="../{{ door.targetSlug }}.html#ru">{{ door.label.ru }}</a>
-    {% else %}
-    <a href="../{{ door.targetSlug }}.html">{{ door.label.en }}</a>
-    {% endif %}
-    {% endfor %}
-    <span class="lang-toggle">
-      {% if item.hasOtherLang %}
-      {% if item.lang == "en" %}
-      <span class="active">EN</span> / <a href="../{{ item.otherLang }}/{{ item.slug }}.html">RU</a>
-      {% else %}
-      <a href="../{{ item.otherLang }}/{{ item.slug }}.html">EN</a> / <span class="active">RU</span>
-      {% endif %}
-      {% else %}
-      {% if item.lang == "ru" %}
-      <span class="active">RU</span>
-      {% else %}
-      <span class="active">EN</span>
-      {% endif %}
-      {% endif %}
-    </span>
-  </nav>
+  {% set navDoors = item.room.doors %}
+  {% set navLang = item.lang %}
+  {% set navPrefix = "../" %}
+  {% set navLangMode = "page" %}
+  {% set navHasOtherLang = item.hasOtherLang %}
+  {% set navOtherLang = item.otherLang %}
+  {% set navSlug = item.slug %}
+  {% include "partials/navbar.njk" %}
 
   <p class="item-context">{{ item.landmarkLabel[item.lang] }} · {{ item.room.label[item.lang] }}</p>
   {% if item.lang == "ru" %}
@@ -55,13 +37,7 @@
   {% include "items/default.njk" %}
   {% endif %}
 
-  <footer>
-    {% if item.lang == "en" %}
-    <a href="../en/prices.html">Support this work</a>
-    {% else %}
-    <a href="../ru/prices.html">Услуги и цены</a>
-    {% endif %}
-  </footer>
+  {% include "partials/footer.njk" %}
 
 </body>
 </html>
