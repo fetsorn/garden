@@ -17,6 +17,21 @@
     },
     {
       "_": "event",
+      "event": "31b4a1f5-8a7d-4bf3-9b58-7d8409a0396c",
+      "actcopyright": "CC-BY-NC-SA",
+      "actdate": "2026-03-16",
+      "actname": [
+        "jack",
+        "maya"
+      ],
+      "category": "legend",
+      "city": "manhattan",
+      "datum": "вчера группа Манхеттен играла в маджонг",
+      "lang": "ru",
+      "project": "city-limits"
+    },
+    {
+      "_": "event",
       "event": "394bbdba-24c6-447e-a3d1-7449e9b29623",
       "actcopyright": "CC-BY-NC-SA",
       "actdate": "2026-03-02",
@@ -63,21 +78,6 @@
       "category": "legend",
       "city": "miami",
       "datum": "вчера в майами декстер морган расследовал историю любви и предательства, а потом объелся в баре у моря",
-      "lang": "ru",
-      "project": "city-limits"
-    },
-    {
-      "_": "event",
-      "event": "ec82508b-056f-4b64-9bcc-04a1e377206b",
-      "actcopyright": "CC-BY-NC-SA",
-      "actdate": "2026-03-16",
-      "actname": [
-        "jack",
-        "maya"
-      ],
-      "category": "legend",
-      "city": "manhattan",
-      "datum": "вчера группа Манхеттен играла в маджонг",
       "lang": "ru",
       "project": "city-limits"
     }
