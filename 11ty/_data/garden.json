@@ -9,7 +9,16 @@
     {
       "@id": "g:stage",
       "@type": "g:Room",
-      "rdfs:label": "The Stage",
+      "rdfs:label": [
+        {
+          "@value": "The Stage",
+          "@language": "en"
+        },
+        {
+          "@value": "Сцена",
+          "@language": "ru"
+        }
+      ],
       "g:description": [
         {
           "@value": "A small theatre stage seen from the wings. Velvet curtains hang heavy on either side. A single spotlight cuts through dust motes, landing on an empty stool at center stage.",
@@ -26,7 +35,16 @@
       "@id": "g:study",
       "@type": "g:Room",
       "g:default": true,
-      "rdfs:label": "The Study",
+      "rdfs:label": [
+        {
+          "@value": "The Study",
+          "@language": "en"
+        },
+        {
+          "@value": "Кабинет",
+          "@language": "ru"
+        }
+      ],
       "g:description": [
         {
           "@value": "Warm light falls across a desk covered in papers. Bookshelves line the walls.",
@@ -42,7 +60,16 @@
     {
       "@id": "g:map-room",
       "@type": "g:Room",
-      "rdfs:label": "The Map Room",
+      "rdfs:label": [
+        {
+          "@value": "The Map Room",
+          "@language": "en"
+        },
+        {
+          "@value": "Картографическая",
+          "@language": "ru"
+        }
+      ],
       "g:description": [
         {
           "@value": "A dim room lit by a single brass lamp. A large table dominates the center, covered by a hand-drawn map with colored pins pressed into it. Rolled charts lean against the walls.",
@@ -62,7 +89,16 @@
         "@id": "g:stage"
       },
       "g:status": "live",
-      "rdfs:label": "Norcivilian Reads",
+      "rdfs:label": [
+        {
+          "@value": "Norcivilian Reads",
+          "@language": "en"
+        },
+        {
+          "@value": "Norcivilian Reads",
+          "@language": "ru"
+        }
+      ],
       "g:description": [
         {
           "@value": "A shelf of well-worn poetry volumes, some lying open, bookmarks tucked between pages. A microphone rests on top.",
@@ -81,114 +117,80 @@
       }
     },
     {
-      "@id": "g:stage-songs",
-      "@type": "g:Feed",
-      "g:status": "draft",
+      "@id": "g:stage-prices",
+      "@type": "g:Item",
       "g:in-room": {
         "@id": "g:stage"
       },
-      "rdfs:label": "Songs",
-      "g:description": [
+      "g:status": "live",
+      "rdfs:label": [
         {
-          "@value": "A guitar leans against a stool under a single spotlight.",
+          "@value": "Playbill",
           "@language": "en"
         },
         {
-          "@value": "Гитара прислонена к табурету под единственным прожектором.",
+          "@value": "Афиша",
           "@language": "ru"
         }
       ],
-      "g:category": "song",
-      "g:order-by": "date_published",
-      "g:order-direction": "descending"
+      "g:description": [
+        {
+          "@value": "A playbill pinned to the curtain beside the stage. Shows and prices are listed in neat columns.",
+          "@language": "en"
+        },
+        {
+          "@value": "Афиша приколота к занавесу у сцены. Представления и цены аккуратно расписаны в два столбца.",
+          "@language": "ru"
+        }
+      ],
+      "g:prose": [
+        {
+          "@value": "../prose/prices-en.md",
+          "@language": "en"
+        },
+        {
+          "@value": "../prose/prices-ru.md",
+          "@language": "ru"
+        }
+      ]
     },
     {
-      "@id": "g:stage-poems",
-      "@type": "g:Feed",
+      "@id": "g:stage-offer",
+      "@type": "g:Item",
       "g:in-room": {
         "@id": "g:stage"
       },
-      "g:status": "draft",
-      "rdfs:label": "Poems",
-      "g:description": [
+      "g:status": "live",
+      "rdfs:label": [
         {
-          "@value": "A microphone stands at center stage, a crumpled page at its feet.",
+          "@value": "Ticket Stub",
           "@language": "en"
         },
         {
-          "@value": "Микрофон стоит в центре сцены, у его ног — смятый листок.",
+          "@value": "Корешок билета",
           "@language": "ru"
         }
       ],
-      "g:category": "poem",
-      "g:order-by": "date_published",
-      "g:order-direction": "descending"
-    },
-    {
-      "@id": "g:stage-stories",
-      "@type": "g:Feed",
-      "g:in-room": {
-        "@id": "g:stage"
-      },
-      "g:status": "draft",
-      "rdfs:label": "Stories",
       "g:description": [
         {
-          "@value": "A worn armchair faces the audience, a reading lamp beside it.",
+          "@value": "A ticket stub on the floor. You turn it over — the back is covered in fine print.",
           "@language": "en"
         },
         {
-          "@value": "Потёртое кресло повёрнуто к зрителям, рядом — торшер.",
+          "@value": "Корешок билета на полу. Переворачиваете — на обороте мелким шрифтом условия.",
           "@language": "ru"
         }
       ],
-      "g:category": "story",
-      "g:order-by": "date_published",
-      "g:order-direction": "descending"
-    },
-    {
-      "@id": "g:stage-audio",
-      "@type": "g:Feed",
-      "g:in-room": {
-        "@id": "g:stage"
-      },
-      "g:status": "draft",
-      "rdfs:label": "Audio",
-      "g:description": [
+      "g:prose": [
         {
-          "@value": "A reel-to-reel tape recorder hums quietly in the wings.",
+          "@value": "../prose/offer-en.md",
           "@language": "en"
         },
         {
-          "@value": "За кулисами тихо гудит катушечный магнитофон.",
+          "@value": "../prose/offer-ru.md",
           "@language": "ru"
         }
-      ],
-      "g:category": "audio",
-      "g:order-by": "date_published",
-      "g:order-direction": "descending"
-    },
-    {
-      "@id": "g:stage-video",
-      "@type": "g:Feed",
-      "g:in-room": {
-        "@id": "g:stage"
-      },
-      "g:status": "draft",
-      "rdfs:label": "Video",
-      "g:description": [
-        {
-          "@value": "A projector throws a pale rectangle of light onto the back wall.",
-          "@language": "en"
-        },
-        {
-          "@value": "Проектор бросает бледный прямоугольник света на заднюю стену.",
-          "@language": "ru"
-        }
-      ],
-      "g:category": "video",
-      "g:order-by": "date_published",
-      "g:order-direction": "descending"
+      ]
     },
     {
       "@id": "g:stage-aetherion",
@@ -197,7 +199,16 @@
         "@id": "g:stage"
       },
       "g:status": "live",
-      "rdfs:label": "Aetherion Horizon",
+      "rdfs:label": [
+        {
+          "@value": "Aetherion Horizon",
+          "@language": "en"
+        },
+        {
+          "@value": "Aetherion Horizon",
+          "@language": "ru"
+        }
+      ],
       "g:description": [
         {
           "@value": "A crystal ball flickers with moving images from another world.",
@@ -226,7 +237,16 @@
         "@id": "g:stage"
       },
       "g:status": "live",
-      "rdfs:label": "City Limits",
+      "rdfs:label": [
+        {
+          "@value": "City Limits",
+          "@language": "en"
+        },
+        {
+          "@value": "Городские пределы",
+          "@language": "ru"
+        }
+      ],
       "g:description": [
         {
           "@value": "A table with a city map spread across it, figurines placed at intersections.",
@@ -251,7 +271,16 @@
       "g:in-room": {
         "@id": "g:stage"
       },
-      "rdfs:label": "To the Study",
+      "rdfs:label": [
+        {
+          "@value": "To the Study",
+          "@language": "en"
+        },
+        {
+          "@value": "В Кабинет",
+          "@language": "ru"
+        }
+      ],
       "g:target": {
         "@id": "g:study"
       }
@@ -263,68 +292,19 @@
       "g:in-room": {
         "@id": "g:stage"
       },
-      "rdfs:label": "To the Map Room",
+      "rdfs:label": [
+        {
+          "@value": "To the Map Room",
+          "@language": "en"
+        },
+        {
+          "@value": "В Картографическую",
+          "@language": "ru"
+        }
+      ],
       "g:target": {
         "@id": "g:map-room"
       }
-    },
-    {
-      "@id": "g:study-thesis",
-      "@type": "g:Item",
-      "g:status": "draft",
-      "g:in-room": {
-        "@id": "g:study"
-      },
-      "rdfs:label": "Thesis",
-      "g:description": [
-        {
-          "@value": "A framed diploma hangs on the wall, its edges curling slightly in the lamplight.",
-          "@language": "en"
-        },
-        {
-          "@value": "На стене висит диплом в рамке, его края чуть загибаются в свете лампы.",
-          "@language": "ru"
-        }
-      ],
-      "g:presents": {
-        "@id": "p:legal-entities"
-      }
-    },
-    {
-      "@id": "g:study-articles",
-      "@type": "g:Feed",
-      "g:in-room": {
-        "@id": "g:study"
-      },
-      "g:status": "draft",
-      "rdfs:label": "Academic Articles",
-      "g:description": [
-        {
-          "@value": "A stack of journals, flagged with colored tabs, sits at the corner of the desk.",
-          "@language": "en"
-        },
-        {
-          "@value": "На углу стола лежит стопка журналов, заложенных цветными закладками.",
-          "@language": "ru"
-        }
-      ],
-      "g:category": "article",
-      "g:order-by": "date_published",
-      "g:order-direction": "descending",
-      "g:presents": [
-        {
-          "@id": "p:legal-entities"
-        },
-        {
-          "@id": "p:saleilles"
-        },
-        {
-          "@id": "p:orphan-works"
-        },
-        {
-          "@id": "p:soccer-regulation"
-        }
-      ]
     },
     {
       "@id": "g:study-blog",
@@ -332,8 +312,17 @@
       "g:in-room": {
         "@id": "g:study"
       },
-      "g:status": "draft",
-      "rdfs:label": "Dev Blog",
+      "g:status": "live",
+      "rdfs:label": [
+        {
+          "@value": "Dev Blog",
+          "@language": "en"
+        },
+        {
+          "@value": "Блог",
+          "@language": "ru"
+        }
+      ],
       "g:description": [
         {
           "@value": "A notebook lies open near the lamp, its pages covered in half-finished diagrams and scrawled reminders.",
@@ -360,68 +349,24 @@
         {
           "@id": "p:glider-cli"
         }
-      ]
-    },
-    {
-      "@id": "g:study-qs",
-      "@type": "g:Feed",
-      "g:in-room": {
-        "@id": "g:study"
-      },
-      "g:status": "draft",
-      "rdfs:label": "Qualified Self",
-      "g:description": [
-        {
-          "@value": "A shelf of slim pamphlets, each one a manifesto for seeing your own data clearly.",
-          "@language": "en"
-        },
-        {
-          "@value": "Полка тонких брошюр, каждая — манифест о том, как ясно видеть свои данные.",
-          "@language": "ru"
-        }
       ],
-      "g:category": "qualified-self",
-      "g:order-by": "date_published",
-      "g:order-direction": "descending",
-      "g:presents": [
-        {
-          "@id": "p:evenor"
-        },
-        {
-          "@id": "p:csvs"
-        },
-        {
-          "@id": "p:panrec"
-        }
-      ]
-    },
-    {
-      "@id": "g:study-aipassana",
-      "@type": "g:Feed",
-      "g:in-room": {
-        "@id": "g:study"
-      },
-      "g:status": "draft",
-      "rdfs:label": "Aipassana",
-      "g:description": [
-        {
-          "@value": "A rolled-up mat leans against the bookshelf. A small timer sits beside it.",
-          "@language": "en"
-        },
-        {
-          "@value": "У книжной полки прислонён свёрнутый коврик. Рядом стоит маленький таймер.",
+      "g:entry": {
+        "rdfs:label": [
+          {
+            "@value": "City Limits: Quick Start",
+            "@language": "en"
+          },
+          {
+            "@value": "Городские пределы: Быстрый старт",
+            "@language": "ru"
+          }
+        ],
+        "g:prose": {
+          "@value": "../prose/city-limits-quick-start.md",
           "@language": "ru"
-        }
-      ],
-      "g:category": "aipassana",
-      "g:presents": [
-        {
-          "@id": "p:aipassana"
         },
-        {
-          "@id": "p:qigon"
-        }
-      ]
+        "g:date": "2026-03-25"
+      }
     },
     {
       "@id": "g:study-docs",
@@ -430,7 +375,16 @@
         "@id": "g:study"
       },
       "g:status": "live",
-      "rdfs:label": "Documentation",
+      "rdfs:label": [
+        {
+          "@value": "Documentation",
+          "@language": "en"
+        },
+        {
+          "@value": "Документация",
+          "@language": "ru"
+        }
+      ],
       "g:description": [
         {
           "@value": "A heavy technical manual lies open on the reading stand, its table of contents marked with ribbon bookmarks.",
@@ -529,7 +483,16 @@
       "g:in-room": {
         "@id": "g:study"
       },
-      "rdfs:label": "Quarry",
+      "rdfs:label": [
+        {
+          "@value": "Quarry",
+          "@language": "en"
+        },
+        {
+          "@value": "Каменоломня",
+          "@language": "ru"
+        }
+      ],
       "g:description": [
         {
           "@value": "A glass case beside the reading stand. Inside, the garden's own ledger — every entry, every link, laid open for inspection.",
@@ -540,29 +503,7 @@
           "@language": "ru"
         }
       ],
-      "g:url": "https://evenor.norcivilianlabs.org/#?~=https://git.nexusnest.link/fetsorn/quarry"
-    },
-    {
-      "@id": "g:study-resume",
-      "@type": "g:Item",
-      "g:in-room": {
-        "@id": "g:study"
-      },
-      "g:status": "draft",
-      "rdfs:label": "Resume",
-      "g:description": [
-        {
-          "@value": "A leather portfolio, closed but within reach.",
-          "@language": "en"
-        },
-        {
-          "@value": "Кожаная папка, закрытая, но под рукой.",
-          "@language": "ru"
-        }
-      ],
-      "g:presents": {
-        "@id": "p:resume"
-      }
+      "g:url": "https://evenor.norcivilianlabs.org/#?~=https://git.nexusnest.link/fetsorn/garden"
     },
     {
       "@id": "g:study-cards",
@@ -571,7 +512,16 @@
         "@id": "g:study"
       },
       "g:status": "live",
-      "rdfs:label": "Calling Cards",
+      "rdfs:label": [
+        {
+          "@value": "Calling Cards",
+          "@language": "en"
+        },
+        {
+          "@value": "Визитки",
+          "@language": "ru"
+        }
+      ],
       "g:description": [
         {
           "@value": "A small drawer of calling cards, each one a different hand.",
@@ -612,7 +562,16 @@
         "@id": "g:study"
       },
       "g:status": "live",
-      "rdfs:label": "To the Stage",
+      "rdfs:label": [
+        {
+          "@value": "To the Stage",
+          "@language": "en"
+        },
+        {
+          "@value": "На Сцену",
+          "@language": "ru"
+        }
+      ],
       "g:target": {
         "@id": "g:stage"
       }
@@ -624,25 +583,18 @@
         "@id": "g:study"
       },
       "g:status": "live",
-      "rdfs:label": "To the Map Room",
+      "rdfs:label": [
+        {
+          "@value": "To the Map Room",
+          "@language": "en"
+        },
+        {
+          "@value": "В Картографическую",
+          "@language": "ru"
+        }
+      ],
       "g:target": {
         "@id": "g:map-room"
-      }
-    },
-    {
-      "@id": "g:map-room-map",
-      "@type": "g:Item",
-      "g:in-room": {
-        "@id": "g:map-room"
-      },
-      "g:status": "draft",
-      "rdfs:label": "Map",
-      "g:description": {
-        "@value": "A large map spread across the table, pins marking places you've been.",
-        "@language": "en"
-      },
-      "g:presents": {
-        "@id": "p:city-limits"
       }
     },
     {
@@ -652,7 +604,16 @@
         "@id": "g:map-room"
       },
       "g:status": "live",
-      "rdfs:label": "To the Stage",
+      "rdfs:label": [
+        {
+          "@value": "To the Stage",
+          "@language": "en"
+        },
+        {
+          "@value": "На Сцену",
+          "@language": "ru"
+        }
+      ],
       "g:target": {
         "@id": "g:stage"
       }
@@ -664,7 +625,16 @@
         "@id": "g:map-room"
       },
       "g:status": "live",
-      "rdfs:label": "To the Study",
+      "rdfs:label": [
+        {
+          "@value": "To the Study",
+          "@language": "en"
+        },
+        {
+          "@value": "В Кабинет",
+          "@language": "ru"
+        }
+      ],
       "g:target": {
         "@id": "g:study"
       }

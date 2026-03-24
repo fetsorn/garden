@@ -7,7 +7,8 @@
 
 g:stage
     a g:Room ;
-    rdfs:label "The Stage" ;
+    rdfs:label "The Stage"@en ;
+    rdfs:label "Сцена"@ru ;
     g:description "A small theatre stage seen from the wings. Velvet curtains hang heavy on either side. A single spotlight cuts through dust motes, landing on an empty stool at center stage."@en ;
     g:description "Бархатные шторы обрамляют маленькую сцену. В воздухе пахнет пылью и канифолью. Где-то за кулисами работает магнитофон."@ru ;
     rdfs:comment "art — songs, poems, stories, game rules, audio, video" .
@@ -15,14 +16,16 @@ g:stage
 g:study
     a g:Room ;
     g:default true ;
-    rdfs:label "The Study" ;
+    rdfs:label "The Study"@en ;
+    rdfs:label "Кабинет"@ru ;
     g:description "Warm light falls across a desk covered in papers. Bookshelves line the walls."@en ;
     g:description "Тёплый свет падает на стол, заваленный бумагами. Вдоль стен — книжные полки."@ru ;
     rdfs:comment "articles, dev blog, qualified self, aipassana, documentation" .
 
 g:map-room
     a g:Room ;
-    rdfs:label "The Map Room" ;
+    rdfs:label "The Map Room"@en ;
+    rdfs:label "Картографическая"@ru ;
     g:description "A dim room lit by a single brass lamp. A large table dominates the center, covered by a hand-drawn map with colored pins pressed into it. Rolled charts lean against the walls."@en ;
     g:description "Тёмная комната с большим столом посередине. Поверхность покрыта рисованной от руки картой, булавки отмечают места, где вы были и куда собираетесь."@ru ;
     rdfs:comment "embedded map of places and events" .
@@ -33,7 +36,8 @@ g:stage-reads
     a g:Feed ;
     g:in-room g:stage ;
     g:status "live" ;
-    rdfs:label "Norcivilian Reads" ;
+    rdfs:label "Norcivilian Reads"@en ;
+    rdfs:label "Norcivilian Reads"@ru ;
     g:description "A shelf of well-worn poetry volumes, some lying open, bookmarks tucked between pages. A microphone rests on top."@en ;
     g:description "Полка зачитанных поэтических сборников, некоторые лежат раскрытыми, между страницами торчат закладки. Сверху лежит микрофон."@ru ;
     g:category "poem-reading" ;
@@ -41,159 +45,90 @@ g:stage-reads
     g:order-direction "descending" ;
     g:presents p:norcivilian-reads .
 
-g:stage-songs
-    a g:Feed ;
-    g:status "draft" ;
+g:stage-prices
+    a g:Item ;
     g:in-room g:stage ;
-    rdfs:label "Songs" ;
-    g:description "A guitar leans against a stool under a single spotlight."@en ;
-    g:description "Гитара прислонена к табурету под единственным прожектором."@ru ;
-    g:category "song" ;
-    g:order-by "date_published" ;
-    g:order-direction "descending" .
+    g:status "live" ;
+    rdfs:label "Playbill"@en ;
+    rdfs:label "Афиша"@ru ;
+    g:description "A playbill pinned to the curtain beside the stage. Shows and prices are listed in neat columns."@en ;
+    g:description "Афиша приколота к занавесу у сцены. Представления и цены аккуратно расписаны в два столбца."@ru ;
+    g:prose "../prose/prices-en.md"@en ;
+    g:prose "../prose/prices-ru.md"@ru .
 
-g:stage-poems
-    a g:Feed ;
+g:stage-offer
+    a g:Item ;
     g:in-room g:stage ;
-    g:status "draft" ;
-    rdfs:label "Poems" ;
-    g:description "A microphone stands at center stage, a crumpled page at its feet."@en ;
-    g:description "Микрофон стоит в центре сцены, у его ног — смятый листок."@ru ;
-    g:category "poem" ;
-    g:order-by "date_published" ;
-    g:order-direction "descending" .
-
-g:stage-stories
-    a g:Feed ;
-    g:in-room g:stage ;
-    g:status "draft" ;
-    rdfs:label "Stories" ;
-    g:description "A worn armchair faces the audience, a reading lamp beside it."@en ;
-    g:description "Потёртое кресло повёрнуто к зрителям, рядом — торшер."@ru ;
-    g:category "story" ;
-    g:order-by "date_published" ;
-    g:order-direction "descending" .
-
-g:stage-audio
-    a g:Feed ;
-    g:in-room g:stage ;
-    g:status "draft" ;
-    rdfs:label "Audio" ;
-    g:description "A reel-to-reel tape recorder hums quietly in the wings."@en ;
-    g:description "За кулисами тихо гудит катушечный магнитофон."@ru ;
-    g:category "audio" ;
-    g:order-by "date_published" ;
-    g:order-direction "descending" .
-
-g:stage-video
-    a g:Feed ;
-    g:in-room g:stage ;
-    g:status "draft" ;
-    rdfs:label "Video" ;
-    g:description "A projector throws a pale rectangle of light onto the back wall."@en ;
-    g:description "Проектор бросает бледный прямоугольник света на заднюю стену."@ru ;
-    g:category "video" ;
-    g:order-by "date_published" ;
-    g:order-direction "descending" .
+    g:status "live" ;
+    rdfs:label "Ticket Stub"@en ;
+    rdfs:label "Корешок билета"@ru ;
+    g:description "A ticket stub on the floor. You turn it over — the back is covered in fine print."@en ;
+    g:description "Корешок билета на полу. Переворачиваете — на обороте мелким шрифтом условия."@ru ;
+    g:prose "../prose/offer-en.md"@en ;
+    g:prose "../prose/offer-ru.md"@ru .
 
 g:stage-aetherion
     a g:Feed ;
     g:in-room g:stage ;
     g:status "live" ;
-    rdfs:label "Aetherion Horizon" ;
+    rdfs:label "Aetherion Horizon"@en ;
+    rdfs:label "Aetherion Horizon"@ru ;
     g:description "A crystal ball flickers with moving images from another world."@en ;
     g:description "Хрустальный шар мерцает движущимися образами из другого мира."@ru ;
     g:entry [ rdfs:label "Episode 1" ; g:url "https://youtu.be/_FdjI2xmjH8" ] ;
     g:entry [ rdfs:label "Episode 2" ; g:url "https://youtu.be/P9cbaTZozyM" ] .
 
-  g:stage-city-limits
-      a g:Feed ;
-      g:in-room g:stage ;
-      g:status "live" ;
-      rdfs:label "City Limits" ;
-      g:description "A table with a city map spread across it, figurines placed at intersections."@en ;
-      g:description "Стол с картой города, на перекрёстках расставлены фигурки."@ru ;
-      g:category "legend" ;
-      g:order-by "date" ;
-      g:order-direction "descending" ;
-      g:presents p:city-limits .
+g:stage-city-limits
+    a g:Feed ;
+    g:in-room g:stage ;
+    g:status "live" ;
+    rdfs:label "City Limits"@en ;
+    rdfs:label "Городские пределы"@ru ;
+    g:description "A table with a city map spread across it, figurines placed at intersections."@en ;
+    g:description "Стол с картой города, на перекрёстках расставлены фигурки."@ru ;
+    g:category "legend" ;
+    g:order-by "date" ;
+    g:order-direction "descending" ;
+    g:presents p:city-limits .
 
 g:stage-to-study
     a g:Door ;
     g:status "live" ;
     g:in-room g:stage ;
-    rdfs:label "To the Study" ;
+    rdfs:label "To the Study"@en ;
+    rdfs:label "В Кабинет"@ru ;
     g:target g:study .
 
 g:stage-to-map-room
     a g:Door ;
     g:status "live" ;
     g:in-room g:stage ;
-    rdfs:label "To the Map Room" ;
+    rdfs:label "To the Map Room"@en ;
+    rdfs:label "В Картографическую"@ru ;
     g:target g:map-room .
 
 # --- study landmarks ---
 
-g:study-thesis
-    a g:Item ;
-    g:status "draft" ;
-    g:in-room g:study ;
-    rdfs:label "Thesis" ;
-    g:description "A framed diploma hangs on the wall, its edges curling slightly in the lamplight."@en ;
-    g:description "На стене висит диплом в рамке, его края чуть загибаются в свете лампы."@ru ;
-    g:presents p:legal-entities .
-
-g:study-articles
-    a g:Feed ;
-    g:in-room g:study ;
-    g:status "draft" ;
-    rdfs:label "Academic Articles" ;
-    g:description "A stack of journals, flagged with colored tabs, sits at the corner of the desk."@en ;
-    g:description "На углу стола лежит стопка журналов, заложенных цветными закладками."@ru ;
-    g:category "article" ;
-    g:order-by "date_published" ;
-    g:order-direction "descending" ;
-    g:presents p:legal-entities, p:saleilles, p:orphan-works, p:soccer-regulation .
-
 g:study-blog
     a g:Feed ;
     g:in-room g:study ;
-    g:status "draft" ;
-    rdfs:label "Dev Blog" ;
+    g:status "live" ;
+    rdfs:label "Dev Blog"@en ;
+    rdfs:label "Блог"@ru ;
     g:description "A notebook lies open near the lamp, its pages covered in half-finished diagrams and scrawled reminders."@en ;
     g:description "У лампы лежит раскрытая тетрадь, её страницы испещрены незаконченными схемами и торопливыми пометками."@ru ;
     g:category "blog" ;
     g:order-by "date_published" ;
     g:order-direction "descending" ;
-    g:presents p:evenor, p:csvs, p:crater, p:glider-cli .
-
-g:study-qs
-    a g:Feed ;
-    g:in-room g:study ;
-    g:status "draft" ;
-    rdfs:label "Qualified Self" ;
-    g:description "A shelf of slim pamphlets, each one a manifesto for seeing your own data clearly."@en ;
-    g:description "Полка тонких брошюр, каждая — манифест о том, как ясно видеть свои данные."@ru ;
-    g:category "qualified-self" ;
-    g:order-by "date_published" ;
-    g:order-direction "descending" ;
-    g:presents p:evenor, p:csvs, p:panrec .
-
-g:study-aipassana
-    a g:Feed ;
-    g:in-room g:study ;
-    g:status "draft" ;
-    rdfs:label "Aipassana" ;
-    g:description "A rolled-up mat leans against the bookshelf. A small timer sits beside it."@en ;
-    g:description "У книжной полки прислонён свёрнутый коврик. Рядом стоит маленький таймер."@ru ;
-    g:category "aipassana" ;
-    g:presents p:aipassana, p:qigon .
+    g:presents p:evenor, p:csvs, p:crater, p:glider-cli ;
+    g:entry [ rdfs:label "City Limits: Quick Start"@en ; rdfs:label "Городские пределы: Быстрый старт"@ru ; g:prose "../prose/city-limits-quick-start.md"@ru ; g:date "2026-03-25" ] .
 
 g:study-docs
     a g:Feed ;
     g:in-room g:study ;
     g:status "live" ;
-    rdfs:label "Documentation" ;
+    rdfs:label "Documentation"@en ;
+    rdfs:label "Документация"@ru ;
     g:description "A heavy technical manual lies open on the reading stand, its table of contents marked with ribbon bookmarks."@en ;
     g:description "На подставке для чтения лежит тяжёлый технический справочник, его оглавление заложено ленточными закладками."@ru ;
     g:entry [ rdfs:label "CSVS — Plain-Text Database"@en ; rdfs:label "CSVS — База данных в формате простого текста"@ru ; g:url
@@ -213,25 +148,18 @@ g:study-quarry
     a g:Item ;
     g:status "live" ;
     g:in-room g:study ;
-    rdfs:label "Quarry" ;
+    rdfs:label "Quarry"@en ;
+    rdfs:label "Каменоломня"@ru ;
     g:description "A glass case beside the reading stand. Inside, the garden's own ledger — every entry, every link, laid open for inspection."@en ;
     g:description "Стеклянная витрина рядом с подставкой для чтения. Внутри — реестр самого сада: каждая запись, каждая связь, открытые для изучения."@ru ;
-    g:url "https://evenor.norcivilianlabs.org/#?~=https://git.nexusnest.link/fetsorn/quarry" .
-
-g:study-resume
-    a g:Item ;
-    g:in-room g:study ;
-    g:status "draft" ;
-    rdfs:label "Resume" ;
-    g:description "A leather portfolio, closed but within reach."@en ;
-    g:description "Кожаная папка, закрытая, но под рукой."@ru ;
-    g:presents p:resume .
+    g:url "https://evenor.norcivilianlabs.org/#?~=https://git.nexusnest.link/fetsorn/garden" .
 
 g:study-cards
     a g:Feed ;
     g:in-room g:study ;
     g:status "live" ;
-    rdfs:label "Calling Cards" ;
+    rdfs:label "Calling Cards"@en ;
+    rdfs:label "Визитки"@ru ;
     g:description "A small drawer of calling cards, each one a different hand."@en ;
     g:description "Маленький ящик визитных карточек, каждая — другим почерком."@ru ;
     g:entry [ rdfs:label "LinkedIn" ; g:url "https://www.linkedin.com/in/fetsorn/" ] ;
@@ -244,36 +172,32 @@ g:study-to-stage
     a g:Door ;
     g:in-room g:study ;
     g:status "live" ;
-    rdfs:label "To the Stage" ;
+    rdfs:label "To the Stage"@en ;
+    rdfs:label "На Сцену"@ru ;
     g:target g:stage .
 
 g:study-to-map-room
     a g:Door ;
     g:in-room g:study ;
     g:status "live" ;
-    rdfs:label "To the Map Room" ;
+    rdfs:label "To the Map Room"@en ;
+    rdfs:label "В Картографическую"@ru ;
     g:target g:map-room .
 
 # --- map room landmarks ---
-
-g:map-room-map
-    a g:Item ;
-    g:in-room g:map-room ;
-    g:status "draft" ;
-    rdfs:label "Map" ;
-    g:description "A large map spread across the table, pins marking places you've been."@en ;
-    g:presents p:city-limits .
 
 g:map-room-to-stage
     a g:Door ;
     g:in-room g:map-room ;
     g:status "live" ;
-    rdfs:label "To the Stage" ;
+    rdfs:label "To the Stage"@en ;
+    rdfs:label "На Сцену"@ru ;
     g:target g:stage .
 
 g:map-room-to-study
     a g:Door ;
     g:in-room g:map-room ;
     g:status "live" ;
-    rdfs:label "To the Study" ;
+    rdfs:label "To the Study"@en ;
+    rdfs:label "В Кабинет"@ru ;
     g:target g:study .

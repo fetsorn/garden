@@ -119,10 +119,33 @@ export default function () {
             const raw = Array.isArray(node['g:entry'])
               ? node['g:entry']
               : [node['g:entry']];
-            lm.entries = raw.map(e => ({
-              label: getText(e['rdfs:label']),
-              url: e['g:url'],
-            }));
+            lm.entries = raw.map(e => {
+              const label = getText(e['rdfs:label']);
+              const url = e['g:url'] || null;
+              const proseVal = e['g:prose'] || null;
+              const date = e['g:date'] || '';
+              let proseSlug = null;
+              // determine which languages have prose
+              const proseLangs = { en: false, ru: false };
+              if (proseVal) {
+                const text = label.en || label.ru;
+                proseSlug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                if (typeof proseVal === 'string') {
+                  proseLangs.en = true;
+                  proseLangs.ru = true;
+                } else if (Array.isArray(proseVal)) {
+                  for (const p of proseVal) {
+                    if (p['@language'] === 'en') proseLangs.en = true;
+                    if (p['@language'] === 'ru') proseLangs.ru = true;
+                  }
+                } else if (proseVal['@value']) {
+                  const lang = proseVal['@language'] || 'en';
+                  if (lang === 'en') proseLangs.en = true;
+                  if (lang === 'ru') proseLangs.ru = true;
+                }
+              }
+              return { label, url, prose: !!proseVal, proseLangs, slug: proseSlug, date };
+            });
           }
 
           // quarry-backed feed: attach items from quarry.json

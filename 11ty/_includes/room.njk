@@ -7,13 +7,13 @@
 
   <div id="ru"></div>
 
-  <header>
-    <img src="img/{{ room.slug }}.jpg"
-         alt="{{ room.description.en }}">
-  </header>
-
   {% for lang in ["en", "ru"] %}
   <div class="lang-{{ lang }}">
+    <header>
+      <img src="img/{{ room.slug }}.jpg"
+           alt="{{ room.description[lang] }}">
+    </header>
+
     {% include "partials/navbar.njk" %}
 
     <section class="room-description">
@@ -39,7 +39,16 @@
       <p class="landmark-description">{{ lm.description[lang] }}</p>
       <ul class="entries">
         {% for entry in lm.entries %}
-        <li><a href="{{ entry.url }}">{{ entry.label[lang] }}</a></li>
+        {% if not entry.prose or entry.proseLangs[lang] %}
+        <li>
+          {% if entry.prose %}
+          <a href="{{ lang }}/{{ entry.slug }}.html">{{ entry.label[lang] }}</a>
+          {% else %}
+          <a href="{{ entry.url }}">{{ entry.label[lang] }}</a>
+          {% endif %}
+          {% if entry.date %}<time>{{ entry.date }}</time>{% endif %}
+        </li>
+        {% endif %}
         {% endfor %}
       </ul>
     </section>
@@ -64,6 +73,18 @@
     {% include "partials/footer.njk" %}
   </div>
   {% endfor %}
+
+  <script>
+    (function() {
+      var titles = { en: {{ room.label.en | dump | safe }}, ru: {{ room.label.ru | dump | safe }} };
+      function setTitle() {
+        var lang = location.hash === '#ru' ? 'ru' : 'en';
+        document.title = titles[lang];
+      }
+      setTitle();
+      window.addEventListener('hashchange', setTitle);
+    })();
+  </script>
 
 </body>
 </html>
