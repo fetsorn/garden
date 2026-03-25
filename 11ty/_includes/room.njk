@@ -1,29 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ room.mainLang }}">
 <head>
-  {% set pageTitle = room.label.en %}
-  {% set pageDescription = room.label.en + " / " + room.label.ru + " — " + site.title %}
-  {% set cssPath = "index.css" %}
+  {% set pageTitle = room.label[room.mainLang] %}
+  {% set pageDescription = room.label[room.mainLang] + " — " + site.title %}
+  {% set pageLangs = room.langs %}
   {% include "partials/head.njk" %}
 </head>
-{# The empty #ru anchor must be the first child of <body> —
-   the CSS :target toggle uses ~ (general sibling combinator) to show/hide
-   .lang-en / .lang-ru blocks. Moving this element will break the toggle. #}
-<body class="room-{{ room.slug }}">
+<body class="{% if room.mainLang != 'en' %}main-{{ room.mainLang }} {% endif %}room-{{ room.slug }}">
 
-  <div id="ru"></div>
+  {% for lang in room.langs %}
+  <div id="{{ lang }}"></div>
+  {% endfor %}
 
-  {% for lang in ["en", "ru"] %}
-  <div class="lang-{{ lang }}">
+  {% for lang in room.langs %}
+  <div class="lang-{{ lang }}" lang="{{ lang }}">
     <header>
-      <img src="img/{{ room.slug }}.jpg"
+      <img src="../img/{{ room.image }}"
            alt="{{ room.description[lang] }}">
     </header>
 
     {% set navDoors = room.doors %}
     {% set navLang = lang %}
-    {% set navPrefix = "" %}
-    {% set navLangMode = "hash" %}
+    {% set navLangs = room.langs %}
     {% include "partials/navbar.njk" %}
 
     <section class="room-description">
@@ -33,18 +31,18 @@
     {% for lm in room.landmarks %}
 
     {% if lm.type == "Item" %}
-    <section id="{{ lm.slug }}{% if lang == 'ru' %}-ru{% endif %}" class="landmark landmark-item status-{{ lm.status }}">
+    <section class="landmark landmark-item status-{{ lm.status }}">
       <h2>{{ lm.label[lang] }}</h2>
       <p class="landmark-description">{{ lm.description[lang] }}</p>
       {% if lm.url %}
       <a href="{{ lm.url }}">{{ lm.label[lang] }}</a>
       {% else %}
-      <a href="{{ lang }}/{{ lm.slug }}.html">{{ lm.label[lang] }}</a>
+      <a href="../items/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a>
       {% endif %}
     </section>
 
     {% elif lm.entries %}
-    <section id="{{ lm.slug }}{% if lang == 'ru' %}-ru{% endif %}" class="landmark landmark-entries status-{{ lm.status }}">
+    <section class="landmark landmark-entries status-{{ lm.status }}">
       <h2>{{ lm.label[lang] }}</h2>
       <p class="landmark-description">{{ lm.description[lang] }}</p>
       <ul class="entries">
@@ -52,7 +50,7 @@
         {% if not entry.prose or entry.proseLangs[lang] %}
         <li>
           {% if entry.prose %}
-          <a href="{{ lang }}/{{ entry.slug }}.html">{{ entry.label[lang] }}</a>
+          <a href="../items/{{ entry.slug }}.html#{{ lang }}">{{ entry.label[lang] }}</a>
           {% else %}
           <a href="{{ entry.url }}">{{ entry.label[lang] }}</a>
           {% endif %}
@@ -64,13 +62,13 @@
     </section>
 
     {% elif lm.category %}
-    <section id="{{ lm.slug }}{% if lang == 'ru' %}-ru{% endif %}" class="landmark landmark-feed status-{{ lm.status }}">
+    <section class="landmark landmark-feed status-{{ lm.status }}">
       <h2>{{ lm.label[lang] }}</h2>
       <p class="landmark-description">{{ lm.description[lang] }}</p>
       {% if lm.items and lm.items[lang] | length %}
       <ul class="feed">
         {% for item in lm.items[lang] %}
-        <li><a href="{{ lang }}/{{ item.slug }}.html">{{ item.title }}</a> <time>{{ item.date }}</time></li>
+        <li><a href="../items/{{ item.slug }}.html#{{ lang }}">{{ item.title }}</a> <time>{{ item.date }}</time></li>
         {% endfor %}
       </ul>
       {% endif %}
@@ -85,15 +83,11 @@
   {% endfor %}
 
   <script>
-    (function() {
-      var titles = { en: {{ room.label.en | dump | safe }}, ru: {{ room.label.ru | dump | safe }} };
-      function update() {
-        var lang = location.hash === '#ru' ? 'ru' : 'en';
-        document.title = titles[lang];
-        document.documentElement.lang = lang;
-      }
-      update();
-      window.addEventListener('hashchange', update);
+    (function(){
+      var T={{ room.label | dump | safe }};
+      var L={{ room.langs | dump | safe }};
+      function u(){var h=location.hash.slice(1);var l=L.indexOf(h)>=0?h:L[0];document.title=T[l]||T[L[0]];document.documentElement.lang=l;}
+      u();addEventListener('hashchange',u);
     })();
   </script>
 

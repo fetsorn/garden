@@ -1,43 +1,53 @@
 <!DOCTYPE html>
-<html lang="{{ item.lang }}">
+<html lang="{{ item.mainLang }}">
 <head>
   {% set pageTitle = item.title %}
-  {% set pageDescription = item.landmarkLabel[item.lang] + " — " + item.title %}
-  {% set cssPath = "../index.css" %}
+  {% set pageDescription = item.landmarkLabel[item.mainLang] + " — " + item.title %}
+  {% set pageLangs = item.langs %}
   {% include "partials/head.njk" %}
 </head>
-<body class="room-{{ item.room.slug }}">
+<body class="{% if item.mainLang != 'en' %}main-{{ item.mainLang }} {% endif %}room-{{ item.room.slug }}">
 
-  <header>
-    <img src="../img/{{ item.room.slug }}.jpg"
-         alt="{{ item.room.label[item.lang] }}">
-  </header>
+  {% for lang in item.langs %}
+  <div id="{{ lang }}"></div>
+  {% endfor %}
 
-  {% set navDoors = item.room.doors %}
-  {% set navLang = item.lang %}
-  {% set navPrefix = "../" %}
-  {% set navLangMode = "page" %}
-  {% set navHasOtherLang = item.hasOtherLang %}
-  {% set navOtherLang = item.otherLang %}
-  {% set navSlug = item.slug %}
-  {% include "partials/navbar.njk" %}
+  {% for lang in item.langs %}
+  <div class="lang-{{ lang }}" lang="{{ lang }}">
+    <header>
+      <img src="../img/{{ item.room.image }}"
+           alt="{{ item.room.label[lang] }}">
+    </header>
 
-  <p class="item-context">{{ item.landmarkLabel[item.lang] }} · {{ item.room.label[item.lang] }}</p>
-  {% if item.lang == "ru" %}
-  <p class="item-back"><a href="../{{ item.room.slug }}.html#ru">← назад</a></p>
-  {% else %}
-  <p class="item-back"><a href="../{{ item.room.slug }}.html">← back</a></p>
-  {% endif %}
+    {% set navDoors = item.room.doors %}
+    {% set navLang = lang %}
+    {% set navLangs = item.langs %}
+    {% include "partials/navbar.njk" %}
 
-  {% if item.category == "legend" %}
-  {% include "items/legend.njk" %}
-  {% elif item.category == "poem-reading" %}
-  {% include "items/poem-reading.njk" %}
-  {% else %}
-  {% include "items/default.njk" %}
-  {% endif %}
+    <p class="item-context">{{ item.landmarkLabel[lang] }} · {{ item.room.label[lang] }}</p>
+    <p class="item-back">
+      <a href="../rooms/{{ item.room.slug }}.html#{{ lang }}">{% if lang == "ru" %}← назад{% elif lang == "zh" %}← 返回{% else %}← back{% endif %}</a>
+    </p>
 
-  {% include "partials/footer.njk" %}
+    {% if item.category == "legend" %}
+    {% include "items/legend.njk" %}
+    {% elif item.category == "poem-reading" %}
+    {% include "items/poem-reading.njk" %}
+    {% else %}
+    {% include "items/default.njk" %}
+    {% endif %}
+
+    {% include "partials/footer.njk" %}
+  </div>
+  {% endfor %}
+
+  <script>
+    (function(){
+      var L={{ item.langs | dump | safe }};
+      function u(){var h=location.hash.slice(1);var l=L.indexOf(h)>=0?h:L[0];document.documentElement.lang=l;}
+      u();addEventListener('hashchange',u);
+    })();
+  </script>
 
 </body>
 </html>

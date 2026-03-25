@@ -1,5 +1,5 @@
 /** Supported languages */
-export const LANGUAGES = ['en', 'ru'];
+export const LANGUAGES = ['en', 'ru', 'zh'];
 
 /** Default language (used when an event has no lang field) */
 export const DEFAULT_LANG = 'en';

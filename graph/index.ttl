@@ -7,6 +7,8 @@
 
 g:stage
     a g:Room ;
+    g:uuid "789a2245" ;
+    g:image "stage.jpg" ;
     rdfs:label "The Stage"@en ;
     rdfs:label "Сцена"@ru ;
     g:description "A small theatre stage seen from the wings. Velvet curtains hang heavy on either side. A single spotlight cuts through dust motes, landing on an empty stool at center stage."@en ;
@@ -16,6 +18,8 @@ g:stage
 g:study
     a g:Room ;
     g:default true ;
+    g:uuid "589e2183" ;
+    g:image "study.jpg" ;
     rdfs:label "The Study"@en ;
     rdfs:label "Кабинет"@ru ;
     g:description "Warm light falls across a desk covered in papers. Bookshelves line the walls."@en ;
@@ -24,6 +28,8 @@ g:study
 
 g:map-room
     a g:Room ;
+    g:uuid "ecf77ea7" ;
+    g:image "map-room.jpg" ;
     rdfs:label "The Map Room"@en ;
     rdfs:label "Картографическая"@ru ;
     g:description "A dim room lit by a single brass lamp. A large table dominates the center, covered by a hand-drawn map with colored pins pressed into it. Rolled charts lean against the walls."@en ;
@@ -77,6 +83,17 @@ g:stage-aetherion
     g:description "Хрустальный шар мерцает движущимися образами из другого мира."@ru ;
     g:entry [ rdfs:label "Episode 1" ; g:url "https://youtu.be/_FdjI2xmjH8" ] ;
     g:entry [ rdfs:label "Episode 2" ; g:url "https://youtu.be/P9cbaTZozyM" ] .
+
+g:stage-city-limits-rules
+    a g:Item ;
+    g:in-room g:stage ;
+    g:status "live" ;
+    rdfs:label "City Limits Rules"@en ;
+    rdfs:label "Правила Городских пределов"@ru ;
+    g:description "The rules of City Limits, a storytelling game in real cities."@en ;
+    g:description "Правила Городских пределов — игры-рассказа в настоящих городах."@ru ;
+    g:prose "../prose/city-limits-rules-en.html"@en ;
+    g:prose "../prose/city-limits-rules-ru.html"@ru .
 
 g:stage-city-limits
     a g:Feed ;

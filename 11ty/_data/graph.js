@@ -45,6 +45,16 @@ export function getRooms() {
 }
 
 /**
+ * Compute the URL slug for a room: "name-uuid" if g:uuid exists,
+ * otherwise just the bare name from @id.
+ */
+export function roomSlug(room) {
+  const name = room['@id'].replace('g:', '');
+  const uuid = room['g:uuid'] || '';
+  return uuid ? `${name}-${uuid}` : name;
+}
+
+/**
  * Return non-Door landmarks for a room, in @graph order.
  * Each landmark is a raw JSON-LD node.
  */
@@ -68,7 +78,7 @@ export function getDoors(roomId) {
       const targetId = node['g:target']?.['@id'];
       const targetRoom = _byId[targetId];
       return {
-        targetSlug: targetId?.replace('g:', '') || '',
+        targetSlug: targetRoom ? roomSlug(targetRoom) : (targetId?.replace('g:', '') || ''),
         label: getText(targetRoom?.['rdfs:label']),
       };
     });

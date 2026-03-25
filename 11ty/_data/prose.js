@@ -3,7 +3,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import markdownIt from 'markdown-it';
 import { getText, getLangMap, LANGUAGES } from './lib.js';
-import { rawGraph, nodeById, getDoors } from './graph.js';
+import { rawGraph, nodeById, getDoors, roomSlug } from './graph.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const md = markdownIt();
@@ -16,10 +16,11 @@ function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-/** Read a markdown file and render to HTML */
+/** Read a prose file and render to HTML (markdown or raw HTML) */
 function renderProse(prosePath) {
   const resolved = join(graphDir, prosePath);
   const source = readFileSync(resolved, 'utf8');
+  if (prosePath.endsWith('.html')) return source;
   return md.render(source);
 }
 
@@ -32,10 +33,12 @@ export default function () {
     const roomId = node['g:in-room']?.['@id'];
     const room = nodeById(roomId);
     if (!room) continue;
-    const roomSlug = roomId.replace('g:', '');
+    const slug_ = roomSlug(room);
+    const image = room['g:image'] || `${roomId.replace('g:', '')}.jpg`;
 
     const roomData = {
-      slug: roomSlug,
+      slug: slug_,
+      image,
       label: getText(room['rdfs:label']),
       doors: getDoors(roomId),
     };
@@ -43,24 +46,25 @@ export default function () {
     // Standalone Items with g:prose
     if (node['@type'] === 'g:Item' && node['g:prose']) {
       const prosePaths = getLangMap(node['g:prose']);
-      const nodeSlug = node['@id'].replace(`g:${roomSlug}-`, '');
+      const name = roomId.replace('g:', '');
+      const nodeSlug = node['@id'].replace(`g:${name}-`, '');
       const label = getText(node['rdfs:label']);
       const langs = LANGUAGES.filter(l => prosePaths[l]);
 
-      for (const lang of langs) {
-        const content = renderProse(prosePaths[lang]);
-        const otherLang = langs.find(l => l !== lang) || null;
+      if (langs.length) {
+        const content = {};
+        for (const lang of langs) content[lang] = renderProse(prosePaths[lang]);
+
         pages.push({
           slug: nodeSlug,
-          lang,
+          langs,
+          mainLang: langs[0],
           type: 'item',
           content,
           label,
           description: getText(node['g:description']),
           room: roomData,
           contextLabel: label,
-          hasOtherLang: !!otherLang,
-          otherLang,
         });
       }
     }
@@ -79,20 +83,20 @@ export default function () {
         const date = entry['g:date'] || '';
         const langs = LANGUAGES.filter(l => prosePaths[l]);
 
-        for (const lang of langs) {
-          const content = renderProse(prosePaths[lang]);
-          const otherLang = langs.find(l => l !== lang) || null;
+        if (langs.length) {
+          const content = {};
+          for (const lang of langs) content[lang] = renderProse(prosePaths[lang]);
+
           pages.push({
             slug: entrySlug,
-            lang,
+            langs,
+            mainLang: langs[0],
             type: 'entry',
             content,
             label: entryLabel,
             date,
             room: roomData,
             contextLabel: getText(node['rdfs:label']),
-            hasOtherLang: !!otherLang,
-            otherLang,
           });
         }
       }

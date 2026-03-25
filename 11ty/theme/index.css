@@ -21,9 +21,31 @@ body {
 }
 
 /* --- language toggle (pure CSS) --- */
+
+/* default: en is main language, hide others */
 .lang-ru { display: none; }
+.lang-zh { display: none; }
+
+/* override defaults when main language is ru */
+body.main-ru .lang-en { display: none; }
+body.main-ru .lang-ru { display: block; }
+
+/* override defaults when main language is zh */
+body.main-zh .lang-en { display: none; }
+body.main-zh .lang-zh { display: block; }
+
+/* fragment overrides — ID selectors beat class selectors */
+#en:target ~ .lang-en { display: block; }
+#en:target ~ .lang-ru { display: none; }
+#en:target ~ .lang-zh { display: none; }
+
 #ru:target ~ .lang-en { display: none; }
 #ru:target ~ .lang-ru { display: block; }
+#ru:target ~ .lang-zh { display: none; }
+
+#zh:target ~ .lang-en { display: none; }
+#zh:target ~ .lang-ru { display: none; }
+#zh:target ~ .lang-zh { display: block; }
 
 /* --- header --- */
 header { margin-bottom: 1.5rem; }

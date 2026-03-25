@@ -2,11 +2,12 @@
  * Layer 3 — Item view models
  *
  * Composes graph feeds + quarry events into one item object per
- * language × event, which items.njk paginates over.
+ * event, which items.njk paginates over.  Each item carries all
+ * its available translations (langs, mainLang).
  */
 
 import { getText, itemSlug, asArray, presentsSet, audioMime, eventLangs, LANGUAGES } from './lib.js';
-import { getRooms, getFeeds, getDoors, nodeById } from './graph.js';
+import { getRooms, getFeeds, getDoors, nodeById, roomSlug } from './graph.js';
 import { getEvents, hasCategory } from './quarry.js';
 
 /** Compute display title per category. */
@@ -50,7 +51,8 @@ export default function () {
     const room = nodeById(roomId);
     if (!room) continue;
 
-    const roomSlug = roomId.replace('g:', '');
+    const slug_ = roomSlug(room);
+    const image = room['g:image'] || `${roomId.replace('g:', '')}.jpg`;
     const doors = getDoors(roomId);
 
     const events = getEvents(category, {
@@ -61,7 +63,7 @@ export default function () {
       const langs = eventLangs(ev);
 
       const displayName = ev.city || ev.datum || '';
-      const slug = itemSlug(displayName, ev.event || '');
+      const evSlug = itemSlug(displayName, ev.event || '');
       const title = itemTitle(category, ev);
       const rawAudio = audioRef(ev);
       const audio = rawAudio
@@ -69,24 +71,22 @@ export default function () {
         : null;
       const normEv = { ...ev, lang: langs, actname: asArray(ev.actname) };
 
-      for (const lang of langs) {
-        items.push({
-          slug,
-          lang,
-          category,
-          title,
-          event: normEv,
-          audio,
-          room: {
-            slug: roomSlug,
-            label: getText(room['rdfs:label']),
-            doors,
-          },
-          landmarkLabel: getText(feed['rdfs:label']),
-          hasOtherLang: langs.length > 1,
-          otherLang: langs.length > 1 ? langs.find(l => l !== lang) : null,
-        });
-      }
+      items.push({
+        slug: evSlug,
+        langs,
+        mainLang: langs[0],
+        category,
+        title,
+        event: normEv,
+        audio,
+        room: {
+          slug: slug_,
+          image,
+          label: getText(room['rdfs:label']),
+          doors,
+        },
+        landmarkLabel: getText(feed['rdfs:label']),
+      });
     }
   }
 

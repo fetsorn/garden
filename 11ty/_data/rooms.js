@@ -5,8 +5,8 @@
  * that room.njk templates expect.
  */
 
-import { getText, getLangMap, itemSlug, asArray, presentsSet, LANGUAGES } from './lib.js';
-import { getRooms, getLandmarks, getDoors } from './graph.js';
+import { getText, getLangMap, itemSlug, asArray, presentsSet, LANGUAGES, DEFAULT_LANG } from './lib.js';
+import { getRooms, getLandmarks, getDoors, roomSlug } from './graph.js';
 import { getEvents } from './quarry.js';
 
 /** Build the entries array for a TTL-defined entry-based feed. */
@@ -117,15 +117,22 @@ function buildLandmark(node, roomSlug) {
 export default function () {
   return getRooms().map(room => {
     const id = room['@id'];
-    const slug = id.replace('g:', '');
+    const name = id.replace('g:', '');
+    const slug = roomSlug(room);
+    const image = room['g:image'] || `${name}.jpg`;
+    const labelMap = getLangMap(room['rdfs:label']);
+    const langs = LANGUAGES.filter(l => labelMap[l]);
 
     return {
       id,
       slug,
+      image,
+      langs: langs.length ? langs : [DEFAULT_LANG],
+      mainLang: (langs.length ? langs : [DEFAULT_LANG])[0],
       label: getText(room['rdfs:label']),
       description: getText(room['g:description']),
       isDefault: room['g:default'] === true,
-      landmarks: getLandmarks(id).map(n => buildLandmark(n, slug)),
+      landmarks: getLandmarks(id).map(n => buildLandmark(n, name)),
       doors: getDoors(id),
     };
   });
