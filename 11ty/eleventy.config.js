@@ -1,6 +1,5 @@
 export default async function(eleventyConfig) {
     eleventyConfig.ignores.add("README.md");
-    eleventyConfig.ignores.add("CLAUDE.md");
     eleventyConfig.ignores.add("theme/");
 
     eleventyConfig.setInputDirectory(".");

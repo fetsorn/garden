@@ -6,7 +6,7 @@ import { getText, getLangMap, LANGUAGES } from './lib.js';
 import { rawGraph, nodeById, getDoors, roomSlug } from './graph.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const md = markdownIt();
+const md = markdownIt({ html: true });
 
 // resolve prose paths relative to graph/ (where index.ttl lives)
 const graphDir = join(__dirname, '..', '..', 'graph');
