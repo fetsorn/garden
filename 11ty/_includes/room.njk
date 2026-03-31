@@ -18,10 +18,12 @@
     {% set navLang = lang %}
     {% include "partials/miller.njk" %}
 
+    {% if room.image %}
     <header>
       <img src="../img/{{ room.image }}"
            alt="{{ room.description[lang] }}">
     </header>
+    {% endif %}
 
     <section class="room-description">
       <p>{{ room.description[lang] }}</p>
@@ -76,6 +78,32 @@
     {% endif %}
 
     {% endfor %}
+
+    {% if room.offers.length or room.worldPatron %}
+    <section class="room-commerce">
+      {% for offer in room.offers %}
+      <div class="world-offer">
+        <h2 class="offer-name">{{ offer.label[lang] }}</h2>
+        <p class="offer-scene">{{ offer.scene[lang] }}</p>
+        <div class="offer-action">
+          <a href="{{ offer.actionUrl }}" class="offer-cta" target="_blank" rel="noopener">{{ offer.actionLabel[lang] }}</a>
+          <span class="offer-price">{{ offer.price[lang] }}</span>
+        </div>
+      </div>
+      {% endfor %}
+
+      {% if room.worldPatron %}
+      <div class="world-offer offer-patron">
+        <h2 class="offer-name">{{ room.worldPatron.label[lang] }}</h2>
+        <p class="offer-scene">{{ room.worldPatron.scene[lang] }}</p>
+        <div class="offer-action">
+          <a href="{{ room.worldPatron.actionUrl }}" class="offer-cta" target="_blank" rel="noopener">{{ room.worldPatron.actionLabel[lang] }}</a>
+          <span class="offer-price">{{ room.worldPatron.price[lang] }}</span>
+        </div>
+      </div>
+      {% endif %}
+    </section>
+    {% endif %}
 
     {% include "partials/footer.njk" %}
   </div>

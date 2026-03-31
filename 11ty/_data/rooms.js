@@ -6,7 +6,7 @@
  */
 
 import { getText, getLangMap, itemSlug, asArray, presentsSet, LANGUAGES, DEFAULT_LANG } from './lib.js';
-import { getRooms, getLandmarks, getDoors, roomSlug, worldSlug, nodeById } from './graph.js';
+import { getRooms, getLandmarks, getDoors, roomSlug, worldSlug, nodeById, getOffersByRoom, getOffersByWorld } from './graph.js';
 import { getEvents } from './quarry.js';
 
 /** Build the entries array for a TTL-defined entry-based feed. */
@@ -128,6 +128,26 @@ export default function () {
     const worldNode = worldId ? nodeById(worldId) : null;
     const wSlug = worldNode ? worldSlug(worldNode) : 'unknown';
 
+    // room-specific offers
+    const roomOffers = getOffersByRoom(id).map(o => ({
+      label: getText(o['rdfs:label']),
+      scene: getText(o['g:scene']),
+      actionLabel: getText(o['g:action-label']),
+      actionUrl: o['g:action-url'] || null,
+      price: getText(o['g:price']),
+    }));
+
+    // world patron (first world offer, always order 1)
+    const worldOffers = worldId ? getOffersByWorld(worldId) : [];
+    const patron = worldOffers.length ? worldOffers[0] : null;
+    const worldPatron = patron ? {
+      label: getText(patron['rdfs:label']),
+      scene: getText(patron['g:scene']),
+      actionLabel: getText(patron['g:action-label']),
+      actionUrl: patron['g:action-url'] || null,
+      price: getText(patron['g:price']),
+    } : null;
+
     return {
       id,
       slug,
@@ -142,6 +162,8 @@ export default function () {
       isDefault: room['g:default'] === true,
       landmarks: getLandmarks(id).map(n => buildLandmark(n, name)),
       doors: getDoors(id),
+      offers: roomOffers,
+      worldPatron,
     };
   });
 }

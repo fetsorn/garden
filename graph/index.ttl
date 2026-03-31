@@ -3,7 +3,9 @@
 @prefix p: <urn:crater:project/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-# --- worlds ---
+# ============================================================
+# WORLDS
+# ============================================================
 
 g:forest
     a g:World ;
@@ -12,7 +14,9 @@ g:forest
     rdfs:label "The Forest"@en ;
     rdfs:label "Лес"@ru ;
     g:description "Tall trees, dappled light, the sound of stories."@en ;
-    g:description "Высокие деревья, пятна света, звук историй."@ru .
+    g:description "Высокие деревья, пятна света, звук историй."@ru ;
+    g:scene "A path winds between old trees. Lanterns hang from branches, swaying. Somewhere ahead, voices — a story being told aloud. The air smells of resin and woodsmoke."@en ;
+    g:scene "Тропа петляет между старых деревьев. На ветвях покачиваются фонари. Откуда-то впереди — голоса, кто-то рассказывает историю. Воздух пахнет смолой и дымком."@ru .
 
 g:mountain
     a g:World ;
@@ -21,109 +25,307 @@ g:mountain
     rdfs:label "The Mountain"@en ;
     rdfs:label "Гора"@ru ;
     g:description "Clear air, sharp edges, the view from above."@en ;
-    g:description "Чистый воздух, острые грани, вид сверху."@ru .
+    g:description "Чистый воздух, острые грани, вид сверху."@ru ;
+    g:scene "The path narrows and climbs. Stone underfoot, wind at your back. The trees thin out. Ahead, a plateau with a low stone building — smoke rising from a chimney, light in the windows."@en ;
+    g:scene "Тропа сужается и идёт вверх. Под ногами камень, ветер в спину. Деревья редеют. Впереди — плато с низким каменным строением: дым из трубы, свет в окнах."@ru .
 
-# --- rooms ---
+# ============================================================
+# WORLD OFFERS — appear on world pages
+# ============================================================
 
-g:stage
+# --- forest offers ---
+
+g:forest-patron
+    a g:Offer ;
+    g:in-world g:forest ;
+    g:order 1 ;
+    rdfs:label "The Guest Ledger"@en ;
+    rdfs:label "Гостевая книга"@ru ;
+    g:scene "At the trailhead, a thick leather-bound ledger lies open on a tree stump. Names fill its pages — travellers who chose to return. A quill rests in the binding."@en ;
+    g:scene "У начала тропы на пне лежит толстая книга в кожаном переплёте. Страницы исписаны именами путников, которые решили вернуться. Перо вложено в корешок."@ru ;
+    g:action-label "Sign the ledger — become a patron"@en ;
+    g:action-label "Подписать книгу — стать покровителем"@ru ;
+    g:action-url "https://liberapay.com/fetsorn" ;
+    g:price "from 500 ₽/month"@en ;
+    g:price "от 500 ₽/мес"@ru .
+
+g:forest-session
+    a g:Offer ;
+    g:in-world g:forest ;
+    g:order 2 ;
+    rdfs:label "The Firepit"@en ;
+    rdfs:label "Костровище"@ru ;
+    g:scene "A clearing opens ahead. Stumps arranged in a circle around a firepit, embers still warm. A deck of cards and a city map lie on one of the stumps. The next game is waiting for you."@en ;
+    g:scene "Тропа выводит на поляну. Пеньки расставлены кругом вокруг костровища, угли ещё тёплые. На одном из пеньков — колода карт и карта города. Следующая игра ждёт вас."@ru ;
+    g:action-label "Take a seat — book a session"@en ;
+    g:action-label "Присесть к огню — записаться на сессию"@ru ;
+    g:action-url "https://startplaying.games/gm/fetsorn" ;
+    g:price "1000 ₽ per session"@en ;
+    g:price "1000 ₽ за сессию"@ru .
+
+g:forest-book
+    a g:Offer ;
+    g:in-world g:forest ;
+    g:order 3 ;
+    rdfs:label "The Bookbinder's Stall"@en ;
+    rdfs:label "Лавка переплётчика"@ru ;
+    g:scene "Past the firepit, a small stall leans against an oak. Unbound pages hang on twine, drying. A half-finished manuscript sits on the counter — the game's world between two covers. The bookbinder says it will be ready by autumn."@en ;
+    g:scene "За костровищем, у дуба приткнулась лавка. На верёвках сушатся несшитые листы. На прилавке — недоконченная рукопись, мир игры между двух обложек. Переплётчик говорит, к осени будет готово."@ru ;
+    g:action-label "Leave a deposit — preorder the book"@en ;
+    g:action-label "Оставить задаток — предзаказать книгу"@ru ;
+    g:action-url "https://liberapay.com/fetsorn" ;
+    g:price "price TBD"@en ;
+    g:price "цена уточняется"@ru .
+
+# --- mountain offers ---
+
+g:mountain-patron
+    a g:Offer ;
+    g:in-world g:mountain ;
+    g:order 1 ;
+    rdfs:label "The Registry"@en ;
+    rdfs:label "Реестр"@ru ;
+    g:scene "By the entrance, a stone tablet is mounted on the wall. Names are carved into it — those who support the work here. A chisel rests on the ledge below."@en ;
+    g:scene "У входа в стену вмурована каменная табличка. В ней высечены имена — тех, кто поддерживает работу. На выступе внизу лежит резец."@ru ;
+    g:action-label "Pick up the chisel — become a patron"@en ;
+    g:action-label "Взять резец — стать покровителем"@ru ;
+    g:action-url "https://liberapay.com/fetsorn" ;
+    g:price "from 500 ₽/month"@en ;
+    g:price "от 500 ₽/мес"@ru .
+
+g:mountain-class
+    a g:Offer ;
+    g:in-world g:mountain ;
+    g:order 2 ;
+    rdfs:label "The Workshop Bench"@en ;
+    rdfs:label "Верстак мастерской"@ru ;
+    g:scene "Inside, a long bench runs beneath the windows. Tools arranged in neat rows — a place for learning by doing. The instructor's schedule is pinned to the beam above."@en ;
+    g:scene "Внутри, под окнами тянется длинный верстак. Инструменты разложены рядами — место для обучения через практику. Расписание занятий приколото к балке над головой."@ru ;
+    g:action-label "Check the schedule — book a master class"@en ;
+    g:action-label "Посмотреть расписание — записаться на мастер-класс"@ru ;
+    g:action-url "https://startplaying.games/gm/fetsorn" ;
+    g:price "1000 ₽ per class"@en ;
+    g:price "1000 ₽ за занятие"@ru .
+
+g:mountain-course
+    a g:Offer ;
+    g:in-world g:mountain ;
+    g:order 3 ;
+    rdfs:label "The Scribe's Desk"@en ;
+    rdfs:label "Стол писца"@ru ;
+    g:scene "In the far corner, a desk piled with bound notebooks. The scribe is assembling a course — structured memory, self-witnessing, working with AI. Not finished yet, but you can reserve a copy."@en ;
+    g:scene "В дальнем углу — стол, заваленный переплетёнными тетрадями. Писец собирает курс — структурированная память, самосвидетельствование, работа с ИИ. Ещё не готово, но можно забронировать экземпляр."@ru ;
+    g:action-label "Leave a note — preorder the course"@en ;
+    g:action-label "Оставить записку — предзаказать курс"@ru ;
+    g:action-url "https://liberapay.com/fetsorn" ;
+    g:price "price TBD"@en ;
+    g:price "цена уточняется"@ru .
+
+# ============================================================
+# FOREST ROOMS
+# ============================================================
+
+g:city-limits
     a g:Room ;
     g:in-world g:forest ;
-    g:uuid "789a2245" ;
     g:image "stage.jpg" ;
-    rdfs:label "The Stage"@en ;
-    rdfs:label "Сцена"@ru ;
-    g:description "A small theatre stage seen from the wings. Velvet curtains hang heavy on either side. A single spotlight cuts through dust motes, landing on an empty stool at center stage."@en ;
-    g:description "Бархатные шторы обрамляют маленькую сцену. В воздухе пахнет пылью и канифолью. Где-то за кулисами работает магнитофон."@ru ;
-    rdfs:comment "art — songs, poems, stories, game rules, audio, video" .
-
-g:study
-    a g:Room ;
-    g:in-world g:mountain ;
-    g:uuid "589e2183" ;
-    g:image "study.jpg" ;
-    rdfs:label "The Study"@en ;
-    rdfs:label "Кабинет"@ru ;
-    g:description "Warm light falls across a desk covered in papers. Bookshelves line the walls."@en ;
-    g:description "Тёплый свет падает на стол, заваленный бумагами. Вдоль стен — книжные полки."@ru ;
-    rdfs:comment "articles, dev blog, qualified self, aipassana, documentation" .
-
-# --- stage landmarks ---
-
-g:stage-reads
-    a g:Feed ;
-    g:in-room g:stage ;
-    g:status "live" ;
-    rdfs:label "Norcivilian Reads"@en ;
-    rdfs:label "Norcivilian Reads"@ru ;
-    g:description "A shelf of well-worn poetry volumes, some lying open, bookmarks tucked between pages. A microphone rests on top."@en ;
-    g:description "Полка зачитанных поэтических сборников, некоторые лежат раскрытыми, между страницами торчат закладки. Сверху лежит микрофон."@ru ;
-    g:category "poem-reading" ;
-    g:order-by "saydate" ;
-    g:order-direction "descending" ;
-    g:presents p:norcivilian-reads .
-
-g:stage-prices
-    a g:Item ;
-    g:in-room g:stage ;
-    g:status "live" ;
-    rdfs:label "Playbill"@en ;
-    rdfs:label "Афиша"@ru ;
-    g:description "A playbill pinned to the curtain beside the stage. Shows and prices are listed in neat columns."@en ;
-    g:description "Афиша приколота к занавесу у сцены. Представления и цены аккуратно расписаны в два столбца."@ru ;
-    g:prose "../prose/prices-en.md"@en ;
-    g:prose "../prose/prices-ru.md"@ru .
-
-g:stage-offer
-    a g:Item ;
-    g:in-room g:stage ;
-    g:status "live" ;
-    rdfs:label "Ticket Stub"@en ;
-    rdfs:label "Корешок билета"@ru ;
-    g:description "A ticket stub on the floor. You turn it over — the back is covered in fine print."@en ;
-    g:description "Корешок билета на полу. Переворачиваете — на обороте мелким шрифтом условия."@ru ;
-    g:prose "../prose/offer-en.md"@en ;
-    g:prose "../prose/offer-ru.md"@ru .
-
-g:stage-aetherion
-    a g:Feed ;
-    g:in-room g:stage ;
-    g:status "live" ;
-    rdfs:label "Aetherion Horizon"@en ;
-    rdfs:label "Aetherion Horizon"@ru ;
-    g:description "A crystal ball flickers with moving images from another world."@en ;
-    g:description "Хрустальный шар мерцает движущимися образами из другого мира."@ru ;
-    g:entry [ rdfs:label "Episode 1" ; g:url "https://youtu.be/_FdjI2xmjH8" ] ;
-    g:entry [ rdfs:label "Episode 2" ; g:url "https://youtu.be/P9cbaTZozyM" ] .
-
-g:stage-city-limits-rules
-    a g:Item ;
-    g:in-room g:stage ;
-    g:status "live" ;
-    rdfs:label "City Limits Rules"@en ;
-    rdfs:label "Правила Городских пределов"@ru ;
-    g:description "The rules of City Limits, a storytelling game in real cities."@en ;
-    g:description "Правила Городских пределов — игры-рассказа в настоящих городах."@ru ;
-    g:prose "../prose/city-limits-rules-en.html"@en ;
-    g:prose "../prose/city-limits-rules-ru.html"@ru .
-
-g:stage-city-limits
-    a g:Feed ;
-    g:in-room g:stage ;
-    g:status "live" ;
     rdfs:label "City Limits"@en ;
     rdfs:label "Городские пределы"@ru ;
-    g:description "A table with a city map spread across it, figurines placed at intersections."@en ;
-    g:description "Стол с картой города, на перекрёстках расставлены фигурки."@ru ;
+    g:description "A table with maps of real cities spread across it. Figurines at intersections. A deck of cards face-down. This is where the game happens."@en ;
+    g:description "Стол с картами настоящих городов. Фигурки на перекрёстках. Колода карт рубашкой вверх. Здесь идёт игра."@ru .
+
+g:parlor
+    a g:Room ;
+    g:in-world g:forest ;
+    rdfs:label "The Parlor"@en ;
+    rdfs:label "Гостиная"@ru ;
+    g:description "A warm room with deep chairs and a reading lamp. A shelf of well-worn poetry volumes. A microphone on the side table. Someone reads aloud here, daily."@en ;
+    g:description "Тёплая комната с глубокими креслами и лампой для чтения. Полка зачитанных поэтических сборников. Микрофон на приставном столике. Здесь каждый день кто-то читает вслух."@ru .
+
+g:floating-island
+    a g:Room ;
+    g:in-world g:forest ;
+    rdfs:label "The Floating Island"@en ;
+    rdfs:label "Плавучий остров"@ru ;
+    g:description "An island suspended in mid-air, tethered by vines. A crystal ball on a velvet cushion flickers with moving images — scenes from another world, filmed with actors and game engines."@en ;
+    g:description "Остров, парящий в воздухе, удерживаемый лианами. Хрустальный шар на бархатной подушке мерцает движущимися образами — сцены из другого мира, снятые с актёрами и игровыми движками."@ru .
+
+g:barracks
+    a g:Room ;
+    g:in-world g:forest ;
+    rdfs:label "The Barracks"@en ;
+    rdfs:label "Казарма"@ru ;
+    g:description "A war table covered in clan flags and carved tokens. Campaign maps pinned to the walls. Stories of alliances and betrayals told here between rounds."@en ;
+    g:description "Боевой стол, покрытый клановыми флагами и резными жетонами. Карты кампаний на стенах. Между раундами здесь рассказывают истории союзов и предательств."@ru .
+
+# ============================================================
+# MOUNTAIN ROOMS
+# ============================================================
+
+g:anamnesis
+    a g:Room ;
+    g:in-world g:mountain ;
+    rdfs:label "Anamnesis"@en ;
+    rdfs:label "Анамнесис"@ru ;
+    g:description "A quiet room with a mirror and a journal on the desk. The practice of structured self-witnessing begins here."@en ;
+    g:description "Тихая комната с зеркалом и дневником на столе. Здесь начинается практика структурированного самосвидетельствования."@ru .
+
+g:workshop
+    a g:Room ;
+    g:in-world g:mountain ;
+    g:image "study.jpg" ;
+    rdfs:label "The Workshop"@en ;
+    rdfs:label "Мастерская"@ru ;
+    g:description "A workbench covered in half-assembled tools. Schematics on the walls. Open-source instruments built here — databases, editors, memory systems."@en ;
+    g:description "Верстак, заваленный полусобранными инструментами. На стенах — схемы. Здесь строят инструменты с открытым кодом — базы данных, редакторы, системы памяти."@ru .
+
+g:legal-archive
+    a g:Room ;
+    g:in-world g:mountain ;
+    rdfs:label "The Archive"@en ;
+    rdfs:label "Архив"@ru ;
+    g:description "Shelves of bound volumes. Legal journals, court proceedings, academic articles. Dust in the air, but the citations are precise."@en ;
+    g:description "Полки переплетённых томов. Юридические журналы, судебные материалы, научные статьи. Пыль в воздухе, но ссылки точны."@ru .
+
+# ============================================================
+# ROOM OFFERS — product-specific, appear only in their room
+# ============================================================
+
+# city-limits sells sessions + book (patron comes from world)
+g:city-limits-offer-session
+    a g:Offer ;
+    g:in-room g:city-limits ;
+    g:order 1 ;
+    rdfs:label "The Game Table"@en ;
+    rdfs:label "Игровой стол"@ru ;
+    g:scene "The table is set for the next session. Two chairs, a candle, a deck of cards. Pick a city — Manhattan, Miami, Volgograd — and a character walks its streets tonight."@en ;
+    g:scene "Стол накрыт к следующей сессии. Два стула, свеча, колода карт. Выберите город — Манхэттен, Майами, Волгоград — и сегодня вечером персонаж выйдет на его улицы."@ru ;
+    g:action-label "Take a seat — book a session"@en ;
+    g:action-label "Сесть за стол — записаться на сессию"@ru ;
+    g:action-url "https://startplaying.games/gm/fetsorn" ;
+    g:price "1000 ₽ per session"@en ;
+    g:price "1000 ₽ за сессию"@ru .
+
+g:city-limits-offer-book
+    a g:Offer ;
+    g:in-room g:city-limits ;
+    g:order 2 ;
+    rdfs:label "The Manuscript"@en ;
+    rdfs:label "Рукопись"@ru ;
+    g:scene "On the shelf behind the table, a half-bound manuscript. The legends of every session — Manhattan alleys, Miami heat, Volgograd snow — collected into one book."@en ;
+    g:scene "На полке за столом — полупереплетённая рукопись. Легенды каждой сессии — переулки Манхэттена, жара Майами, снег Волгограда — собранные в одну книгу."@ru ;
+    g:action-label "Leave a deposit — preorder the book"@en ;
+    g:action-label "Оставить задаток — предзаказать книгу"@ru ;
+    g:action-url "https://liberapay.com/fetsorn" ;
+    g:price "price TBD"@en ;
+    g:price "цена уточняется"@ru .
+
+# anamnesis sells master class + course (patron comes from world)
+g:anamnesis-offer-class
+    a g:Offer ;
+    g:in-room g:anamnesis ;
+    g:order 1 ;
+    rdfs:label "The Mirror Session"@en ;
+    rdfs:label "Зеркальная сессия"@ru ;
+    g:scene "The mirror is for practice, not vanity. One hour, guided: how to witness your own process, structure memory, work with AI as a medium. The instructor sits across from you."@en ;
+    g:scene "Зеркало — для практики, не для любования. Один час с наставником: как наблюдать собственный процесс, структурировать память, работать с ИИ как с медиумом."@ru ;
+    g:action-label "Check the schedule — book a master class"@en ;
+    g:action-label "Посмотреть расписание — записаться на мастер-класс"@ru ;
+    g:action-url "https://startplaying.games/gm/fetsorn" ;
+    g:price "1000 ₽ per class"@en ;
+    g:price "1000 ₽ за занятие"@ru .
+
+g:anamnesis-offer-course
+    a g:Offer ;
+    g:in-room g:anamnesis ;
+    g:order 2 ;
+    rdfs:label "The Bound Notebooks"@en ;
+    rdfs:label "Переплетённые тетради"@ru ;
+    g:scene "A stack of bound notebooks on the desk — the course taking shape. Structured memory, self-witnessing, working with AI. Not finished yet, but you can reserve a copy."@en ;
+    g:scene "Стопка переплетённых тетрадей на столе — курс обретает форму. Структурированная память, самосвидетельствование, работа с ИИ. Ещё не готово, но можно забронировать."@ru ;
+    g:action-label "Leave a note — preorder the course"@en ;
+    g:action-label "Оставить записку — предзаказать курс"@ru ;
+    g:action-url "https://liberapay.com/fetsorn" ;
+    g:price "price TBD"@en ;
+    g:price "цена уточняется"@ru .
+
+# ============================================================
+# CITY-LIMITS LANDMARKS
+# ============================================================
+
+g:city-limits-legends
+    a g:Feed ;
+    g:in-room g:city-limits ;
+    g:status "live" ;
+    rdfs:label "Legends"@en ;
+    rdfs:label "Легенды"@ru ;
+    g:description "Transcripts pinned to the wall — stories from past sessions. Each city, each character, each night."@en ;
+    g:description "Стенограммы, приколотые к стене — истории прошедших сессий. Каждый город, каждый персонаж, каждый вечер."@ru ;
     g:category "legend" ;
     g:order-by "actdate" ;
     g:order-direction "descending" ;
     g:presents p:city-limits .
 
-# --- study landmarks ---
+g:city-limits-rules
+    a g:Item ;
+    g:in-room g:city-limits ;
+    g:status "live" ;
+    rdfs:label "Rules"@en ;
+    rdfs:label "Правила"@ru ;
+    g:description "A laminated card with the rules of the game. Simple enough to start in five minutes."@en ;
+    g:description "Ламинированная карточка с правилами игры. Достаточно простыми, чтобы начать за пять минут."@ru ;
+    g:prose "../prose/city-limits-rules-en.html"@en ;
+    g:prose "../prose/city-limits-rules-ru.html"@ru .
 
-g:study-blog
+g:city-limits-quick-start
+    a g:Item ;
+    g:in-room g:city-limits ;
+    g:status "live" ;
+    rdfs:label "Quick Start"@en ;
+    rdfs:label "Быстрый старт"@ru ;
+    g:description "A one-page guide to your first session."@en ;
+    g:description "Руководство на одну страницу к первой сессии."@ru ;
+    g:prose "../prose/city-limits-quick-start.md"@ru .
+
+# ============================================================
+# NORCIVILIAN READS LANDMARKS
+# ============================================================
+
+g:parlor-readings
     a g:Feed ;
-    g:in-room g:study ;
+    g:in-room g:parlor ;
+    g:status "live" ;
+    rdfs:label "Readings"@en ;
+    rdfs:label "Чтения"@ru ;
+    g:description "Daily audio readings. A poem, a voice, a minute of attention."@en ;
+    g:description "Ежедневные аудиочтения. Стихотворение, голос, минута внимания."@ru ;
+    g:category "poem-reading" ;
+    g:order-by "saydate" ;
+    g:order-direction "descending" ;
+    g:presents p:norcivilian-reads .
+
+# ============================================================
+# AETHERION LANDMARKS
+# ============================================================
+
+g:floating-island-episodes
+    a g:Feed ;
+    g:in-room g:floating-island ;
+    g:status "live" ;
+    rdfs:label "Episodes"@en ;
+    rdfs:label "Эпизоды"@ru ;
+    g:description "Filmed scenes from the Aetherion world — voice acting, game engine footage, original score."@en ;
+    g:description "Снятые сцены из мира Этериона — озвучка, кадры из игрового движка, оригинальная музыка."@ru ;
+    g:entry [ rdfs:label "Episode 1" ; g:url "https://youtu.be/_FdjI2xmjH8" ] ;
+    g:entry [ rdfs:label "Episode 2" ; g:url "https://youtu.be/P9cbaTZozyM" ] .
+
+# ============================================================
+# WORKSHOP LANDMARKS
+# ============================================================
+
+g:workshop-blog
+    a g:Feed ;
+    g:in-room g:workshop ;
     g:status "live" ;
     rdfs:label "Dev Blog"@en ;
     rdfs:label "Блог"@ru ;
@@ -132,43 +334,36 @@ g:study-blog
     g:category "blog" ;
     g:order-by "date_published" ;
     g:order-direction "descending" ;
-    g:presents p:evenor, p:csvs, p:crater, p:glider-cli ;
-    g:entry [ rdfs:label "City Limits: Quick Start"@en ; rdfs:label "Городские пределы: Быстрый старт"@ru ; g:prose "../prose/city-limits-quick-start.md"@ru ; g:date "2026-03-25" ] .
+    g:presents p:evenor, p:csvs, p:crater, p:glider-cli .
 
-g:study-docs
+g:workshop-docs
     a g:Feed ;
-    g:in-room g:study ;
+    g:in-room g:workshop ;
     g:status "live" ;
     rdfs:label "Documentation"@en ;
     rdfs:label "Документация"@ru ;
     g:description "A heavy technical manual lies open on the reading stand, its table of contents marked with ribbon bookmarks."@en ;
     g:description "На подставке для чтения лежит тяжёлый технический справочник, его оглавление заложено ленточными закладками."@ru ;
-    g:entry [ rdfs:label "CSVS — Plain-Text Database"@en ; rdfs:label "CSVS — База данных в формате простого текста"@ru ; g:url
-"https://norcivilianlabs.org/csvs/" ] ;
-    g:entry [ rdfs:label "Evenor — Event Editor"@en ; rdfs:label "Evenor — Редактор мероприятий"@ru ; g:url
-"https://norcivilianlabs.org/evenor/" ] ;
-    g:entry [ rdfs:label "Panrec — Recording Utility"@en ; rdfs:label "Panrec — Утилита записи"@ru ; g:url
-"https://norcivilianlabs.org/panrec/" ] ;
-    g:entry [ rdfs:label "Guanbo — Music Programming"@en ; rdfs:label "Guanbo — Программирование музыки"@ru ; g:url
-"https://norcivilianlabs.org/guanbo/" ] ;
-    g:entry [ rdfs:label "Morio — Syndication Viewer"@en ; rdfs:label "Morio — Программа для просмотра синдикации"@ru ; g:url
-"https://norcivilianlabs.org/morio/" ] ;
-    g:entry [ rdfs:label "Retina — Retina Detector"@en ; rdfs:label "Retina — Детектор сетчатки"@ru ; g:url
-"https://norcivilianlabs.org/retina/" ] .
+    g:entry [ rdfs:label "CSVS — Plain-Text Database"@en ; rdfs:label "CSVS — База данных в формате простого текста"@ru ; g:url "https://norcivilianlabs.org/csvs/" ] ;
+    g:entry [ rdfs:label "Evenor — Event Editor"@en ; rdfs:label "Evenor — Редактор мероприятий"@ru ; g:url "https://norcivilianlabs.org/evenor/" ] ;
+    g:entry [ rdfs:label "Panrec — Recording Utility"@en ; rdfs:label "Panrec — Утилита записи"@ru ; g:url "https://norcivilianlabs.org/panrec/" ] ;
+    g:entry [ rdfs:label "Guanbo — Music Programming"@en ; rdfs:label "Guanbo — Программирование музыки"@ru ; g:url "https://norcivilianlabs.org/guanbo/" ] ;
+    g:entry [ rdfs:label "Morio — Syndication Viewer"@en ; rdfs:label "Morio — Программа для просмотра синдикации"@ru ; g:url "https://norcivilianlabs.org/morio/" ] ;
+    g:entry [ rdfs:label "Retina — Retina Detector"@en ; rdfs:label "Retina — Детектор сетчатки"@ru ; g:url "https://norcivilianlabs.org/retina/" ] .
 
-g:study-quarry
+g:workshop-quarry
     a g:Item ;
     g:status "live" ;
-    g:in-room g:study ;
+    g:in-room g:workshop ;
     rdfs:label "Quarry"@en ;
     rdfs:label "Каменоломня"@ru ;
     g:description "A glass case beside the reading stand. Inside, the garden's own ledger — every entry, every link, laid open for inspection."@en ;
     g:description "Стеклянная витрина рядом с подставкой для чтения. Внутри — реестр самого сада: каждая запись, каждая связь, открытые для изучения."@ru ;
     g:url "https://evenor.norcivilianlabs.org/#?~=https://git.nexusnest.link/fetsorn/garden" .
 
-g:study-cards
+g:workshop-cards
     a g:Feed ;
-    g:in-room g:study ;
+    g:in-room g:workshop ;
     g:status "live" ;
     rdfs:label "Calling Cards"@en ;
     rdfs:label "Визитки"@ru ;

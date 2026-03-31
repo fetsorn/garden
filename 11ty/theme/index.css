@@ -494,6 +494,14 @@ header img {
   color: var(--accent);
 }
 
+/* --- room commerce section --- */
+
+.room-commerce {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
 /* ===== item pages ===== */
 
 .item-context {

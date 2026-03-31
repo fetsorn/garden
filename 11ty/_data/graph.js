@@ -123,3 +123,13 @@ export function getOffersByWorld(worldId) {
     .filter(n => n['@type'] === 'g:Offer' && n['g:in-world']?.['@id'] === worldId)
     .sort((a, b) => (a['g:order'] || 0) - (b['g:order'] || 0));
 }
+
+/**
+ * Return Offer nodes belonging to a specific room, ordered by g:order.
+ */
+export function getOffersByRoom(roomId) {
+  load();
+  return _graph
+    .filter(n => n['@type'] === 'g:Offer' && n['g:in-room']?.['@id'] === roomId)
+    .sort((a, b) => (a['g:order'] || 0) - (b['g:order'] || 0));
+}

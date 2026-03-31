@@ -3,7 +3,7 @@
   <ul class="miller-col">
     {% for w in nav %}
     <li>
-      <a href="{% if currentRoom %}../../worlds/{{ w.slug }}.html{% else %}../worlds/{{ w.slug }}.html{% endif %}"
+      <a href="{% if currentRoom %}../worlds/{{ w.slug }}.html{% else %}../worlds/{{ w.slug }}.html{% endif %}"
          class="{% if w.slug == currentWorld %}miller-active{% endif %}">{{ w.label[navLang] }}</a>
     </li>
     {% endfor %}
@@ -15,7 +15,7 @@
   <ul class="miller-col">
     {% for room in w.rooms %}
     <li>
-      <a href="{% if currentRoom %}../{{ room.slug }}.html{% else %}../rooms/{{ room.slug }}.html{% endif %}"
+      <a href="{% if currentRoom %}{{ room.slug }}.html{% else %}../rooms/{{ room.slug }}.html{% endif %}"
          class="{% if room.slug == currentRoom %}miller-active{% endif %}">{{ room.label[navLang] }}</a>
     </li>
     {% endfor %}
