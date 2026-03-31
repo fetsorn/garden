@@ -1,28 +1,27 @@
 <!DOCTYPE html>
-<html lang="{{ room.mainLang }}">
+<html lang="en">
 <head>
-  {% set pageTitle = room.label[room.mainLang] %}
-  {% set pageDescription = room.label[room.mainLang] + " — " + site.title %}
+  {% set pageTitle = room.label.en %}
+  {% set pageDescription = room.label.en + " — " + site.title %}
   {% set pageLangs = room.langs %}
   {% include "partials/head.njk" %}
 </head>
-<body class="{% if room.mainLang != 'en' %}main-{{ room.mainLang }} {% endif %}room-{{ room.slug }}">
+<body class="world--{{ room.world }} room-{{ room.slug }}">
+  {% include "partials/lang.njk" %}
 
   {% for lang in room.langs %}
-  <div id="{{ lang }}"></div>
-  {% endfor %}
+  <div id="{{ lang }}" class="lang-{{ lang }}" lang="{{ lang }}">
 
-  {% for lang in room.langs %}
-  <div class="lang-{{ lang }}" lang="{{ lang }}">
+    {% set currentWorld = room.world %}
+    {% set currentRoom = room.slug %}
+    {% set roomLandmarks = room.landmarks %}
+    {% set navLang = lang %}
+    {% include "partials/miller.njk" %}
+
     <header>
       <img src="../img/{{ room.image }}"
            alt="{{ room.description[lang] }}">
     </header>
-
-    {% set navDoors = room.doors %}
-    {% set navLang = lang %}
-    {% set navLangs = room.langs %}
-    {% include "partials/navbar.njk" %}
 
     <section class="room-description">
       <p>{{ room.description[lang] }}</p>
@@ -31,18 +30,18 @@
     {% for lm in room.landmarks %}
 
     {% if lm.type == "Item" %}
-    <section class="landmark landmark-item status-{{ lm.status }}">
+    <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-item status-{{ lm.status }}">
       <h2>{{ lm.label[lang] }}</h2>
       <p class="landmark-description">{{ lm.description[lang] }}</p>
       {% if lm.url %}
       <a href="{{ lm.url }}">{{ lm.label[lang] }}</a>
       {% else %}
-      <a href="../items/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a>
+      <a href="../items/{{ lm.slug }}.html">{{ lm.label[lang] }}</a>
       {% endif %}
     </section>
 
     {% elif lm.entries %}
-    <section class="landmark landmark-entries status-{{ lm.status }}">
+    <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-entries status-{{ lm.status }}">
       <h2>{{ lm.label[lang] }}</h2>
       <p class="landmark-description">{{ lm.description[lang] }}</p>
       <ul class="entries">
@@ -50,7 +49,7 @@
         {% if not entry.prose or entry.proseLangs[lang] %}
         <li>
           {% if entry.prose %}
-          <a href="../items/{{ entry.slug }}.html#{{ lang }}">{{ entry.label[lang] }}</a>
+          <a href="../items/{{ entry.slug }}.html">{{ entry.label[lang] }}</a>
           {% else %}
           <a href="{{ entry.url }}">{{ entry.label[lang] }}</a>
           {% endif %}
@@ -62,13 +61,13 @@
     </section>
 
     {% elif lm.category %}
-    <section class="landmark landmark-feed status-{{ lm.status }}">
+    <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-feed status-{{ lm.status }}">
       <h2>{{ lm.label[lang] }}</h2>
       <p class="landmark-description">{{ lm.description[lang] }}</p>
       {% if lm.items and lm.items[lang] | length %}
       <ul class="feed">
         {% for item in lm.items[lang] %}
-        <li><a href="../items/{{ item.slug }}.html#{{ lang }}">{{ item.title }}</a> <time>{{ item.date }}</time></li>
+        <li><a href="../items/{{ item.slug }}.html">{{ item.title }}</a> <time>{{ item.date }}</time></li>
         {% endfor %}
       </ul>
       {% endif %}
@@ -85,9 +84,8 @@
   <script>
     (function(){
       var T={{ room.label | dump | safe }};
-      var L={{ room.langs | dump | safe }};
-      function u(){var h=location.hash.slice(1);var l=L.indexOf(h)>=0?h:L[0];document.title=T[l]||T[L[0]];document.documentElement.lang=l;}
-      u();addEventListener('hashchange',u);
+      function u(){document.title=T[window.__lang]||T['en']||'{{ site.title }}';}
+      if(window.__lang)u();
     })();
   </script>
 

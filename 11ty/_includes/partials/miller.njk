@@ -1,0 +1,44 @@
+<nav class="miller">
+  {# Column 1: worlds #}
+  <ul class="miller-col">
+    {% for w in nav %}
+    <li>
+      <a href="{% if currentRoom %}../../worlds/{{ w.slug }}.html{% else %}../worlds/{{ w.slug }}.html{% endif %}"
+         class="{% if w.slug == currentWorld %}miller-active{% endif %}">{{ w.label[navLang] }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {# Column 2: rooms in selected world #}
+  {% for w in nav %}
+  {% if w.slug == currentWorld %}
+  <ul class="miller-col">
+    {% for room in w.rooms %}
+    <li>
+      <a href="{% if currentRoom %}../{{ room.slug }}.html{% else %}../rooms/{{ room.slug }}.html{% endif %}"
+         class="{% if room.slug == currentRoom %}miller-active{% endif %}">{{ room.label[navLang] }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endfor %}
+
+  {# Column 3: landmarks in selected room (only on room pages) #}
+  {% if currentRoom and roomLandmarks %}
+  <ul class="miller-col">
+    {% for lm in roomLandmarks %}
+    <li>
+      <a href="#{{ navLang }}-{{ lm.slug }}" class="miller-landmark">{{ lm.label[navLang] }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {# Language toggle — only visible with JS #}
+  <span class="miller-lang">
+    <button class="lang-switch"
+            onclick="__setLang(__lang==='en'?'ru':'en')">
+      {% if navLang == 'en' %}RU{% else %}EN{% endif %}
+    </button>
+  </span>
+</nav>

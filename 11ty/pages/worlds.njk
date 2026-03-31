@@ -1,0 +1,52 @@
+---
+pagination:
+  data: nav
+  size: 1
+  alias: world
+permalink: "worlds/{{ world.slug }}.html"
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Language" content="en, ru">
+  <title>{{ world.label.en }} — {{ site.title }}</title>
+  <link rel="stylesheet" href="../index.css">
+</head>
+<body class="world--{{ world.slug }}">
+  {% include "partials/lang.njk" %}
+
+  {% set langs = ['en', 'ru'] %}
+  {% for lang in langs %}
+  <div id="{{ lang }}" class="lang-{{ lang }}" lang="{{ lang }}">
+
+    {% set currentWorld = world.slug %}
+    {% set currentRoom = null %}
+    {% set navLang = lang %}
+    {% include "partials/miller.njk" %}
+
+    <section class="world-description">
+      <p>{{ world.description[lang] }}</p>
+    </section>
+
+    <section class="world-rooms">
+      {% for room in world.rooms %}
+      <a href="../rooms/{{ room.slug }}.html" class="world-room-link">
+        <h2>{{ room.label[lang] }}</h2>
+      </a>
+      {% endfor %}
+    </section>
+
+    <div class="world-cta">
+      <a href="../items/prices.html" class="gate-cta-link">
+        {% if lang == 'en' %}Services &amp; prices{% else %}Услуги и цены{% endif %}
+      </a>
+    </div>
+
+    {% include "partials/footer.njk" %}
+  </div>
+  {% endfor %}
+
+</body>
+</html>

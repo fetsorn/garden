@@ -5,10 +5,48 @@ permalink: "index.html"
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url={{ site.defaultRoom }}.html">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Language" content="en, ru">
   <title>{{ site.title }}</title>
+  <link rel="stylesheet" href="index.css">
 </head>
-<body>
-  <p>Entering <a href="{{ site.defaultRoom }}.html">the garden</a>...</p>
+<body class="gate">
+  {% include "partials/lang.njk" %}
+
+  {% set langs = ['en', 'ru'] %}
+  {% for lang in langs %}
+  <div id="{{ lang }}" class="lang-{{ lang }}" lang="{{ lang }}">
+
+    <div class="gate-lang">
+      <button class="lang-switch"
+              onclick="__setLang(__lang==='en'?'ru':'en')">
+        {% if lang == 'en' %}RU{% else %}EN{% endif %}
+      </button>
+    </div>
+
+    <div class="gate-intro">
+      <p class="gate-title">
+        {% if lang == 'en' %}A garden with two paths.{% else %}Сад с двумя тропами.{% endif %}
+      </p>
+    </div>
+
+    <div class="gate-worlds">
+      {% for world in nav %}
+      <a href="worlds/{{ world.slug }}.html" class="gate-world gate-world--{{ world.slug }}">
+        <h2>{{ world.label[lang] }}</h2>
+        <p>{{ world.description[lang] }}</p>
+      </a>
+      {% endfor %}
+    </div>
+
+    <div class="gate-cta">
+      <a href="items/prices.html" class="gate-cta-link">
+        {% if lang == 'en' %}Services &amp; prices{% else %}Услуги и цены{% endif %}
+      </a>
+    </div>
+
+  </div>
+  {% endfor %}
+
 </body>
 </html>

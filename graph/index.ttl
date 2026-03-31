@@ -3,10 +3,31 @@
 @prefix p: <urn:crater:project/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
+# --- worlds ---
+
+g:forest
+    a g:World ;
+    g:order 1 ;
+    g:slug "forest" ;
+    rdfs:label "The Forest"@en ;
+    rdfs:label "Лес"@ru ;
+    g:description "Tall trees, dappled light, the sound of stories."@en ;
+    g:description "Высокие деревья, пятна света, звук историй."@ru .
+
+g:mountain
+    a g:World ;
+    g:order 2 ;
+    g:slug "mountain" ;
+    rdfs:label "The Mountain"@en ;
+    rdfs:label "Гора"@ru ;
+    g:description "Clear air, sharp edges, the view from above."@en ;
+    g:description "Чистый воздух, острые грани, вид сверху."@ru .
+
 # --- rooms ---
 
 g:stage
     a g:Room ;
+    g:in-world g:forest ;
     g:uuid "789a2245" ;
     g:image "stage.jpg" ;
     rdfs:label "The Stage"@en ;
@@ -17,7 +38,7 @@ g:stage
 
 g:study
     a g:Room ;
-    g:default true ;
+    g:in-world g:mountain ;
     g:uuid "589e2183" ;
     g:image "study.jpg" ;
     rdfs:label "The Study"@en ;
@@ -25,16 +46,6 @@ g:study
     g:description "Warm light falls across a desk covered in papers. Bookshelves line the walls."@en ;
     g:description "Тёплый свет падает на стол, заваленный бумагами. Вдоль стен — книжные полки."@ru ;
     rdfs:comment "articles, dev blog, qualified self, aipassana, documentation" .
-
-g:map-room
-    a g:Room ;
-    g:uuid "ecf77ea7" ;
-    g:image "map-room.jpg" ;
-    rdfs:label "The Map Room"@en ;
-    rdfs:label "Картографическая"@ru ;
-    g:description "A dim room lit by a single brass lamp. A large table dominates the center, covered by a hand-drawn map with colored pins pressed into it. Rolled charts lean against the walls."@en ;
-    g:description "Тёмная комната с большим столом посередине. Поверхность покрыта рисованной от руки картой, булавки отмечают места, где вы были и куда собираетесь."@ru ;
-    rdfs:comment "embedded map of places and events" .
 
 # --- stage landmarks ---
 
@@ -108,22 +119,6 @@ g:stage-city-limits
     g:order-direction "descending" ;
     g:presents p:city-limits .
 
-g:stage-to-study
-    a g:Door ;
-    g:status "live" ;
-    g:in-room g:stage ;
-    rdfs:label "To the Study"@en ;
-    rdfs:label "В Кабинет"@ru ;
-    g:target g:study .
-
-g:stage-to-map-room
-    a g:Door ;
-    g:status "live" ;
-    g:in-room g:stage ;
-    rdfs:label "To the Map Room"@en ;
-    rdfs:label "В Картографическую"@ru ;
-    g:target g:map-room .
-
 # --- study landmarks ---
 
 g:study-blog
@@ -184,37 +179,3 @@ g:study-cards
     g:entry [ rdfs:label "Codeberg" ; g:url "https://codeberg.org/fetsorn" ] ;
     g:entry [ rdfs:label "Liberapay" ; g:url "https://liberapay.com/fetsorn" ] ;
     g:entry [ rdfs:label "StartPlaying" ; g:url "https://startplaying.games/gm/fetsorn" ] .
-
-g:study-to-stage
-    a g:Door ;
-    g:in-room g:study ;
-    g:status "live" ;
-    rdfs:label "To the Stage"@en ;
-    rdfs:label "На Сцену"@ru ;
-    g:target g:stage .
-
-g:study-to-map-room
-    a g:Door ;
-    g:in-room g:study ;
-    g:status "live" ;
-    rdfs:label "To the Map Room"@en ;
-    rdfs:label "В Картографическую"@ru ;
-    g:target g:map-room .
-
-# --- map room landmarks ---
-
-g:map-room-to-stage
-    a g:Door ;
-    g:in-room g:map-room ;
-    g:status "live" ;
-    rdfs:label "To the Stage"@en ;
-    rdfs:label "На Сцену"@ru ;
-    g:target g:stage .
-
-g:map-room-to-study
-    a g:Door ;
-    g:in-room g:map-room ;
-    g:status "live" ;
-    rdfs:label "To the Study"@en ;
-    rdfs:label "В Кабинет"@ru ;
-    g:target g:study .

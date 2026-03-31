@@ -1,0 +1,27 @@
+<script>
+(function(){
+  var LANGS=['en','ru'];
+  var h=location.hash.slice(1);
+  var hashLang=null;
+  for(var i=0;i<LANGS.length;i++){
+    if(h===LANGS[i]||h.indexOf(LANGS[i]+'-')===0){
+      hashLang=LANGS[i];break;
+    }
+  }
+  var s=localStorage.getItem('lang');
+  var l=hashLang||
+    (s&&LANGS.indexOf(s)>=0?s:null)||
+    ((navigator.language||'').startsWith('ru')?'ru':'en');
+  document.body.classList.add('has-lang','lang-'+l);
+  window.__lang=l;
+  window.__setLang=function(v){
+    document.body.classList.remove('lang-'+window.__lang);
+    window.__lang=v;
+    document.body.classList.add('lang-'+v);
+    localStorage.setItem('lang',v);
+    document.querySelectorAll('.lang-switch').forEach(function(b){
+      b.textContent=v==='en'?'RU':'EN';
+    });
+  };
+})();
+</script>

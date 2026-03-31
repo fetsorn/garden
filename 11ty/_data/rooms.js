@@ -6,7 +6,7 @@
  */
 
 import { getText, getLangMap, itemSlug, asArray, presentsSet, LANGUAGES, DEFAULT_LANG } from './lib.js';
-import { getRooms, getLandmarks, getDoors, roomSlug } from './graph.js';
+import { getRooms, getLandmarks, getDoors, roomSlug, worldSlug, nodeById } from './graph.js';
 import { getEvents } from './quarry.js';
 
 /** Build the entries array for a TTL-defined entry-based feed. */
@@ -77,9 +77,9 @@ function buildFeedItems(node) {
 }
 
 /** Shape a single landmark node into a template-ready object. */
-function buildLandmark(node, roomSlug) {
+function buildLandmark(node, roomName) {
   const lmId = node['@id'];
-  const lmSlug = lmId.replace(`g:${roomSlug}-`, '');
+  const lmSlug = lmId.replace(`g:${roomName}-`, '');
   const type = node['@type'].replace('g:', '');
 
   const lm = {
@@ -123,10 +123,18 @@ export default function () {
     const labelMap = getLangMap(room['rdfs:label']);
     const langs = LANGUAGES.filter(l => labelMap[l]);
 
+    // resolve world
+    const worldId = room['g:in-world']?.['@id'] || null;
+    const worldNode = worldId ? nodeById(worldId) : null;
+    const wSlug = worldNode ? worldSlug(worldNode) : 'unknown';
+
     return {
       id,
       slug,
       image,
+      world: wSlug,
+      worldId,
+      worldLabel: worldNode ? getText(worldNode['rdfs:label']) : {},
       langs: langs.length ? langs : [DEFAULT_LANG],
       mainLang: (langs.length ? langs : [DEFAULT_LANG])[0],
       label: getText(room['rdfs:label']),

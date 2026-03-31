@@ -1,3 +1,3 @@
 <footer>
-  <a href="../items/{{ site.supportUrl }}.html#{{ navLang }}">{{ site.supportLabel[navLang] }}</a>
+  <a href="{% if currentRoom %}../../index.html{% else %}../index.html{% endif %}">{{ site.title }}</a>
 </footer>

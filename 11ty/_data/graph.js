@@ -2,7 +2,7 @@
  * Layer 1 — Graph reading
  *
  * Reads garden.json (JSON-LD converted from TTL), indexes all nodes,
- * and exposes typed accessors for rooms, landmarks, and doors.
+ * and exposes typed accessors for worlds, rooms, landmarks, and doors.
  */
 
 import { readFileSync } from 'fs';
@@ -38,10 +38,27 @@ export function nodeById(id) {
   return _byId[id] || null;
 }
 
+/** Return all World nodes, ordered by g:order. */
+export function getWorlds() {
+  load();
+  return _graph
+    .filter(n => n['@type'] === 'g:World')
+    .sort((a, b) => (a['g:order'] || 0) - (b['g:order'] || 0));
+}
+
 /** Return all Room nodes. */
 export function getRooms() {
   load();
   return _graph.filter(n => n['@type'] === 'g:Room');
+}
+
+/** Return rooms belonging to a specific world. */
+export function getRoomsByWorld(worldId) {
+  load();
+  return _graph.filter(n =>
+    n['@type'] === 'g:Room' &&
+    n['g:in-world']?.['@id'] === worldId
+  );
 }
 
 /**
@@ -54,6 +71,11 @@ export function roomSlug(room) {
   return uuid ? `${name}-${uuid}` : name;
 }
 
+/** Get the world slug from a world node. */
+export function worldSlug(world) {
+  return world['g:slug'] || world['@id'].replace('g:', '');
+}
+
 /**
  * Return non-Door landmarks for a room, in @graph order.
  * Each landmark is a raw JSON-LD node.
@@ -62,7 +84,7 @@ export function getLandmarks(roomId) {
   load();
   return _graph.filter(n => {
     const type = n['@type'];
-    if (!type || type === 'g:Room' || type === 'g:Door') return false;
+    if (!type || type === 'g:Room' || type === 'g:Door' || type === 'g:World') return false;
     return n['g:in-room']?.['@id'] === roomId;
   });
 }
