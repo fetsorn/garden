@@ -238,47 +238,112 @@ body.has-lang .lang-switch:hover {
   margin-bottom: 1rem;
 }
 
-/* gate CTA — payment shortcut */
-.gate-cta {
-  margin-top: 2rem;
+/* gate patron — world-agnostic offer at the garden entrance */
+.gate-patron {
+  margin-top: 2.5rem;
   text-align: center;
 }
 
-.gate-cta-link {
-  display: inline-block;
-  padding: 0.6rem 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  color: var(--text-dim);
+.gate-patron-scene {
+  font-style: italic;
+  color: var(--text-faint);
   font-size: 0.9rem;
-  letter-spacing: 0.03em;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.gate-cta-link:hover {
-  border-color: var(--text-dim);
-  color: var(--text);
-  text-decoration: none;
+  margin-bottom: 0.75rem;
 }
 
 
 /* ===== world page ===== */
 
-.world-description {
-  font-style: italic;
-  color: var(--text-dim);
-  margin-bottom: 2rem;
+.world-scene {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
 }
 
+.world-scene-prose {
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+/* --- offers (in-scene commerce) --- */
+
+.world-offer {
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+}
+
+.offer-name {
+  font-size: 1.1rem;
+  font-weight: normal;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.offer-scene {
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.offer-action {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.offer-cta {
+  display: inline-block;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid var(--accent-dim);
+  border-radius: 3px;
+  color: var(--accent);
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.offer-cta:hover {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.offer-price {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+/* --- rooms as paths below offers --- */
+
 .world-rooms {
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
+.world-rooms-heading {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  text-transform: lowercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+
 .world-room-link {
   display: block;
-  padding: 1rem;
+  padding: 0.75rem 1rem;
   border: 1px solid var(--border);
   border-radius: 3px;
   transition: border-color 0.2s, background 0.2s;
@@ -290,15 +355,11 @@ body.has-lang .lang-switch:hover {
   text-decoration: none;
 }
 
-.world-room-link h2 {
+.world-room-link h3 {
   font-size: 1rem;
   font-weight: normal;
   color: var(--accent);
   letter-spacing: 0.04em;
-}
-
-.world-cta {
-  margin-top: 2rem;
 }
 
 

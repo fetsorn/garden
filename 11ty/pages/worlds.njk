@@ -26,23 +26,31 @@ permalink: "worlds/{{ world.slug }}.html"
     {% set navLang = lang %}
     {% include "partials/miller.njk" %}
 
-    <section class="world-description">
-      <p>{{ world.description[lang] }}</p>
+    <section class="world-scene">
+      <p class="world-scene-prose">{{ world.scene[lang] or world.description[lang] }}</p>
     </section>
 
+    {% for offer in world.offers %}
+    <section class="world-offer">
+      <h2 class="offer-name">{{ offer.label[lang] }}</h2>
+      <p class="offer-scene">{{ offer.scene[lang] }}</p>
+      <div class="offer-action">
+        <a href="{{ offer.actionUrl }}" class="offer-cta" target="_blank" rel="noopener">{{ offer.actionLabel[lang] }}</a>
+        <span class="offer-price">{{ offer.price[lang] }}</span>
+      </div>
+    </section>
+    {% endfor %}
+
     <section class="world-rooms">
+      <p class="world-rooms-heading">
+        {% if lang == 'en' %}Deeper in:{% else %}Дальше:{% endif %}
+      </p>
       {% for room in world.rooms %}
       <a href="../rooms/{{ room.slug }}.html" class="world-room-link">
-        <h2>{{ room.label[lang] }}</h2>
+        <h3>{{ room.label[lang] }}</h3>
       </a>
       {% endfor %}
     </section>
-
-    <div class="world-cta">
-      <a href="../items/prices.html" class="gate-cta-link">
-        {% if lang == 'en' %}Services &amp; prices{% else %}Услуги и цены{% endif %}
-      </a>
-    </div>
 
     {% include "partials/footer.njk" %}
   </div>
