@@ -155,6 +155,16 @@ g:patron
 # ITEMS — content at places
 # ============================================================
 
+g:legal-archive-offer
+    a g:Item ;
+    g:in-place g:legal-archive ;
+    g:status "live" ;
+    rdfs:label "Public Offer"@en ;
+    rdfs:label "Публичная оферта"@ru ;
+    g:description "The binding terms of service for all paid offerings."@en ;
+    g:description "Обязательные условия оказания услуг для всех платных предложений."@ru ;
+    g:prose "../prose/lesson-offer.md"@ru .
+
 g:city-limits-rules
     a g:Item ;
     g:in-place g:city-limits ;
