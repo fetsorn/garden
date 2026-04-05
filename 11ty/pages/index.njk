@@ -18,38 +18,42 @@ permalink: "index.html"
   <div id="{{ lang }}" class="lang-{{ lang }}" lang="{{ lang }}">
 
     <div class="gate-lang">
-      <button class="lang-switch"
-              onclick="__setLang(__lang==='en'?'ru':'en')">
-        {% if lang == 'en' %}RU{% else %}EN{% endif %}
-      </button>
+      {% set switcherLangs = langs %}
+      {% include "partials/lang-switcher.njk" %}
     </div>
 
     <div class="gate-intro">
-      <p class="gate-title">
-        {% if lang == 'en' %}A garden with two paths.{% else %}Сад с двумя тропами.{% endif %}
+      <h1 class="gate-name">fetsorn</h1>
+      <p class="gate-tagline">
+        {% if lang == 'en' %}I work with language.{% else %}Я работаю со словом.{% endif %}
       </p>
     </div>
 
-    <div class="gate-worlds">
-      {% for world in nav %}
-      <a href="worlds/{{ world.slug }}.html" class="gate-world gate-world--{{ world.slug }}">
-        <h2>{{ world.label[lang] }}</h2>
-        <p>{{ world.description[lang] }}</p>
-      </a>
-      {% endfor %}
+    <div class="gate-random">
+      <button class="gate-random-btn" onclick="__goRandom()">
+        {% if lang == 'en' %}wander{% else %}куда-нибудь{% endif %}
+      </button>
     </div>
 
-    <div class="gate-patron">
-      <p class="gate-patron-scene">
-        {% if lang == 'en' %}By the garden gate, a weathered notebook hangs on a nail. Names of those who tend this place.{% else %}У калитки на гвозде висит потрёпанная тетрадь. Имена тех, кто ухаживает за этим местом.{% endif %}
-      </p>
-      <a href="https://liberapay.com/fetsorn" class="offer-cta" target="_blank" rel="noopener">
-        {% if lang == 'en' %}Add your name — become a patron{% else %}Вписать своё имя — стать покровителем{% endif %}
+    <footer>
+      <a href="all.html">
+        {% if lang == 'en' %}index{% else %}карта сайта{% endif %}
       </a>
-    </div>
-
+    </footer>
   </div>
   {% endfor %}
+
+  <script>
+    var __pages=[
+      {% for p in nav %}"rooms/{{ p.slug }}.html",{% endfor %}
+      {% for f in feedPages %}"feeds/{{ f.slug }}.html",{% endfor %}
+      {% for p in prose %}"items/{{ p.slug }}.html",{% endfor %}
+    ];
+    function __goRandom(){
+      var url=__pages[Math.floor(Math.random()*__pages.length)];
+      location.href=url+'#'+(__lang||'en');
+    }
+  </script>
 
 </body>
 </html>

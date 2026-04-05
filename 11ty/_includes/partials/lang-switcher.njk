@@ -1,0 +1,10 @@
+<div class="lang-dropdown">
+  <button class="lang-dropdown-btn" onclick="this.parentElement.classList.toggle('open')">
+    <span class="lang-dropdown-current"></span> ▾
+  </button>
+  <ul class="lang-dropdown-menu">
+    {% for l in switcherLangs %}
+    <li><button onclick="__setLang('{{ l }}')">{{ l | upper }}</button></li>
+    {% endfor %}
+  </ul>
+</div>

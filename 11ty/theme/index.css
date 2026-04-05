@@ -47,18 +47,24 @@ a:hover { text-decoration: underline; }
    JS adds body.has-lang before first paint, collapsing to one. */
 
 body.has-lang .lang-en,
-body.has-lang .lang-ru { display: none; }
+body.has-lang .lang-ru,
+body.has-lang .lang-zh { display: none; }
 
 body.has-lang.lang-en .lang-en { display: block; }
 body.has-lang.lang-ru .lang-ru { display: block; }
+body.has-lang.lang-zh .lang-zh { display: block; }
 
-/* lang toggle button (only visible with JS) */
-.lang-switch {
+/* lang dropdown (only visible with JS) */
+.lang-dropdown {
   display: none;
+  position: relative;
 }
 
-body.has-lang .lang-switch {
-  display: inline;
+body.has-lang .lang-dropdown {
+  display: inline-block;
+}
+
+.lang-dropdown-btn {
   cursor: pointer;
   background: none;
   border: 1px solid var(--border);
@@ -70,72 +76,110 @@ body.has-lang .lang-switch {
   transition: color 0.15s, border-color 0.15s;
 }
 
-body.has-lang .lang-switch:hover {
+.lang-dropdown-btn:hover {
   color: var(--text);
   border-color: var(--text-dim);
 }
 
-/* ===== miller columns ===== */
+.lang-dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 2px;
+  list-style: none;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0;
+  z-index: 10;
+}
 
-.miller {
+.lang-dropdown.open .lang-dropdown-menu {
+  display: block;
+}
+
+.lang-dropdown-menu button {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0.3rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--text-faint);
+  text-align: left;
+}
+
+.lang-dropdown-menu button:hover {
+  background: var(--bg-surface);
+  color: var(--text);
+}
+
+/* ===== star view (three-column typed graph nav) ===== */
+
+.star {
   display: flex;
   gap: 0;
   margin-bottom: 2rem;
   font-size: 0.85rem;
   border: 1px solid var(--border);
   border-radius: 3px;
-  overflow: hidden;
 }
 
-.miller-col {
+.star-col {
   list-style: none;
   min-width: 10rem;
   border-right: 1px solid var(--border);
   padding: 0;
 }
 
-.miller-col:last-child {
+.star-col:last-child {
   border-right: none;
 }
 
-.miller-col li {
+.star-col li {
   border-bottom: 1px solid var(--border);
 }
 
-.miller-col li:last-child {
+.star-col li:last-child {
   border-bottom: none;
 }
 
-.miller-col a {
+.star-col a {
   display: block;
   padding: 0.4rem 0.75rem;
   color: var(--text-dim);
   transition: background 0.15s;
 }
 
-.miller-col a:hover {
+.star-col a:hover {
   background: var(--bg-surface);
   color: var(--text);
   text-decoration: none;
 }
 
-.miller-col a.miller-active {
+/* column 2: current place (anchor) */
+.star-active {
   background: var(--bg-surface);
   color: var(--accent);
   font-weight: bold;
+  padding: 0.4rem 0.75rem;
 }
 
-.miller-col a.miller-landmark {
+/* column 3: item anchors */
+.star-col a.star-landmark {
   color: var(--text-faint);
   font-size: 0.8rem;
 }
 
-.miller-col a.miller-landmark:hover {
+.star-col a.star-landmark:hover {
   color: var(--text);
 }
 
-/* language toggle inside miller nav */
-.miller-lang {
+/* language toggle inside star nav */
+.star-lang {
   display: flex;
   align-items: center;
   padding: 0 0.75rem;
@@ -165,77 +209,56 @@ body.has-lang .lang-switch:hover {
   letter-spacing: 0.05em;
 }
 
-.gate-worlds {
+.gate-places {
   display: flex;
-  gap: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
   width: 100%;
 }
 
-.gate-world {
-  flex: 1;
-  padding: 2rem 1.5rem;
+.gate-place {
+  padding: 0.75rem 1.25rem;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
+  color: var(--text-dim);
+  font-size: 0.9rem;
   text-decoration: none;
   transition: border-color 0.2s, background 0.2s;
 }
 
-.gate-world:hover {
+.gate-place:hover {
   text-decoration: none;
-}
-
-.gate-world h2 {
-  font-size: 1.1rem;
-  font-weight: normal;
-  letter-spacing: 0.04em;
-  margin-bottom: 0.5rem;
-}
-
-.gate-world p {
-  font-size: 0.9rem;
-  font-style: italic;
-}
-
-/* forest card */
-.gate-world--forest {
-  border-color: #3a3a1e;
-}
-
-.gate-world--forest h2 {
-  color: #c9a95f;
-}
-
-.gate-world--forest p {
-  color: #8a7a4a;
-}
-
-.gate-world--forest:hover {
-  background: #1a1a0e;
-  border-color: #c9a95f;
-}
-
-/* mountain card */
-.gate-world--mountain {
-  border-color: #2a3040;
-}
-
-.gate-world--mountain h2 {
-  color: #7aa0c4;
-}
-
-.gate-world--mountain p {
-  color: #4a6a8a;
-}
-
-.gate-world--mountain:hover {
-  background: #141820;
-  border-color: #7aa0c4;
+  background: var(--bg-surface);
+  border-color: var(--accent);
+  color: var(--text);
 }
 
 /* gate lang switch position */
 .gate-lang {
   align-self: flex-end;
   margin-bottom: 1rem;
+}
+
+.gate-random {
+  margin-top: 2rem;
+}
+
+.gate-random-btn {
+  cursor: pointer;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.5rem 1.5rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.gate-random-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
 }
 
 /* gate patron — world-agnostic offer at the garden entrance */
@@ -324,44 +347,6 @@ body.has-lang .lang-switch:hover {
   font-style: italic;
 }
 
-/* --- rooms as paths below offers --- */
-
-.world-rooms {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.world-rooms-heading {
-  font-size: 0.85rem;
-  color: var(--text-faint);
-  text-transform: lowercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 0.5rem;
-}
-
-.world-room-link {
-  display: block;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.world-room-link:hover {
-  background: var(--bg-surface);
-  border-color: var(--accent);
-  text-decoration: none;
-}
-
-.world-room-link h3 {
-  font-size: 1rem;
-  font-weight: normal;
-  color: var(--accent);
-  letter-spacing: 0.04em;
-}
-
 
 /* ===== header image ===== */
 
@@ -376,9 +361,9 @@ header img {
   opacity: 0.85;
 }
 
-/* ===== room description ===== */
+/* ===== place description ===== */
 
-.room-description {
+.place-description {
   font-style: italic;
   color: var(--text-dim);
   margin-bottom: 2rem;
@@ -494,9 +479,9 @@ header img {
   color: var(--accent);
 }
 
-/* --- room commerce section --- */
+/* --- place commerce section --- */
 
-.room-commerce {
+.place-commerce {
   margin-top: 2.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--border);
@@ -562,24 +547,80 @@ footer a:hover {
   text-decoration: underline;
 }
 
+/* ===== all-items index ===== */
+
+.all-index {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.all-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2rem;
+}
+
+.all-header h1 {
+  font-size: 1.4rem;
+  font-weight: normal;
+  letter-spacing: 0.05em;
+  color: var(--text);
+}
+
+.all-place {
+  margin-bottom: 1.5rem;
+}
+
+.all-place h2 {
+  font-size: 1rem;
+  font-weight: normal;
+  margin-bottom: 0.4rem;
+}
+
+.all-place h2 a {
+  color: var(--accent);
+}
+
+.all-place ul {
+  list-style: none;
+  padding: 0;
+}
+
+.all-place li {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  padding: 0.2rem 0;
+}
+
+.all-type {
+  display: inline-block;
+  min-width: 3.5rem;
+  font-size: 0.75rem;
+  color: var(--text-faint);
+  text-transform: lowercase;
+  letter-spacing: 0.04em;
+}
+
 /* ===== responsive ===== */
 
 @media (max-width: 40rem) {
-  .gate-worlds {
+  .gate-places {
     flex-direction: column;
   }
 
-  .miller {
+  .star {
     flex-direction: column;
   }
 
-  .miller-col {
+  .star-col {
     min-width: auto;
     border-right: none;
     border-bottom: 1px solid var(--border);
   }
 
-  .miller-col:last-child {
+  .star-col:last-child {
     border-bottom: none;
   }
 }

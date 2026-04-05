@@ -3,7 +3,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import markdownIt from 'markdown-it';
 import { getText, getLangMap, LANGUAGES } from './lib.js';
-import { rawGraph, nodeById, getDoors, roomSlug } from './graph.js';
+import { rawGraph, nodeById, getAdjacent, placeSlug } from './graph.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const md = markdownIt({ html: true });
@@ -30,23 +30,28 @@ export default function () {
   const pages = [];
 
   for (const node of graph) {
-    const roomId = node['g:in-room']?.['@id'];
-    const room = nodeById(roomId);
-    if (!room) continue;
-    const slug_ = roomSlug(room);
-    const image = room['g:image'] || `${roomId.replace('g:', '')}.jpg`;
+    const placeId = node['g:in-place']?.['@id'];
+    const place = nodeById(placeId);
+    if (!place) continue;
+    const slug_ = placeSlug(place);
+    const image = place['g:image'] || `${placeId.replace('g:', '')}.jpg`;
 
-    const roomData = {
+    const adjacent = getAdjacent(placeId).map(adj => ({
+      slug: placeSlug(adj),
+      label: getText(adj['rdfs:label']),
+    }));
+
+    const placeData = {
       slug: slug_,
       image,
-      label: getText(room['rdfs:label']),
-      doors: getDoors(roomId),
+      label: getText(place['rdfs:label']),
+      adjacent,
     };
 
-    // Standalone Items with g:prose
+    // Standalone Items with g:prose (Offers handled by offers.js)
     if (node['@type'] === 'g:Item' && node['g:prose']) {
       const prosePaths = getLangMap(node['g:prose']);
-      const name = roomId.replace('g:', '');
+      const name = placeId.replace('g:', '');
       const nodeSlug = node['@id'].replace(`g:${name}-`, '');
       const label = getText(node['rdfs:label']);
       const langs = LANGUAGES.filter(l => prosePaths[l]);
@@ -63,7 +68,7 @@ export default function () {
           content,
           label,
           description: getText(node['g:description']),
-          room: roomData,
+          place: placeData,
           contextLabel: label,
         });
       }
@@ -95,7 +100,7 @@ export default function () {
             content,
             label: entryLabel,
             date,
-            room: roomData,
+            place: placeData,
             contextLabel: getText(node['rdfs:label']),
           });
         }

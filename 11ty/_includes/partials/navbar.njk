@@ -1,17 +1,6 @@
 <nav>
-  {% for door in navDoors %}
-  <a href="../rooms/{{ door.targetSlug }}.html#{{ navLang }}">{{ door.label[navLang] }}</a>
+  {% for adj in adjacentPlaces %}
+  <a href="../rooms/{{ adj.slug }}.html#{{ navLang }}">{{ adj.label[navLang] }}</a>
   {% endfor %}
-  {% if navLangs | length > 1 %}
-  <span class="lang-toggle">
-    {% for l in navLangs %}
-      {% if l == navLang %}
-      <span class="active">{{ l | upper }}</span>
-      {% else %}
-      <a href="#{{ l }}">{{ l | upper }}</a>
-      {% endif %}
-      {% if not loop.last %} / {% endif %}
-    {% endfor %}
-  </span>
-  {% endif %}
+  {% include "partials/lang-switcher.njk" %}
 </nav>

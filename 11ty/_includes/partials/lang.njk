@@ -1,6 +1,6 @@
 <script>
 (function(){
-  var LANGS=['en','ru'];
+  var LANGS=['en','ru','zh'];
   var h=location.hash.slice(1);
   var hashLang=null;
   for(var i=0;i<LANGS.length;i++){
@@ -11,17 +11,37 @@
   var s=localStorage.getItem('lang');
   var l=hashLang||
     (s&&LANGS.indexOf(s)>=0?s:null)||
-    ((navigator.language||'').startsWith('ru')?'ru':'en');
+    ((navigator.language||'').startsWith('ru')?'ru':
+     (navigator.language||'').startsWith('zh')?'zh':'en');
   document.body.classList.add('has-lang','lang-'+l);
   window.__lang=l;
+  function updateDropdowns(v){
+    document.querySelectorAll('.lang-dropdown-current').forEach(function(s){
+      s.textContent=v.toUpperCase();
+    });
+    document.querySelectorAll('.lang-dropdown').forEach(function(d){
+      d.classList.remove('open');
+    });
+  }
   window.__setLang=function(v){
     document.body.classList.remove('lang-'+window.__lang);
     window.__lang=v;
     document.body.classList.add('lang-'+v);
     localStorage.setItem('lang',v);
-    document.querySelectorAll('.lang-switch').forEach(function(b){
-      b.textContent=v==='en'?'RU':'EN';
-    });
+    updateDropdowns(v);
   };
+  document.addEventListener('click',function(e){
+    if(!e.target.closest('.lang-dropdown')){
+      document.querySelectorAll('.lang-dropdown').forEach(function(d){
+        d.classList.remove('open');
+      });
+    }
+  });
+  // set initial label after DOM is ready
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',function(){updateDropdowns(l);});
+  }else{
+    updateDropdowns(l);
+  }
 })();
 </script>

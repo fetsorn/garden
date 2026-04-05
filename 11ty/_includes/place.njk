@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  {% set pageTitle = room.label.en %}
-  {% set pageDescription = room.label.en + " — " + site.title %}
-  {% set pageLangs = room.langs %}
+  {% set pageTitle = place.label.en %}
+  {% set pageDescription = place.label.en + " — " + site.title %}
+  {% set pageLangs = place.langs %}
   {% include "partials/head.njk" %}
 </head>
-<body class="world--{{ room.world }} room-{{ room.slug }}">
+<body class="place-{{ place.slug }}">
   {% include "partials/lang.njk" %}
 
-  {% for lang in room.langs %}
+  {% for lang in place.langs %}
   <div id="{{ lang }}" class="lang-{{ lang }}" lang="{{ lang }}">
 
-    {% set currentWorld = room.world %}
-    {% set currentRoom = room.slug %}
-    {% set roomLandmarks = room.landmarks %}
+    {% set currentPlace = place.slug %}
+    {% set adjacentPlaces = place.adjacent %}
+    {% set placeLandmarks = place.landmarks %}
     {% set navLang = lang %}
-    {% include "partials/miller.njk" %}
+    {% set switcherLangs = place.langs %}
+    {% include "partials/star.njk" %}
 
-    {% if room.image %}
+    {% if place.image %}
     <header>
-      <img src="../img/{{ room.image }}"
-           alt="{{ room.description[lang] }}">
+      <img src="../img/{{ place.image }}"
+           alt="{{ place.description[lang] }}">
     </header>
     {% endif %}
 
-    <section class="room-description">
-      <p>{{ room.description[lang] }}</p>
+    <section class="place-description">
+      <p>{{ place.description[lang] }}</p>
     </section>
 
-    {% for lm in room.landmarks %}
+    {% for lm in place.landmarks %}
 
     {% if lm.type == "Item" %}
     <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-item status-{{ lm.status }}">
@@ -44,7 +45,7 @@
 
     {% elif lm.entries %}
     <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-entries status-{{ lm.status }}">
-      <h2>{{ lm.label[lang] }}</h2>
+      <h2><a href="../feeds/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a></h2>
       <p class="landmark-description">{{ lm.description[lang] }}</p>
       <ul class="entries">
         {% for entry in lm.entries %}
@@ -64,7 +65,7 @@
 
     {% elif lm.category %}
     <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-feed status-{{ lm.status }}">
-      <h2>{{ lm.label[lang] }}</h2>
+      <h2><a href="../feeds/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a></h2>
       <p class="landmark-description">{{ lm.description[lang] }}</p>
       {% if lm.items and lm.items[lang] | length %}
       <ul class="feed">
@@ -79,29 +80,22 @@
 
     {% endfor %}
 
-    {% if room.offers.length or room.worldPatron %}
-    <section class="room-commerce">
-      {% for offer in room.offers %}
-      <div class="world-offer">
+    {% if place.offers | length %}
+    <section class="place-commerce">
+      {% for offer in place.offers %}
+      <div class="place-offer">
         <h2 class="offer-name">{{ offer.label[lang] }}</h2>
         <p class="offer-scene">{{ offer.scene[lang] }}</p>
         <div class="offer-action">
+          {% if offer.slug %}
+          <a href="../offers/{{ offer.slug }}.html#{{ lang }}" class="offer-cta">{{ offer.actionLabel[lang] }}</a>
+          {% else %}
           <a href="{{ offer.actionUrl }}" class="offer-cta" target="_blank" rel="noopener">{{ offer.actionLabel[lang] }}</a>
+          {% endif %}
           <span class="offer-price">{{ offer.price[lang] }}</span>
         </div>
       </div>
       {% endfor %}
-
-      {% if room.worldPatron %}
-      <div class="world-offer offer-patron">
-        <h2 class="offer-name">{{ room.worldPatron.label[lang] }}</h2>
-        <p class="offer-scene">{{ room.worldPatron.scene[lang] }}</p>
-        <div class="offer-action">
-          <a href="{{ room.worldPatron.actionUrl }}" class="offer-cta" target="_blank" rel="noopener">{{ room.worldPatron.actionLabel[lang] }}</a>
-          <span class="offer-price">{{ room.worldPatron.price[lang] }}</span>
-        </div>
-      </div>
-      {% endif %}
     </section>
     {% endif %}
 
@@ -111,7 +105,7 @@
 
   <script>
     (function(){
-      var T={{ room.label | dump | safe }};
+      var T={{ place.label | dump | safe }};
       function u(){document.title=T[window.__lang]||T['en']||'{{ site.title }}';}
       if(window.__lang)u();
     })();

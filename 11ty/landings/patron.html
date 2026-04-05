@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ранний доступ — fetsorn</title>
+  <meta name="description" content="Подписка на ранний доступ: стихи, песни, расшифровки сессий — до публикации. Рассылка на e-mail после оплаты.">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #222;
+      background: #fff;
+      line-height: 1.6;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.5rem 2rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-tagline {
+      font-size: 1.1rem;
+      color: #555;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .cta {
+      display: inline-block;
+      background: #222;
+      color: #fff;
+      padding: 0.9rem 2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .cta:hover { background: #444; }
+
+    .price {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    section {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    section + section {
+      border-top: 1px solid #eee;
+    }
+
+    section h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    section p, section li {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    section ul {
+      padding-left: 1.2rem;
+    }
+
+    section li {
+      margin-bottom: 0.4rem;
+    }
+
+    .feeds {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .feeds li {
+      margin-bottom: 0.8rem;
+    }
+
+    .feeds a {
+      color: #222;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .feeds a:hover {
+      text-decoration: underline;
+    }
+
+    .feeds .feed-desc {
+      display: block;
+      color: #555;
+      font-weight: 400;
+      font-size: 0.95rem;
+    }
+
+    .footer-link {
+      text-align: center;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .footer-link a {
+      color: #888;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .footer-link a:hover {
+      color: #222;
+    }
+
+    @media (min-width: 600px) {
+      .hero { padding-top: 4rem; }
+      .hero h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <h1>Ранний доступ</h1>
+    <p class="hero-tagline">Стихи, песни, расшифровки сессий — до публикации на сайте</p>
+    <p class="price">500 ₽ / мес</p>
+    <a href="https://city-limits.payform.ru" class="cta">Подписаться</a>
+  </div>
+
+  <section>
+    <h2>Что вы получаете</h2>
+    <p>После оплаты на указанный e-mail начинает приходить рассылка с новыми материалами до их публикации:</p>
+    <ul>
+      <li>Стихи и песни на английском</li>
+      <li>Аудиозаписи чтений</li>
+      <li>Расшифровки и обзоры игровых сессий City Limits</li>
+      <li>Заметки из мастерской</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Что уже опубликовано</h2>
+    <ul class="feeds">
+      <li>
+        <a href="../feeds/readings.html#ru">Чтения</a>
+        <span class="feed-desc">Ежедневные аудиочтения стихов</span>
+      </li>
+      <li>
+        <a href="../feeds/legends.html#ru">Легенды</a>
+        <span class="feed-desc">Расшифровки прошедших сессий</span>
+      </li>
+      <li>
+        <a href="../feeds/blog.html#ru">Блог</a>
+        <span class="feed-desc">Заметки о разработке инструментов</span>
+      </li>
+    </ul>
+  </section>
+
+  <div class="footer-link">
+    <a href="../rooms/parlor.html#ru">на сайт</a>
+  </div>
+
+</body>
+</html>

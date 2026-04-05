@@ -7,7 +7,7 @@
  */
 
 import { getText, itemSlug, asArray, presentsSet, audioMime, eventLangs, LANGUAGES } from './lib.js';
-import { getRooms, getFeeds, getDoors, nodeById, roomSlug } from './graph.js';
+import { getFeeds, getAdjacent, nodeById, placeSlug } from './graph.js';
 import { getEvents, hasCategory } from './quarry.js';
 
 /** Compute display title per category. */
@@ -47,13 +47,16 @@ export default function () {
     const category = feed['g:category'];
     if (!category || !hasCategory(category)) continue;
 
-    const roomId = feed['g:in-room']?.['@id'];
-    const room = nodeById(roomId);
-    if (!room) continue;
+    const placeId = feed['g:in-place']?.['@id'];
+    const place = nodeById(placeId);
+    if (!place) continue;
 
-    const slug_ = roomSlug(room);
-    const image = room['g:image'] || `${roomId.replace('g:', '')}.jpg`;
-    const doors = getDoors(roomId);
+    const slug_ = placeSlug(place);
+    const image = place['g:image'] || `${placeId.replace('g:', '')}.jpg`;
+    const adjacent = getAdjacent(placeId).map(adj => ({
+      slug: placeSlug(adj),
+      label: getText(adj['rdfs:label']),
+    }));
 
     const events = getEvents(category, {
       projects: presentsSet(feed['g:presents']),
@@ -79,11 +82,11 @@ export default function () {
         title,
         event: normEv,
         audio,
-        room: {
+        place: {
           slug: slug_,
           image,
-          label: getText(room['rdfs:label']),
-          doors,
+          label: getText(place['rdfs:label']),
+          adjacent,
         },
         landmarkLabel: getText(feed['rdfs:label']),
       });

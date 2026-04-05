@@ -6,7 +6,8 @@
   {% set pageLangs = doc.langs %}
   {% include "partials/head.njk" %}
 </head>
-<body class="{% if doc.mainLang != 'en' %}main-{{ doc.mainLang }} {% endif %}room-{{ doc.room.slug }}">
+<body class="{% if doc.mainLang != 'en' %}main-{{ doc.mainLang }} {% endif %}place-{{ doc.place.slug }}">
+  {% include "partials/lang.njk" %}
 
   {% for lang in doc.langs %}
   <div id="{{ lang }}"></div>
@@ -15,18 +16,19 @@
   {% for lang in doc.langs %}
   <div class="lang-{{ lang }}" lang="{{ lang }}">
     <header>
-      <img src="../img/{{ doc.room.image }}"
-           alt="{{ doc.room.label[lang] }}">
+      <img src="../img/{{ doc.place.image }}"
+           alt="{{ doc.place.label[lang] }}">
     </header>
 
-    {% set navDoors = doc.room.doors %}
+    {% set adjacentPlaces = doc.place.adjacent %}
     {% set navLang = lang %}
     {% set navLangs = doc.langs %}
+    {% set switcherLangs = doc.langs %}
     {% include "partials/navbar.njk" %}
 
-    <p class="item-context">{{ doc.contextLabel[lang] }} · {{ doc.room.label[lang] }}</p>
+    <p class="item-context">{{ doc.contextLabel[lang] }} · {{ doc.place.label[lang] }}</p>
     <p class="item-back">
-      <a href="../rooms/{{ doc.room.slug }}.html#{{ lang }}">{% if lang == "ru" %}← назад{% elif lang == "zh" %}← 返回{% else %}← back{% endif %}</a>
+      <a href="../rooms/{{ doc.place.slug }}.html#{{ lang }}">{% if lang == "ru" %}← назад{% elif lang == "zh" %}← 返回{% else %}← back{% endif %}</a>
     </p>
 
     <article class="item-body prose-body">
@@ -36,14 +38,6 @@
     {% include "partials/footer.njk" %}
   </div>
   {% endfor %}
-
-  <script>
-    (function(){
-      var L={{ doc.langs | dump | safe }};
-      function u(){var h=location.hash.slice(1);var l=L.indexOf(h)>=0?h:L[0];document.documentElement.lang=l;}
-      u();addEventListener('hashchange',u);
-    })();
-  </script>
 
 
 </body>

@@ -1,12 +1,12 @@
 /**
- * Layer 3 — Room view models
+ * Layer 3 — Place view models
  *
  * Composes graph (structure) + quarry (content) into the shape
- * that room.njk templates expect.
+ * that place.njk templates expect.
  */
 
 import { getText, getLangMap, itemSlug, asArray, presentsSet, LANGUAGES, DEFAULT_LANG } from './lib.js';
-import { getRooms, getLandmarks, getDoors, roomSlug, worldSlug, nodeById, getOffersByRoom, getOffersByWorld } from './graph.js';
+import { getPlaces, getLandmarks, getAdjacent, placeSlug, nodeById, getOffersByPlace } from './graph.js';
 import { getEvents } from './quarry.js';
 
 /** Build the entries array for a TTL-defined entry-based feed. */
@@ -77,9 +77,9 @@ function buildFeedItems(node) {
 }
 
 /** Shape a single landmark node into a template-ready object. */
-function buildLandmark(node, roomName) {
+function buildLandmark(node, placeName) {
   const lmId = node['@id'];
-  const lmSlug = lmId.replace(`g:${roomName}-`, '');
+  const lmSlug = lmId.replace(`g:${placeName}-`, '');
   const type = node['@type'].replace('g:', '');
 
   const lm = {
@@ -111,59 +111,51 @@ function buildLandmark(node, roomName) {
     lm.presents = node['g:presents']?.['@id'] || null;
   }
 
+  if (type === 'Offer') {
+    lm.offerSlug = node['g:slug'] || null;
+    lm.actionUrl = node['g:action-url'] || null;
+  }
+
   return lm;
 }
 
 export default function () {
-  return getRooms().map(room => {
-    const id = room['@id'];
+  return getPlaces().map(place => {
+    const id = place['@id'];
     const name = id.replace('g:', '');
-    const slug = roomSlug(room);
-    const image = room['g:image'] || `${name}.jpg`;
-    const labelMap = getLangMap(room['rdfs:label']);
+    const slug = placeSlug(place);
+    const image = place['g:image'] || `${name}.jpg`;
+    const labelMap = getLangMap(place['rdfs:label']);
     const langs = LANGUAGES.filter(l => labelMap[l]);
 
-    // resolve world
-    const worldId = room['g:in-world']?.['@id'] || null;
-    const worldNode = worldId ? nodeById(worldId) : null;
-    const wSlug = worldNode ? worldSlug(worldNode) : 'unknown';
+    // adjacent places (star view column 1)
+    const adjacent = getAdjacent(id).map(adj => ({
+      slug: placeSlug(adj),
+      label: getText(adj['rdfs:label']),
+    }));
 
-    // room-specific offers
-    const roomOffers = getOffersByRoom(id).map(o => ({
+    // place-specific offers
+    const placeOffers = getOffersByPlace(id).map(o => ({
       label: getText(o['rdfs:label']),
       scene: getText(o['g:scene']),
       actionLabel: getText(o['g:action-label']),
       actionUrl: o['g:action-url'] || null,
       price: getText(o['g:price']),
+      slug: o['g:slug'] || null,
     }));
-
-    // world patron (first world offer, always order 1)
-    const worldOffers = worldId ? getOffersByWorld(worldId) : [];
-    const patron = worldOffers.length ? worldOffers[0] : null;
-    const worldPatron = patron ? {
-      label: getText(patron['rdfs:label']),
-      scene: getText(patron['g:scene']),
-      actionLabel: getText(patron['g:action-label']),
-      actionUrl: patron['g:action-url'] || null,
-      price: getText(patron['g:price']),
-    } : null;
 
     return {
       id,
       slug,
       image,
-      world: wSlug,
-      worldId,
-      worldLabel: worldNode ? getText(worldNode['rdfs:label']) : {},
       langs: langs.length ? langs : [DEFAULT_LANG],
       mainLang: (langs.length ? langs : [DEFAULT_LANG])[0],
-      label: getText(room['rdfs:label']),
-      description: getText(room['g:description']),
-      isDefault: room['g:default'] === true,
+      label: getText(place['rdfs:label']),
+      description: getText(place['g:description']),
+      isDefault: place['g:default'] === true,
       landmarks: getLandmarks(id).map(n => buildLandmark(n, name)),
-      doors: getDoors(id),
-      offers: roomOffers,
-      worldPatron,
+      adjacent,
+      offers: placeOffers,
     };
   });
 }
