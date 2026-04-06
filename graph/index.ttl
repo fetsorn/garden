@@ -128,7 +128,7 @@ g:city-limits-offer-session
     rdfs:label "City Limits"@en ;
     rdfs:label "City Limits"@ru ;
     g:scene "The table is set for the next session. Two chairs, a candle, a deck of cards. Pick a city — Manhattan, Miami, Volgograd — and a character walks its streets tonight."@en ;
-    g:scene "Стол накрыт к следующей сессии. Два стула, свеча, колода карт. Выберите город — Манхэттен, Майами, Волгоград — и сегодня вечером персонаж выйдет на его улицы."@ru ;
+    g:scene "Стол накрыт к следующей сессии. Два стула, свеча, колода карт. Выберите город и проживите в нём жизнь."@ru ;
     g:action-label "Take a seat — book a session"@en ;
     g:action-label "Сесть за стол — записаться на сессию"@ru ;
     g:action-url "https://city-limits.payform.ru" ;
