@@ -1,8 +1,6 @@
 export default async function(eleventyConfig) {
     eleventyConfig.ignores.add("README.md");
     eleventyConfig.ignores.add("theme/");
-    eleventyConfig.ignores.add("landings/");
-
     eleventyConfig.setInputDirectory(".");
     eleventyConfig.setIncludesDirectory("_includes");
     eleventyConfig.setDataDirectory("_data");
@@ -13,5 +11,6 @@ export default async function(eleventyConfig) {
     eleventyConfig.addPassthroughCopy({ 'theme/img': '/img' });
     eleventyConfig.addPassthroughCopy({ 'theme/robots.txt': '/robots.txt' });
     eleventyConfig.addPassthroughCopy({ 'theme/.domains': '/.domains' });
-    eleventyConfig.addPassthroughCopy({ 'landings': '/offers' });
+
+    // offer landing pages: handled by pages/offers.njk + htmlPages.js
 };

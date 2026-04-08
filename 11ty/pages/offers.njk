@@ -1,0 +1,9 @@
+---
+pagination:
+  data: htmlPages
+  size: 1
+  alias: page
+permalink: "offers/{{ page.slug }}.html"
+eleventyExcludeFromCollections: true
+---
+{{ page.content | safe }}
