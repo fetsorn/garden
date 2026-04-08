@@ -1,6 +1,7 @@
 <script>
 (function(){
   var LANGS=['en','ru','zh'];
+  var PAGE_LANGS={{ pageLangs | dump | safe }};
   var h=location.hash.slice(1);
   var hashLang=null;
   for(var i=0;i<LANGS.length;i++){
@@ -9,10 +10,11 @@
     }
   }
   var s=localStorage.getItem('lang');
-  var l=hashLang||
+  var preferred=hashLang||
     (s&&LANGS.indexOf(s)>=0?s:null)||
     ((navigator.language||'').startsWith('ru')?'ru':
      (navigator.language||'').startsWith('zh')?'zh':'en');
+  var l=(PAGE_LANGS.indexOf(preferred)>=0)?preferred:PAGE_LANGS[0];
   document.body.classList.add('has-lang','lang-'+l);
   window.__lang=l;
   function updateDropdowns(v){

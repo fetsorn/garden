@@ -14,7 +14,9 @@
 
     {% set currentPlace = place.slug %}
     {% set adjacentPlaces = place.adjacent %}
-    {% set placeLandmarks = place.landmarks %}
+    {% set placeLandmarks = [] %}
+    {% for lm in place.landmarks %}{% set placeLandmarks = (placeLandmarks.push(lm), placeLandmarks) %}{% endfor %}
+    {% for o in place.offers %}{% set placeLandmarks = (placeLandmarks.push({slug: o.slug, label: o.label}), placeLandmarks) %}{% endfor %}
     {% set navLang = lang %}
     {% set switcherLangs = place.langs %}
     {% include "partials/star.njk" %}
@@ -22,17 +24,53 @@
     {% if place.image %}
     <header>
       <img src="../img/{{ place.image }}"
-           alt="{{ place.description[lang] }}">
+           alt="{{ place.description[lang] | striptags }}">
     </header>
     {% endif %}
 
     <section class="place-description">
-      <p>{{ place.description[lang] }}</p>
+      {{ place.description[lang] | safe }}
     </section>
 
     {% for lm in place.landmarks %}
 
-    {% if lm.type == "Item" %}
+    {% if lm.category %}
+    <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-feed status-{{ lm.status }}">
+      <h2><a href="../feeds/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a></h2>
+      <p class="landmark-description">{{ lm.description[lang] }}</p>
+      {% if lm.entries | length %}
+      <ul class="feed">
+        {% for entry in lm.entries %}
+        <li>
+          {% if entry.url %}
+          <a href="{{ entry.url }}">{{ entry.label[lang] }}</a>
+          {% else %}
+          <a href="../items/{{ entry.slug }}.html">{{ entry.label[lang] }}</a>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </section>
+
+    {% elif lm.entries | length %}
+    <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-entries status-{{ lm.status }}">
+      <h2>{{ lm.label[lang] }}</h2>
+      <p class="landmark-description">{{ lm.description[lang] }}</p>
+      <ul class="entries">
+        {% for entry in lm.entries %}
+        <li>
+          {% if entry.url %}
+          <a href="{{ entry.url }}">{{ entry.label[lang] }}</a>
+          {% else %}
+          <a href="../items/{{ entry.slug }}.html">{{ entry.label[lang] }}</a>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    {% else %}
     <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-item status-{{ lm.status }}">
       <h2>{{ lm.label[lang] }}</h2>
       <p class="landmark-description">{{ lm.description[lang] }}</p>
@@ -40,39 +78,6 @@
       <a href="{{ lm.url }}">{{ lm.label[lang] }}</a>
       {% else %}
       <a href="../items/{{ lm.slug }}.html">{{ lm.label[lang] }}</a>
-      {% endif %}
-    </section>
-
-    {% elif lm.entries %}
-    <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-entries status-{{ lm.status }}">
-      <h2><a href="../feeds/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a></h2>
-      <p class="landmark-description">{{ lm.description[lang] }}</p>
-      <ul class="entries">
-        {% for entry in lm.entries %}
-        {% if not entry.prose or entry.proseLangs[lang] %}
-        <li>
-          {% if entry.prose %}
-          <a href="../items/{{ entry.slug }}.html">{{ entry.label[lang] }}</a>
-          {% else %}
-          <a href="{{ entry.url }}">{{ entry.label[lang] }}</a>
-          {% endif %}
-          {% if entry.date %}<time>{{ entry.date }}</time>{% endif %}
-        </li>
-        {% endif %}
-        {% endfor %}
-      </ul>
-    </section>
-
-    {% elif lm.category %}
-    <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-feed status-{{ lm.status }}">
-      <h2><a href="../feeds/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a></h2>
-      <p class="landmark-description">{{ lm.description[lang] }}</p>
-      {% if lm.items and lm.items[lang] | length %}
-      <ul class="feed">
-        {% for item in lm.items[lang] %}
-        <li><a href="../items/{{ item.slug }}.html">{{ item.title }}</a> <time>{{ item.date }}</time></li>
-        {% endfor %}
-      </ul>
       {% endif %}
     </section>
 

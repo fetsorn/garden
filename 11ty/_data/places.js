@@ -1,161 +1,174 @@
 /**
- * Layer 3 — Place view models
+ * Place view models from CSVS + fountain token matching (ADR-0009, ADR-0024).
  *
- * Composes graph (structure) + quarry (content) into the shape
- * that place.njk templates expect.
+ * Fountain files are the single source for all prose, labels, and order.
+ * CSVS provides only: slug, url, in_place, category, status, action_url.
+ *
+ * Token mapping:
+ *   section            -> slug marker (matches CSVS item or offer)
+ *   action (1st)       -> display label (h2)
+ *   action (2nd+)      -> description text
+ *   character block    -> for items: entries (parenthetical=slug, dialogue=label)
+ *                         for offers: CTA (parenthetical=label, dialogue=price)
+ *
+ * Place convention (ADR-0024):
+ *   first action before any section = place label (h1)
+ *   remaining actions before first section = place description
  */
+import {
+  json, arr, first,
+  parseFountainTokens, groupBySection,
+  placeLabels, placeImage,
+} from './resolve.js';
 
-import { getText, getLangMap, itemSlug, asArray, presentsSet, LANGUAGES, DEFAULT_LANG } from './lib.js';
-import { getPlaces, getLandmarks, getAdjacent, placeSlug, nodeById, getOffersByPlace } from './graph.js';
-import { getEvents } from './quarry.js';
+/* ── Extract structured data from section tokens ── */
 
-/** Build the entries array for a TTL-defined entry-based feed. */
-function buildEntries(node) {
-  const raw = Array.isArray(node['g:entry']) ? node['g:entry'] : [node['g:entry']];
-
-  return raw.map(e => {
-    const label = getText(e['rdfs:label']);
-    const url = e['g:url'] || null;
-    const proseVal = e['g:prose'] || null;
-    const date = e['g:date'] || '';
-
-    let proseSlug = null;
-    const prosePaths = getLangMap(proseVal);
-    const hasProse = LANGUAGES.some(l => prosePaths[l]);
-
-    if (hasProse) {
-      const text = label.en || label.ru;
-      proseSlug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    }
-
-    return {
-      label,
-      url,
-      prose: hasProse,
-      proseLangs: Object.fromEntries(LANGUAGES.map(l => [l, !!prosePaths[l]])),
-      slug: proseSlug,
-      date,
-    };
-  });
+function extractActions(tokens) {
+  return tokens.filter(t => t.type === 'action').map(t => t.text);
 }
 
-/** Build per-language item lists for a quarry-backed feed. */
-function buildFeedItems(node) {
-  const category = node['g:category'];
-  const orderBy = node['g:order-by'] || null;
-  const orderDirection = node['g:order-direction'] || 'ascending';
+/** For offers: first parenthetical = CTA label, first dialogue = price */
+function extractOfferBlock(tokens) {
+  let cta = '', price = '';
+  for (const t of tokens) {
+    if (t.type === 'parenthetical' && !cta) cta = t.text.replace(/[()]/g, '');
+    else if (t.type === 'dialogue' && !price) price = t.text;
+  }
+  return { cta, price };
+}
 
-  const events = getEvents(category, {
-    projects: presentsSet(node['g:presents']),
-    orderBy,
-    orderDirection,
-  });
-
-  if (!events.length) return null;
-
-  const items = Object.fromEntries(LANGUAGES.map(l => [l, []]));
-
-  for (const ev of events) {
-    const langs = asArray(ev.lang);
-    if (!langs.length) langs.push('en');
-
-    const dateVal = orderBy ? (ev[orderBy] || '') : '';
-    const displayName = ev.city || ev.datum || '';
-    const title = dateVal && displayName
-      ? `${dateVal} — ${displayName}`
-      : displayName || dateVal;
-    const slug = itemSlug(displayName, ev.event || '');
-
-    for (const l of LANGUAGES) {
-      if (langs.includes(l)) {
-        items[l].push({ slug, title, date: dateVal });
-      }
+/** For items: each dialogue block is an entry. parenthetical=slug, dialogue=display text */
+function extractEntries(tokens, itemLookup) {
+  const entries = [];
+  let currentSlug = null;
+  for (const t of tokens) {
+    if (t.type === 'parenthetical') {
+      currentSlug = t.text.replace(/[()]/g, '');
+    } else if (t.type === 'dialogue' && currentSlug) {
+      const item = itemLookup[currentSlug];
+      entries.push({
+        slug: currentSlug,
+        label: t.text,
+        url: item ? first(item.url) : null,
+      });
+      currentSlug = null;
+    } else if (t.type === 'dialogue_end') {
+      currentSlug = null;
     }
   }
-
-  return items;
+  return entries;
 }
 
-/** Shape a single landmark node into a template-ready object. */
-function buildLandmark(node, placeName) {
-  const lmId = node['@id'];
-  const lmSlug = lmId.replace(`g:${placeName}-`, '');
-  const type = node['@type'].replace('g:', '');
+/* ── Build place data from en+ru fountain tokens ── */
 
-  const lm = {
-    id: lmId,
-    slug: lmSlug,
-    type,
-    status: node['g:status'] || 'live',
-    label: getText(node['rdfs:label']),
-    description: getText(node['g:description']),
+function buildPlaceData(slug, itemLookup, offerLookup) {
+  // Fountain files resolved from slug (ADR-0024)
+  const enGroups = groupBySection(parseFountainTokens(`${slug}.en.fountain`));
+  const ruGroups = groupBySection(parseFountainTokens(`${slug}.ru.fountain`));
+
+  // Place description: actions before first section, skipping the first (which is the label)
+  const enDescActions = enGroups.description.filter(t => t.type === 'action');
+  const ruDescActions = ruGroups.description.filter(t => t.type === 'action');
+  const description = {
+    en: enDescActions.slice(1).map(t => `<p>${t.text}</p>`).join('\n'),
+    ru: ruDescActions.slice(1).map(t => `<p>${t.text}</p>`).join('\n'),
   };
 
-  if (type === 'Feed') {
-    lm.category = node['g:category'] || null;
-    lm.orderBy = node['g:order-by'] || null;
-    lm.orderDirection = node['g:order-direction'] || 'ascending';
+  // Collect section slugs in fountain order (en first, then any ru-only)
+  const seen = new Set();
+  const slugOrder = [];
+  for (const s of enGroups.sections) { if (!seen.has(s.slug)) { seen.add(s.slug); slugOrder.push(s.slug); } }
+  for (const s of ruGroups.sections) { if (!seen.has(s.slug)) { seen.add(s.slug); slugOrder.push(s.slug); } }
 
-    if (node['g:entry']) {
-      lm.entries = buildEntries(node);
+  const landmarks = [];
+  const offers = [];
+
+  for (const lmSlug of slugOrder) {
+    const enSec = enGroups.sections.find(s => s.slug === lmSlug);
+    const ruSec = ruGroups.sections.find(s => s.slug === lmSlug);
+
+    const offer = offerLookup[lmSlug];
+
+    if (offer) {
+      const enActions = enSec ? extractActions(enSec.tokens) : [];
+      const ruActions = ruSec ? extractActions(ruSec.tokens) : [];
+      const enOffer = enSec ? extractOfferBlock(enSec.tokens) : { cta: '', price: '' };
+      const ruOffer = ruSec ? extractOfferBlock(ruSec.tokens) : { cta: '', price: '' };
+
+      offers.push({
+        slug:        first(offer.slug) || lmSlug,
+        label:       { en: enActions[0] || '', ru: ruActions[0] || '' },
+        scene:       { en: enActions.slice(1).join(' '), ru: ruActions.slice(1).join(' ') },
+        actionLabel: { en: enOffer.cta || 'Learn more', ru: ruOffer.cta || '' },
+        actionUrl:   first(offer.action_url) || null,
+        price:       { en: enOffer.price, ru: ruOffer.price },
+      });
+      continue;
     }
 
-    if (lm.category) {
-      const items = buildFeedItems(node);
-      if (items) lm.items = items;
-    }
+    const item = itemLookup[lmSlug];
+    if (!item) continue;
+
+    const enActions = enSec ? extractActions(enSec.tokens) : [];
+    const ruActions = ruSec ? extractActions(ruSec.tokens) : [];
+
+    // Entries from dialogue blocks (parenthetical=slug -> URL, dialogue=display text)
+    const enEntries = enSec ? extractEntries(enSec.tokens, itemLookup) : [];
+    const ruEntries = ruSec ? extractEntries(ruSec.tokens, itemLookup) : [];
+
+    // Merge en/ru entries by slug
+    const entries = enEntries.map(e => {
+      const ru = ruEntries.find(r => r.slug === e.slug);
+      return { slug: e.slug, label: { en: e.label, ru: ru?.label || e.label }, url: e.url };
+    });
+
+    landmarks.push({
+      slug: lmSlug,
+      type:        'Item',
+      status:      first(item.status) || 'live',
+      label:       { en: enActions[0] || '', ru: ruActions[0] || '' },
+      description: { en: enActions.slice(1).join(' '), ru: ruActions.slice(1).join(' ') },
+      url:         first(item.url) || null,
+      category:    first(item.category) || null,
+      entries,
+    });
   }
 
-  if (type === 'Item') {
-    lm.url = node['g:url'] || null;
-    lm.presents = node['g:presents']?.['@id'] || null;
-  }
-
-  if (type === 'Offer') {
-    lm.offerSlug = node['g:slug'] || null;
-    lm.actionUrl = node['g:action-url'] || null;
-  }
-
-  return lm;
+  return { description, landmarks, offers };
 }
 
+/* ── Main export ── */
+
 export default function () {
-  return getPlaces().map(place => {
-    const id = place['@id'];
-    const name = id.replace('g:', '');
-    const slug = placeSlug(place);
-    const image = place['g:image'] || `${name}.jpg`;
-    const labelMap = getLangMap(place['rdfs:label']);
-    const langs = LANGUAGES.filter(l => labelMap[l]);
+  const places = json('raw_places.json');
+  const items  = json('raw_items.json');
+  const offers = json('raw_offers.json');
 
-    // adjacent places (star view column 1)
-    const adjacent = getAdjacent(id).map(adj => ({
-      slug: placeSlug(adj),
-      label: getText(adj['rdfs:label']),
-    }));
+  // Item lookup by slug
+  const itemLookup = {};
+  for (const it of items) itemLookup[it.item] = it;
 
-    // place-specific offers
-    const placeOffers = getOffersByPlace(id).map(o => ({
-      label: getText(o['rdfs:label']),
-      scene: getText(o['g:scene']),
-      actionLabel: getText(o['g:action-label']),
-      actionUrl: o['g:action-url'] || null,
-      price: getText(o['g:price']),
-      slug: o['g:slug'] || null,
-    }));
+  // Offer lookup by slug
+  const offerLookup = {};
+  for (const o of offers) {
+    offerLookup[o.offer] = o;
+    if (o.slug) offerLookup[first(o.slug)] = o;
+  }
+
+  return places.map(p => {
+    const slug = p.place;
+    const label = placeLabels(slug);
+    const { description, landmarks, offers: placeOffers } = buildPlaceData(slug, itemLookup, offerLookup);
 
     return {
-      id,
       slug,
-      image,
-      langs: langs.length ? langs : [DEFAULT_LANG],
-      mainLang: (langs.length ? langs : [DEFAULT_LANG])[0],
-      label: getText(place['rdfs:label']),
-      description: getText(place['g:description']),
-      isDefault: place['g:default'] === true,
-      landmarks: getLandmarks(id).map(n => buildLandmark(n, name)),
-      adjacent,
-      offers: placeOffers,
+      label,
+      description,
+      image:       placeImage(slug),
+      langs:       ['en', 'ru'],
+      adjacent:    arr(p.adjacent).map(a => ({ slug: a, label: placeLabels(a) })),
+      landmarks,
+      offers:      placeOffers,
     };
   });
 }

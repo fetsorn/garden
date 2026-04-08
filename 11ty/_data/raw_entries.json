@@ -1,0 +1,119 @@
+[
+  {
+    "_": "entry",
+    "entry": "card-codeberg",
+    "in_item": "workshop-cards",
+    "label_en": "Codeberg",
+    "label_ru": "Codeberg",
+    "order": "3",
+    "url": "https://codeberg.org/fetsorn"
+  },
+  {
+    "_": "entry",
+    "entry": "card-github",
+    "in_item": "workshop-cards",
+    "label_en": "GitHub",
+    "label_ru": "GitHub",
+    "order": "2",
+    "url": "https://github.com/fetsorn"
+  },
+  {
+    "_": "entry",
+    "entry": "card-liberapay",
+    "in_item": "workshop-cards",
+    "label_en": "Liberapay",
+    "label_ru": "Liberapay",
+    "order": "4",
+    "url": "https://liberapay.com/fetsorn"
+  },
+  {
+    "_": "entry",
+    "entry": "card-linkedin",
+    "in_item": "workshop-cards",
+    "label_en": "LinkedIn",
+    "label_ru": "LinkedIn",
+    "order": "1",
+    "url": "https://www.linkedin.com/in/fetsorn/"
+  },
+  {
+    "_": "entry",
+    "entry": "card-startplaying",
+    "in_item": "workshop-cards",
+    "label_en": "StartPlaying",
+    "label_ru": "StartPlaying",
+    "order": "5",
+    "url": "https://startplaying.games/gm/fetsorn"
+  },
+  {
+    "_": "entry",
+    "entry": "doc-csvs",
+    "in_item": "workshop-docs",
+    "label_en": "CSVS — Plain-Text Database",
+    "label_ru": "CSVS — База данных в формате простого текста",
+    "order": "1",
+    "url": "https://norcivilianlabs.org/csvs/"
+  },
+  {
+    "_": "entry",
+    "entry": "doc-evenor",
+    "in_item": "workshop-docs",
+    "label_en": "Evenor — Event Editor",
+    "label_ru": "Evenor — Редактор мероприятий",
+    "order": "2",
+    "url": "https://norcivilianlabs.org/evenor/"
+  },
+  {
+    "_": "entry",
+    "entry": "doc-guanbo",
+    "in_item": "workshop-docs",
+    "label_en": "Guanbo — Music Programming",
+    "label_ru": "Guanbo — Программирование музыки",
+    "order": "4",
+    "url": "https://norcivilianlabs.org/guanbo/"
+  },
+  {
+    "_": "entry",
+    "entry": "doc-morio",
+    "in_item": "workshop-docs",
+    "label_en": "Morio — Syndication Viewer",
+    "label_ru": "Morio — Программа для просмотра синдикации",
+    "order": "5",
+    "url": "https://norcivilianlabs.org/morio/"
+  },
+  {
+    "_": "entry",
+    "entry": "doc-panrec",
+    "in_item": "workshop-docs",
+    "label_en": "Panrec — Recording Utility",
+    "label_ru": "Panrec — Утилита записи",
+    "order": "3",
+    "url": "https://norcivilianlabs.org/panrec/"
+  },
+  {
+    "_": "entry",
+    "entry": "doc-retina",
+    "in_item": "workshop-docs",
+    "label_en": "Retina — Retina Detector",
+    "label_ru": "Retina — Детектор сетчатки",
+    "order": "6",
+    "url": "https://norcivilianlabs.org/retina/"
+  },
+  {
+    "_": "entry",
+    "entry": "episode-1",
+    "in_item": "floating-island-episodes",
+    "label_en": "Episode 1",
+    "label_ru": "Episode 1",
+    "order": "1",
+    "url": "https://youtu.be/_FdjI2xmjH8"
+  },
+  {
+    "_": "entry",
+    "entry": "episode-2",
+    "in_item": "floating-island-episodes",
+    "label_en": "Episode 2",
+    "label_ru": "Episode 2",
+    "order": "2",
+    "url": "https://youtu.be/P9cbaTZozyM"
+  }
+]

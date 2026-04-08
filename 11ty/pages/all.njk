@@ -11,6 +11,7 @@ permalink: "all.html"
   <link rel="stylesheet" href="index.css">
 </head>
 <body class="all-index">
+  {% set pageLangs = ['en', 'ru'] %}
   {% include "partials/lang.njk" %}
 
   {% set langs = ['en', 'ru'] %}
@@ -29,17 +30,25 @@ permalink: "all.html"
       <ul>
         {% for lm in place.landmarks %}
         <li>
-          <span class="all-type">{{ lm.type }}</span>
-          {% if lm.type == "Offer" and lm.offerSlug %}
-          <a href="offers/{{ lm.offerSlug }}.html#{{ lang }}">{{ lm.label[lang] }}</a>
-          {% elif lm.type == "Item" and lm.url %}
-          <a href="{{ lm.url }}">{{ lm.label[lang] }}</a>
-          {% elif lm.type == "Item" %}
-          <a href="items/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a>
-          {% elif lm.type == "Feed" %}
+          {% if lm.category %}
+          <span class="all-type">Feed</span>
           <a href="feeds/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a>
+          {% elif lm.url %}
+          <span class="all-type">Item</span>
+          <a href="{{ lm.url }}">{{ lm.label[lang] }}</a>
           {% else %}
-          {{ lm.label[lang] }}
+          <span class="all-type">Item</span>
+          <a href="items/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a>
+          {% endif %}
+        </li>
+        {% endfor %}
+        {% for o in place.offers %}
+        <li>
+          <span class="all-type">Offer</span>
+          {% if o.actionUrl %}
+          <a href="{{ o.actionUrl }}">{{ o.label[lang] }}</a>
+          {% else %}
+          {{ o.label[lang] }}
           {% endif %}
         </li>
         {% endfor %}

@@ -1,0 +1,34 @@
+[
+  {
+    "_": "offer",
+    "offer": "english-lessons",
+    "action_url": "https://city-limits.payform.ru",
+    "in_place": "classroom",
+    "slug": "english-lessons",
+    "status": "live"
+  },
+  {
+    "_": "offer",
+    "offer": "patron",
+    "action_url": "https://city-limits.payform.ru",
+    "in_place": "parlor",
+    "slug": "patron",
+    "status": "live"
+  },
+  {
+    "_": "offer",
+    "offer": "story-sessions",
+    "action_url": "https://city-limits.payform.ru",
+    "in_place": "city-limits",
+    "slug": "story-sessions",
+    "status": "live"
+  },
+  {
+    "_": "offer",
+    "offer": "translation",
+    "action_url": "mailto:fetsorn@gmail.com",
+    "in_place": "legal-archive",
+    "slug": "translation",
+    "status": "live"
+  }
+]

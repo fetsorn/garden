@@ -1,28 +1,12 @@
 /**
- * Navigation data for star view (ADR-0006).
- *
- * Structure: [ { slug, label, adjacent: [ { slug, label } ] } ]
- * Each place carries its own adjacency list for fog-of-war navigation.
- * Available to all templates as `nav`.
+ * Navigation data — minimal, from CSVS + fountain labels (ADR-0009, ADR-0024).
+ * index.njk uses nav[].slug for the random-wander list.
  */
-
-import { getText } from './lib.js';
-import { getPlaces, getAdjacent, placeSlug } from './graph.js';
+import { json, placeLabels } from './resolve.js';
 
 export default function () {
-  return getPlaces().map(place => {
-    const id = place['@id'];
-    const adjacent = getAdjacent(id).map(adj => ({
-      slug: placeSlug(adj),
-      label: getText(adj['rdfs:label']),
-    }));
-
-    return {
-      id,
-      slug: placeSlug(place),
-      label: getText(place['rdfs:label']),
-      description: getText(place['g:description']),
-      adjacent,
-    };
-  });
+  return json('raw_places.json').map(p => ({
+    slug:  p.place,
+    label: placeLabels(p.place),
+  }));
 }

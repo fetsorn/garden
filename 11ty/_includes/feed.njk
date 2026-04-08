@@ -1,61 +1,37 @@
 <!DOCTYPE html>
-<html lang="{{ feed.mainLang }}">
+<html lang="en">
 <head>
-  {% set pageTitle = feed.label[feed.mainLang] %}
-  {% set pageDescription = feed.label[feed.mainLang] + " — " + site.title %}
+  {% set pageTitle = feed.slug %}
+  {% set pageDescription = feed.slug + " — " + site.title %}
   {% set pageLangs = feed.langs %}
   {% include "partials/head.njk" %}
 </head>
-<body class="{% if feed.mainLang != 'en' %}main-{{ feed.mainLang }} {% endif %}place-{{ feed.place.slug }}">
+<body>
   {% include "partials/lang.njk" %}
 
   {% for lang in feed.langs %}
-  <div id="{{ lang }}"></div>
-  {% endfor %}
+  <div id="{{ lang }}" class="lang-{{ lang }}" lang="{{ lang }}">
 
-  {% for lang in feed.langs %}
-  <div class="lang-{{ lang }}" lang="{{ lang }}">
-    <header>
-      <img src="../img/{{ feed.place.image }}"
-           alt="{{ feed.place.label[lang] }}">
-    </header>
-
-    {% set adjacentPlaces = feed.place.adjacent %}
-    {% set navLang = lang %}
-    {% set navLangs = feed.langs %}
-    {% set switcherLangs = feed.langs %}
-    {% include "partials/navbar.njk" %}
-
-    <p class="item-context">{{ feed.label[lang] }} · {{ feed.place.label[lang] }}</p>
     <p class="item-back">
-      <a href="../rooms/{{ feed.place.slug }}.html#{{ lang }}">{% if lang == "ru" %}← назад{% elif lang == "zh" %}← 返回{% else %}← back{% endif %}</a>
+      <a href="../index.html#{{ lang }}">{% if lang == "ru" %}← назад{% else %}← back{% endif %}</a>
     </p>
 
     <article class="feed-body">
-      <h1>{{ feed.label[lang] }}</h1>
-      <p class="landmark-description">{{ feed.description[lang] }}</p>
+      <h1>{{ feed.slug }}</h1>
 
-      {% if feed.entries %}
-      <ul class="entries">
+      {% if feed.entries | length %}
+      <ul class="feed">
         {% for entry in feed.entries %}
-        {% if not entry.prose or entry.proseLangs[lang] %}
         <li>
-          {% if entry.prose %}
-          <a href="../items/{{ entry.slug }}.html">{{ entry.label[lang] }}</a>
+          {% if entry.hasProse %}
+          <a href="../items/{{ entry.slug }}.html">{{ entry.name }}</a>
+          {% elif entry.url %}
+          <a href="{{ entry.url }}">{{ entry.name }}</a>
           {% else %}
-          <a href="{{ entry.url }}">{{ entry.label[lang] }}</a>
+          {{ entry.name }}
           {% endif %}
           {% if entry.date %}<time>{{ entry.date }}</time>{% endif %}
         </li>
-        {% endif %}
-        {% endfor %}
-      </ul>
-      {% endif %}
-
-      {% if feed.items and feed.items[lang] | length %}
-      <ul class="feed">
-        {% for item in feed.items[lang] %}
-        <li><a href="../items/{{ item.slug }}.html">{{ item.title }}</a> <time>{{ item.date }}</time></li>
         {% endfor %}
       </ul>
       {% endif %}
@@ -64,7 +40,6 @@
     {% include "partials/footer.njk" %}
   </div>
   {% endfor %}
-
 
 </body>
 </html>

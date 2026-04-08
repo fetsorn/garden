@@ -1,111 +1,76 @@
-import { readFileSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
-import markdownIt from 'markdown-it';
-import { getText, getLangMap, LANGUAGES } from './lib.js';
-import { rawGraph, nodeById, getAdjacent, placeSlug } from './graph.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const md = markdownIt({ html: true });
-
-// resolve prose paths relative to graph/ (where index.ttl lives)
-const graphDir = join(__dirname, '..', '..', 'graph');
-
-/** Slugify a string */
-function slugify(str) {
-  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
-
-/** Read a prose file and render to HTML (markdown or raw HTML) */
-function renderProse(prosePath) {
-  const resolved = join(graphDir, prosePath);
-  const source = readFileSync(resolved, 'utf8');
-  if (prosePath.endsWith('.html')) return source;
-  return md.render(source);
-}
+/**
+ * Prose pages from items with fountain/md/html scripts (ADR-0009, ADR-0024).
+ *
+ * Script filenames derived from slug: {slug}.{lang}.fountain|.md|.html
+ *
+ * prose.njk expects:
+ *   slug, langs, mainLang, content.{lang}, label.{en,ru},
+ *   place.{slug, image, label.{en,ru}, adjacent[]}
+ *   contextLabel.{en,ru}
+ */
+import {
+  json, arr,
+  findProseFile, renderProse,
+  placeLabels, placeImage,
+  placeLabelFromFountain,
+} from './resolve.js';
 
 export default function () {
-  const graph = rawGraph();
+  const items  = json('raw_items.json');
+  const places = json('raw_places.json');
+
+  // Place lookup — labels from fountain, image from slug
+  const placeLookup = {};
+  for (const p of places) {
+    const slug = p.place;
+    placeLookup[slug] = {
+      slug,
+      image: placeImage(slug),
+      label: placeLabels(slug),
+      adjacent: arr(p.adjacent).map(a => {
+        return { slug: a, label: placeLabels(a) };
+      }),
+    };
+  }
 
   const pages = [];
 
-  for (const node of graph) {
-    const placeId = node['g:in-place']?.['@id'];
-    const place = nodeById(placeId);
+  for (const item of items) {
+    const slug = item.item;
+    const place = placeLookup[item.in_place];
     if (!place) continue;
-    const slug_ = placeSlug(place);
-    const image = place['g:image'] || `${placeId.replace('g:', '')}.jpg`;
 
-    const adjacent = getAdjacent(placeId).map(adj => ({
-      slug: placeSlug(adj),
-      label: getText(adj['rdfs:label']),
-    }));
+    // Find prose files by slug convention (ADR-0024)
+    const content = {};
+    const langs = [];
+    for (const lang of ['en', 'ru']) {
+      const file = findProseFile(slug, lang);
+      if (file) {
+        try {
+          content[lang] = renderProse(file);
+          langs.push(lang);
+        } catch { /* skip unreadable files */ }
+      }
+    }
+    if (!langs.length) continue;
 
-    const placeData = {
-      slug: slug_,
-      image,
-      label: getText(place['rdfs:label']),
-      adjacent,
+    // Label from the place's fountain file for this item's section
+    // (first action in the section matching this slug)
+    const label = {
+      en: placeLabelFromFountain(place.slug, 'en'),
+      ru: placeLabelFromFountain(place.slug, 'ru'),
     };
 
-    // Standalone Items with g:prose (Offers handled by offers.js)
-    if (node['@type'] === 'g:Item' && node['g:prose']) {
-      const prosePaths = getLangMap(node['g:prose']);
-      const name = placeId.replace('g:', '');
-      const nodeSlug = node['@id'].replace(`g:${name}-`, '');
-      const label = getText(node['rdfs:label']);
-      const langs = LANGUAGES.filter(l => prosePaths[l]);
-
-      if (langs.length) {
-        const content = {};
-        for (const lang of langs) content[lang] = renderProse(prosePaths[lang]);
-
-        pages.push({
-          slug: nodeSlug,
-          langs,
-          mainLang: langs[0],
-          type: 'item',
-          content,
-          label,
-          description: getText(node['g:description']),
-          place: placeData,
-          contextLabel: label,
-        });
-      }
-    }
-
-    // Feed entries with g:prose
-    if (node['@type'] === 'g:Feed') {
-      const raw = node['g:entry']
-        ? (Array.isArray(node['g:entry']) ? node['g:entry'] : [node['g:entry']])
-        : [];
-
-      for (const entry of raw) {
-        if (!entry['g:prose']) continue;
-        const prosePaths = getLangMap(entry['g:prose']);
-        const entryLabel = getText(entry['rdfs:label']);
-        const entrySlug = slugify(entryLabel.en || entryLabel.ru);
-        const date = entry['g:date'] || '';
-        const langs = LANGUAGES.filter(l => prosePaths[l]);
-
-        if (langs.length) {
-          const content = {};
-          for (const lang of langs) content[lang] = renderProse(prosePaths[lang]);
-
-          pages.push({
-            slug: entrySlug,
-            langs,
-            mainLang: langs[0],
-            type: 'entry',
-            content,
-            label: entryLabel,
-            date,
-            place: placeData,
-            contextLabel: getText(node['rdfs:label']),
-          });
-        }
-      }
-    }
+    pages.push({
+      slug,
+      langs,
+      mainLang:     langs[0],
+      content,
+      label:        { en: '', ru: '' },
+      description:  { en: '', ru: '' },
+      place,
+      contextLabel: { en: '', ru: '' },
+    });
   }
 
   return pages;

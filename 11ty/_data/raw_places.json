@@ -1,0 +1,70 @@
+[
+  {
+    "_": "place",
+    "place": "anamnesis",
+    "adjacent": [
+      "classroom",
+      "workshop"
+    ],
+    "status": "live"
+  },
+  {
+    "_": "place",
+    "place": "barracks",
+    "adjacent": "city-limits",
+    "status": "live"
+  },
+  {
+    "_": "place",
+    "place": "city-limits",
+    "adjacent": [
+      "classroom",
+      "barracks",
+      "floating-island"
+    ],
+    "status": "live"
+  },
+  {
+    "_": "place",
+    "place": "classroom",
+    "adjacent": [
+      "city-limits",
+      "parlor",
+      "anamnesis"
+    ],
+    "status": "live"
+  },
+  {
+    "_": "place",
+    "place": "floating-island",
+    "adjacent": [
+      "city-limits",
+      "parlor"
+    ],
+    "status": "live"
+  },
+  {
+    "_": "place",
+    "place": "legal-archive",
+    "adjacent": "workshop",
+    "status": "live"
+  },
+  {
+    "_": "place",
+    "place": "parlor",
+    "adjacent": [
+      "classroom",
+      "floating-island"
+    ],
+    "status": "live"
+  },
+  {
+    "_": "place",
+    "place": "workshop",
+    "adjacent": [
+      "anamnesis",
+      "legal-archive"
+    ],
+    "status": "live"
+  }
+]

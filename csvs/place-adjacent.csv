@@ -1,0 +1,16 @@
+anamnesis,classroom
+anamnesis,workshop
+barracks,city-limits
+city-limits,classroom
+city-limits,barracks
+city-limits,floating-island
+classroom,city-limits
+classroom,parlor
+classroom,anamnesis
+floating-island,city-limits
+floating-island,parlor
+legal-archive,workshop
+parlor,classroom
+parlor,floating-island
+workshop,anamnesis
+workshop,legal-archive

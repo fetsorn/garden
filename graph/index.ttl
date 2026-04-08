@@ -2,279 +2,155 @@
 @prefix g: <urn:garden/> .
 @prefix p: <urn:crater:project/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 
-# ============================================================
-# PLACES — viewpoints in the garden (ADR-0005)
-# A place is a camera angle, not a container.
-# ============================================================
+# --- Classes ---
 
-g:classroom
-    a g:Place ;
-    g:image "classroom.jpg" ;
-    rdfs:label "The Classroom"@en ;
-    rdfs:label "Класс"@ru ;
-    g:description "A room with a blackboard and a deck of flashcards. Someone is learning to speak."@en ;
-    g:description "Комната с доской и колодой карточек. Кто-то учится говорить."@ru .
+g:item  a owl:Class ;
+        rdfs:label "item" ;
+        rdfs:comment "A creative work: poem, recording, game session, feed. Prose lives in fountain files resolved by slug (ADR-0024)." ;
+        rdfs:subClassOf schema:CreativeWork .
 
-g:city-limits
-    a g:Place ;
-    g:image "stage.jpg" ;
-    rdfs:label "City Limits"@en ;
-    rdfs:label "Городские пределы"@ru ;
-    g:description "A table with maps of real cities spread across it. Figurines at intersections. A deck of cards face-down. This is where the game happens."@en ;
-    g:description "Стол с картами настоящих городов. Фигурки на перекрёстках. Колода карт рубашкой вверх. Здесь идёт игра."@ru .
+g:feed  a owl:Class ;
+        rdfs:label "feed" ;
+        rdfs:comment "An item with category and in_place. Its page lists all items sharing that category. Represented in CSVS as an item row with a category value, not as a separate entity." ;
+        rdfs:subClassOf g:item .
 
-g:parlor
-    a g:Place ;
-    rdfs:label "The Parlor"@en ;
-    rdfs:label "Гостиная"@ru ;
-    g:description "A warm room with deep chairs and a reading lamp. A shelf of well-worn poetry volumes. A microphone on the side table. Someone reads aloud here, daily."@en ;
-    g:description "Тёплая комната с глубокими креслами и лампой для чтения. Полка зачитанных поэтических сборников. Микрофон на приставном столике. Здесь каждый день кто-то читает вслух."@ru .
+g:place a owl:Class ;
+        rdfs:label "place" ;
+        rdfs:comment "A named room in the garden. Labels and descriptions live in fountain, not CSVS." ;
+        rdfs:subClassOf schema:Place .
 
-g:floating-island
-    a g:Place ;
-    rdfs:label "The Floating Island"@en ;
-    rdfs:label "Плавучий остров"@ru ;
-    g:description "An island suspended in mid-air, tethered by vines. A crystal ball on a velvet cushion flickers with moving images — scenes from another world, filmed with actors and game engines."@en ;
-    g:description "Остров, парящий в воздухе, удерживаемый лианами. Хрустальный шар на бархатной подушке мерцает движущимися образами — сцены из другого мира, снятые с актёрами и игровыми движками."@ru .
+g:offer a owl:Class ;
+        rdfs:label "offer" ;
+        rdfs:comment "A purchasable action tied to a place. CTA label and price live in fountain." ;
+        rdfs:subClassOf schema:Offer .
 
-g:barracks
-    a g:Place ;
-    rdfs:label "The Barracks"@en ;
-    rdfs:label "Казарма"@ru ;
-    g:description "A war table covered in clan flags and carved tokens. Campaign maps pinned to the walls. Stories of alliances and betrayals told here between rounds."@en ;
-    g:description "Боевой стол, покрытый клановыми флагами и резными жетонами. Карты кампаний на стенах. Между раундами здесь рассказывают истории союзов и предательств."@ru .
+g:file  a owl:Class ;
+        rdfs:label "file" ;
+        rdfs:comment "A media attachment on an item." ;
+        rdfs:subClassOf schema:MediaObject .
 
-g:anamnesis
-    a g:Place ;
-    rdfs:label "Anamnesis"@en ;
-    rdfs:label "Анамнесис"@ru ;
-    g:description "A quiet room with a mirror and a journal on the desk. The practice of structured self-witnessing begins here."@en ;
-    g:description "Тихая комната с зеркалом и дневником на столе. Здесь начинается практика структурированного самосвидетельствования."@ru .
+g:reference a owl:Class ;
+            rdfs:label "reference" ;
+            rdfs:comment "A content-addressed blob (hash + extension). Compare RFC 6920 ni: URI scheme." .
 
-g:workshop
-    a g:Place ;
-    g:image "study.jpg" ;
-    rdfs:label "The Workshop"@en ;
-    rdfs:label "Мастерская"@ru ;
-    g:description "A workbench covered in half-assembled tools. Schematics on the walls. Open-source instruments built here — databases, editors, memory systems."@en ;
-    g:description "Верстак, заваленный полусобранными инструментами. На стенах — схемы. Здесь строят инструменты с открытым кодом — базы данных, редакторы, системы памяти."@ru .
+# --- item properties ---
 
-g:legal-archive
-    a g:Place ;
-    rdfs:label "The Archive"@en ;
-    rdfs:label "Архив"@ru ;
-    g:description "Shelves of bound volumes. Legal journals, court proceedings, academic articles. Dust in the air, but the citations are precise."@en ;
-    g:description "Полки переплетённых томов. Юридические журналы, судебные материалы, научные статьи. Пыль в воздухе, но ссылки точны."@ru .
+g:in_place      a owl:ObjectProperty ;
+                rdfs:domain g:item ;
+                rdfs:range  g:place ;
+                rdfs:subPropertyOf schema:containedInPlace .
 
-# ============================================================
-# ADJACENCY — fog-of-war edges between places (ADR-0006)
-# Symmetric: if A g:adjacent B, also B g:adjacent A.
-# ============================================================
+g:category      a owl:DatatypeProperty ;
+                rdfs:domain g:item ;
+                rdfs:comment "Tag that groups items into a feed. An item with category + in_place is a g:feed." .
 
-g:classroom   g:adjacent g:city-limits, g:parlor, g:anamnesis .
-g:city-limits g:adjacent g:classroom, g:barracks, g:floating-island .
-g:parlor      g:adjacent g:classroom, g:floating-island .
-g:floating-island g:adjacent g:city-limits, g:parlor .
-g:barracks    g:adjacent g:city-limits .
-g:anamnesis   g:adjacent g:classroom, g:workshop .
-g:workshop    g:adjacent g:anamnesis, g:legal-archive .
-g:legal-archive g:adjacent g:workshop .
+g:datum         a owl:DatatypeProperty ;
+                rdfs:domain g:item ;
+                rdfs:subPropertyOf dcterms:title .
 
-# ============================================================
-# OFFERS — standalone landing pages, outside the build system
-# Each offer has a landing HTML in 11ty/landings/<slug>.html
-# TTL describes the offer's spatial identity for place context
-# ============================================================
+g:url           a owl:DatatypeProperty ;
+                rdfs:domain g:item ;
+                rdfs:subPropertyOf schema:url .
 
-g:archive-translation
-    a g:Offer ;
-    g:in-place g:legal-archive ;
-    g:slug "translation" ;
-    g:status "live" ;
-    g:order 1 ;
-    rdfs:label "Translation"@en ;
-    rdfs:label "Перевод документов"@ru ;
-    g:scene "A stack of papers on the desk, half in Russian, half in English. A pen moves between them, finding the right word."@en ;
-    g:scene "На столе стопка бумаг, половина на русском, половина на английском. Перо движется между ними, подбирая нужное слово."@ru ;
-    g:action-label "Request a quote"@en ;
-    g:action-label "Написать"@ru ;
-    g:action-url "mailto:fetsorn@gmail.com" ;
-    g:price "quote-based"@en ;
-    g:price "по запросу"@ru .
+g:lang          a owl:DatatypeProperty ;
+                rdfs:domain g:item ;
+                rdfs:subPropertyOf dcterms:language .
 
-g:classroom-english-lessons
-    a g:Offer ;
-    g:in-place g:classroom ;
-    g:slug "english-lessons" ;
-    g:status "live" ;
-    g:order 2 ;
-    rdfs:label "English Lessons"@en ;
-    rdfs:label "Уроки английского"@ru ;
-    g:scene "A schedule pinned to the board, next to a stack of Anki cards. The next lesson is this week."@en ;
-    g:scene "Расписание на доске, рядом стопка карточек Anki. Следующий урок на этой неделе."@ru ;
-    g:action-label "Book a lesson"@en ;
-    g:action-label "Записаться на урок"@ru ;
-    g:action-url "https://city-limits.payform.ru" ;
-    g:price "$10 per hour"@en ;
-    g:price "1000 ₽/час"@ru .
+g:actdate       a owl:DatatypeProperty ;
+                rdfs:domain g:item ;
+                rdfs:comment "Actual date of the event. The 'act' series tracks what actually happened — cf. FRBR manifestation level, prov:wasAssociatedWith." ;
+                rdfs:subPropertyOf dcterms:date .
 
-g:city-limits-offer-session
-    a g:Offer ;
-    g:in-place g:city-limits ;
-    g:slug "story-sessions" ;
-    g:status "live" ;
-    g:order 3 ;
-    rdfs:label "City Limits"@en ;
-    rdfs:label "City Limits"@ru ;
-    g:scene "The table is set for the next session. Two chairs, a candle, a deck of cards. Pick a city — Manhattan, Miami, Volgograd — and a character walks its streets tonight."@en ;
-    g:scene "Стол накрыт к следующей сессии. Два стула, свеча, колода карт. Выберите город и проживите в нём жизнь."@ru ;
-    g:action-label "Take a seat — book a session"@en ;
-    g:action-label "Сесть за стол — записаться на сессию"@ru ;
-    g:action-url "https://city-limits.payform.ru" ;
-    g:price "1000 ₽ per session"@en ;
-    g:price "1000 ₽ за сессию"@ru .
+g:saydate       a owl:DatatypeProperty ;
+                rdfs:domain g:item ;
+                rdfs:comment "Date as presented by the work. The 'say' series tracks what the work claims — cf. FRBR expression level, prov:wasAttributedTo." ;
+                rdfs:subPropertyOf dcterms:date .
 
-g:patron
-    a g:Offer ;
-    g:in-place g:parlor ;
-    g:slug "patron" ;
-    g:status "live" ;
-    g:order 99 ;
-    rdfs:label "Early Access"@en ;
-    rdfs:label "Ранний доступ"@ru ;
-    g:scene "A weathered notebook hangs on a nail by the gate. Names of those who tend this place. Poems, songs, session transcripts — before they go public."@en ;
-    g:scene "У калитки на гвозде висит потрёпанная тетрадь. Имена тех, кто ухаживает за этим местом. Стихи, песни, расшифровки сессий — до публикации."@ru ;
-    g:action-label "Become a patron"@en ;
-    g:action-label "Стать покровителем"@ru ;
-    g:action-url "https://city-limits.payform.ru" ;
-    g:price "from $5/month"@en ;
-    g:price "от 500 ₽/мес"@ru .
+g:actname       a owl:DatatypeProperty ;
+                rdfs:domain g:item ;
+                rdfs:comment "Actual creator. Act series: prov:wasAssociatedWith." ;
+                rdfs:subPropertyOf dcterms:creator .
 
-# ============================================================
-# ITEMS — content at places
-# ============================================================
+g:sayname       a owl:DatatypeProperty ;
+                rdfs:domain g:item ;
+                rdfs:comment "Credited creator as presented by the work. Say series: prov:wasAttributedTo." ;
+                rdfs:subPropertyOf dcterms:creator .
 
-g:legal-archive-offer
-    a g:Item ;
-    g:in-place g:legal-archive ;
-    g:status "live" ;
-    rdfs:label "Public Offer"@en ;
-    rdfs:label "Публичная оферта"@ru ;
-    g:description "The binding terms of service for all paid offerings."@en ;
-    g:description "Обязательные условия оказания услуг для всех платных предложений."@ru ;
-    g:prose "../prose/lesson-offer.md"@ru .
+g:actcopyright  a owl:DatatypeProperty ;
+                rdfs:domain g:item ;
+                rdfs:comment "Actual rights holder. Act series: prov:wasAssociatedWith." ;
+                rdfs:subPropertyOf dcterms:rights .
 
-g:city-limits-rules
-    a g:Item ;
-    g:in-place g:city-limits ;
-    g:status "live" ;
-    rdfs:label "Rules"@en ;
-    rdfs:label "Правила"@ru ;
-    g:description "A laminated card with the rules of the game. Simple enough to start in five minutes."@en ;
-    g:description "Ламинированная карточка с правилами игры. Достаточно простыми, чтобы начать за пять минут."@ru ;
-    g:prose "../prose/city-limits-rules-en.html"@en ;
-    g:prose "../prose/city-limits-rules-ru.html"@ru .
+g:saycopyright  a owl:DatatypeProperty ;
+                rdfs:domain g:item ;
+                rdfs:comment "Rights as presented by the work. Say series: prov:wasAttributedTo." ;
+                rdfs:subPropertyOf dcterms:rights .
 
-g:city-limits-quick-start
-    a g:Item ;
-    g:in-place g:city-limits ;
-    g:status "live" ;
-    rdfs:label "Quick Start"@en ;
-    rdfs:label "Быстрый старт"@ru ;
-    g:description "A one-page guide to your first session."@en ;
-    g:description "Руководство на одну страницу к первой сессии."@ru ;
-    g:prose "../prose/city-limits-quick-start.md"@ru .
+g:city          a owl:DatatypeProperty ;
+                rdfs:domain g:item .
 
-g:workshop-quarry
-    a g:Item ;
-    g:in-place g:workshop ;
-    g:status "live" ;
-    rdfs:label "Quarry"@en ;
-    rdfs:label "Каменоломня"@ru ;
-    g:description "A glass case beside the reading stand. Inside, the garden's own ledger — every entry, every link, laid open for inspection."@en ;
-    g:description "Стеклянная витрина рядом с подставкой для чтения. Внутри — реестр самого сада: каждая запись, каждая связь, открытые для изучения."@ru ;
-    g:url "https://evenor.norcivilianlabs.org/#?~=https://git.nexusnest.link/fetsorn/garden" .
+g:status        a owl:DatatypeProperty ;
+                rdfs:domain g:item .
 
-# ============================================================
-# FEEDS — content streams at places
-# ============================================================
+g:project       a owl:ObjectProperty ;
+                rdfs:domain g:item ;
+                rdfs:range  p:Project ;
+                rdfs:comment "Link to crater project." .
 
-g:city-limits-legends
-    a g:Feed ;
-    g:in-place g:city-limits ;
-    g:status "live" ;
-    rdfs:label "Legends"@en ;
-    rdfs:label "Легенды"@ru ;
-    g:description "Transcripts pinned to the wall — stories from past sessions. Each city, each character, each night."@en ;
-    g:description "Стенограммы, приколотые к стене — истории прошедших сессий. Каждый город, каждый персонаж, каждый вечер."@ru ;
-    g:category "legend" ;
-    g:order-by "actdate" ;
-    g:order-direction "descending" ;
-    g:presents p:city-limits .
+g:file_rel      a owl:ObjectProperty ;
+                rdfs:domain g:item ;
+                rdfs:range  g:file .
 
-g:parlor-readings
-    a g:Feed ;
-    g:in-place g:parlor ;
-    g:status "live" ;
-    rdfs:label "Readings"@en ;
-    rdfs:label "Чтения"@ru ;
-    g:description "Daily audio readings. A poem, a voice, a minute of attention."@en ;
-    g:description "Ежедневные аудиочтения. Стихотворение, голос, минута внимания."@ru ;
-    g:category "poem-reading" ;
-    g:order-by "saydate" ;
-    g:order-direction "descending" ;
-    g:presents p:norcivilian-reads .
+# --- place properties ---
 
-g:floating-island-episodes
-    a g:Feed ;
-    g:in-place g:floating-island ;
-    g:status "live" ;
-    rdfs:label "Episodes"@en ;
-    rdfs:label "Эпизоды"@ru ;
-    g:description "Filmed scenes from the Aetherion world — voice acting, game engine footage, original score."@en ;
-    g:description "Снятые сцены из мира Этериона — озвучка, кадры из игрового движка, оригинальная музыка."@ru ;
-    g:entry [ rdfs:label "Episode 1" ; g:url "https://youtu.be/_FdjI2xmjH8" ] ;
-    g:entry [ rdfs:label "Episode 2" ; g:url "https://youtu.be/P9cbaTZozyM" ] .
+g:adjacent      a owl:ObjectProperty ;
+                rdfs:domain g:place ;
+                rdfs:range  g:place ;
+                a owl:SymmetricProperty .
 
-g:workshop-blog
-    a g:Feed ;
-    g:in-place g:workshop ;
-    g:status "live" ;
-    rdfs:label "Dev Blog"@en ;
-    rdfs:label "Блог"@ru ;
-    g:description "A notebook lies open near the lamp, its pages covered in half-finished diagrams and scrawled reminders."@en ;
-    g:description "У лампы лежит раскрытая тетрадь, её страницы испещрены незаконченными схемами и торопливыми пометками."@ru ;
-    g:category "blog" ;
-    g:order-by "date_published" ;
-    g:order-direction "descending" ;
-    g:presents p:evenor, p:csvs, p:crater, p:glider-cli .
+g:place_status  a owl:DatatypeProperty ;
+                rdfs:domain g:place .
 
-g:workshop-docs
-    a g:Feed ;
-    g:in-place g:workshop ;
-    g:status "live" ;
-    rdfs:label "Documentation"@en ;
-    rdfs:label "Документация"@ru ;
-    g:description "A heavy technical manual lies open on the reading stand, its table of contents marked with ribbon bookmarks."@en ;
-    g:description "На подставке для чтения лежит тяжёлый технический справочник, его оглавление заложено ленточными закладками."@ru ;
-    g:entry [ rdfs:label "CSVS — Plain-Text Database"@en ; rdfs:label "CSVS — База данных в формате простого текста"@ru ; g:url "https://norcivilianlabs.org/csvs/" ] ;
-    g:entry [ rdfs:label "Evenor — Event Editor"@en ; rdfs:label "Evenor — Редактор мероприятий"@ru ; g:url "https://norcivilianlabs.org/evenor/" ] ;
-    g:entry [ rdfs:label "Panrec — Recording Utility"@en ; rdfs:label "Panrec — Утилита записи"@ru ; g:url "https://norcivilianlabs.org/panrec/" ] ;
-    g:entry [ rdfs:label "Guanbo — Music Programming"@en ; rdfs:label "Guanbo — Программирование музыки"@ru ; g:url "https://norcivilianlabs.org/guanbo/" ] ;
-    g:entry [ rdfs:label "Morio — Syndication Viewer"@en ; rdfs:label "Morio — Программа для просмотра синдикации"@ru ; g:url "https://norcivilianlabs.org/morio/" ] ;
-    g:entry [ rdfs:label "Retina — Retina Detector"@en ; rdfs:label "Retina — Детектор сетчатки"@ru ; g:url "https://norcivilianlabs.org/retina/" ] .
+# --- offer properties ---
 
-g:workshop-cards
-    a g:Feed ;
-    g:in-place g:workshop ;
-    g:status "live" ;
-    rdfs:label "Calling Cards"@en ;
-    rdfs:label "Визитки"@ru ;
-    g:description "A small drawer of calling cards, each one a different hand."@en ;
-    g:description "Маленький ящик визитных карточек, каждая — другим почерком."@ru ;
-    g:entry [ rdfs:label "LinkedIn" ; g:url "https://www.linkedin.com/in/fetsorn/" ] ;
-    g:entry [ rdfs:label "GitHub" ; g:url "https://github.com/fetsorn" ] ;
-    g:entry [ rdfs:label "Codeberg" ; g:url "https://codeberg.org/fetsorn" ] ;
-    g:entry [ rdfs:label "Liberapay" ; g:url "https://liberapay.com/fetsorn" ] ;
-    g:entry [ rdfs:label "StartPlaying" ; g:url "https://startplaying.games/gm/fetsorn" ] .
+g:action_url    a owl:DatatypeProperty ;
+                rdfs:domain g:offer ;
+                rdfs:subPropertyOf schema:url .
+
+g:slug          a owl:DatatypeProperty ;
+                rdfs:domain g:offer .
+
+g:offer_in_place a owl:ObjectProperty ;
+                 rdfs:domain g:offer ;
+                 rdfs:range  g:place ;
+                 rdfs:subPropertyOf schema:containedInPlace .
+
+g:offer_status  a owl:DatatypeProperty ;
+                rdfs:domain g:offer .
+
+# --- file / reference ---
+
+g:description   a owl:DatatypeProperty ;
+                rdfs:domain g:file .
+
+g:date          a owl:DatatypeProperty ;
+                rdfs:domain g:file ;
+                rdfs:subPropertyOf dcterms:date .
+
+g:reference_rel a owl:ObjectProperty ;
+                rdfs:domain g:file ;
+                rdfs:range  g:reference .
+
+g:hash          a owl:DatatypeProperty ;
+                rdfs:domain g:reference ;
+                rdfs:comment "SHA-256 content address." .
+
+g:extension     a owl:DatatypeProperty ;
+                rdfs:domain g:reference .
+
+g:name          a owl:DatatypeProperty ;
+                rdfs:domain g:reference .
