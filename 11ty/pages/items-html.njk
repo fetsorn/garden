@@ -1,8 +1,8 @@
 ---
 pagination:
-  data: items.templated
+  data: items.passthrough
   size: 1
   alias: item
 permalink: "items/{{ item.slug }}.html"
-layout: item.njk
 ---
+{{ item.htmlPassthrough | safe }}

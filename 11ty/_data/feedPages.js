@@ -5,7 +5,7 @@
  * Its page lists all other items sharing that category.
  */
 import {
-  json, first, hasProse,
+  json, first, hasProse, LANGS,
   datumFromFountain,
   buildLandmarkLabels,
 } from './resolve.js';
@@ -13,9 +13,9 @@ import {
 export default function () {
   const items = json('raw_items.json');
 
-  // A feed is an item with category AND in_place (placed in fountain as a section).
-  // Items with category but no in_place are feed entries (events).
-  const feeds = items.filter(it => it.category && it.in_place);
+  // A feed is an item with category AND in_place, but not an offer.
+  // Offers have category "offer" and are rendered as passthrough HTML, not feeds.
+  const feeds = items.filter(it => it.category && it.in_place && first(it.category) !== 'offer');
 
   // Group all items by category for listing
   const byCategory = {};
@@ -53,7 +53,7 @@ export default function () {
       slug:     feed.item,
       category: cat,
       label:    landmarkLabels[feed.item] || { en: feed.item, ru: feed.item },
-      langs:    ['en', 'ru'],
+      langs:    LANGS,
       place:    feed.in_place || null,
       entries,
     };

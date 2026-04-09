@@ -1,6 +1,6 @@
 <script>
 (function(){
-  var LANGS=['en','ru','zh'];
+  var LANGS={{ site.langs | dump | safe }};
   var PAGE_LANGS={{ pageLangs | dump | safe }};
   var h=location.hash.slice(1);
   var hashLang=null;

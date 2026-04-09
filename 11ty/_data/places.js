@@ -18,7 +18,7 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
 import {
-  json, arr, first,
+  json, arr, first, LANGS,
   parseFountainTokens, groupBySection,
   placeLabels, placeImage, proseDir,
 } from './resolve.js';
@@ -64,77 +64,121 @@ function extractEntries(tokens, itemLookup) {
 /* ── Build place data from en+ru fountain tokens ── */
 
 function buildPlaceData(slug, itemLookup) {
-  // Fountain files resolved from slug (ADR-0024)
-  const enGroups = groupBySection(parseFountainTokens(`${slug}.en.fountain`));
-  const ruGroups = groupBySection(parseFountainTokens(`${slug}.ru.fountain`));
+  // Fountain files resolved from slug, one per lang (ADR-0024)
+  const groupsByLang = {};
+  for (const lang of LANGS) {
+    groupsByLang[lang] = groupBySection(parseFountainTokens(`${slug}.${lang}.fountain`));
+  }
 
   // Place description: actions before first section, skipping the first (which is the label)
-  const enDescActions = enGroups.description.filter(t => t.type === 'action');
-  const ruDescActions = ruGroups.description.filter(t => t.type === 'action');
-  const description = {
-    en: enDescActions.slice(1).map(t => `<p>${t.text}</p>`).join('\n'),
-    ru: ruDescActions.slice(1).map(t => `<p>${t.text}</p>`).join('\n'),
-  };
+  const description = {};
+  for (const lang of LANGS) {
+    const descActions = groupsByLang[lang].description.filter(t => t.type === 'action');
+    description[lang] = descActions.slice(1).map(t => `<p>${t.text}</p>`).join('\n');
+  }
 
-  // Collect section slugs in fountain order (en first, then any ru-only)
+  // Collect section slugs in fountain order (first lang wins, then lang-only additions)
   const seen = new Set();
   const slugOrder = [];
-  for (const s of enGroups.sections) { if (!seen.has(s.slug)) { seen.add(s.slug); slugOrder.push(s.slug); } }
-  for (const s of ruGroups.sections) { if (!seen.has(s.slug)) { seen.add(s.slug); slugOrder.push(s.slug); } }
+  for (const lang of LANGS) {
+    for (const s of groupsByLang[lang].sections) {
+      if (!seen.has(s.slug)) { seen.add(s.slug); slugOrder.push(s.slug); }
+    }
+  }
 
   const landmarks = [];
   const offers = [];
 
   for (const lmSlug of slugOrder) {
-    const enSec = enGroups.sections.find(s => s.slug === lmSlug);
-    const ruSec = ruGroups.sections.find(s => s.slug === lmSlug);
+    const secByLang = {};
+    for (const lang of LANGS) {
+      secByLang[lang] = groupsByLang[lang].sections.find(s => s.slug === lmSlug) || null;
+    }
 
     const item = itemLookup[lmSlug];
     if (!item) continue;
 
     const isOffer = arr(item.category).includes('offer');
-    const enActions = enSec ? extractActions(enSec.tokens) : [];
-    const ruActions = ruSec ? extractActions(ruSec.tokens) : [];
+    const actionsByLang = {};
+    for (const lang of LANGS) {
+      actionsByLang[lang] = secByLang[lang] ? extractActions(secByLang[lang].tokens) : [];
+    }
 
     if (isOffer) {
-      const enOffer = enSec ? extractOfferBlock(enSec.tokens) : { cta: '', price: '' };
-      const ruOffer = ruSec ? extractOfferBlock(ruSec.tokens) : { cta: '', price: '' };
+      const offerByLang = {};
+      for (const lang of LANGS) {
+        offerByLang[lang] = secByLang[lang] ? extractOfferBlock(secByLang[lang].tokens) : { cta: '', price: '' };
+      }
+
+      const label = {}, scene = {}, actionLabel = {}, price = {};
+      for (const lang of LANGS) {
+        label[lang] = actionsByLang[lang][0] || '';
+        scene[lang] = actionsByLang[lang].slice(1).join(' ');
+        actionLabel[lang] = offerByLang[lang].cta || (lang === 'en' ? 'Learn more' : '');
+        price[lang] = offerByLang[lang].price;
+      }
 
       offers.push({
-        slug:           lmSlug,
-        label:          { en: enActions[0] || '', ru: ruActions[0] || '' },
-        scene:          { en: enActions.slice(1).join(' '), ru: ruActions.slice(1).join(' ') },
-        actionLabel:    { en: enOffer.cta || 'Learn more', ru: ruOffer.cta || '' },
+        slug: lmSlug, label, scene, actionLabel,
         actionUrl:      first(item.url) || null,
         hasLandingPage: existsSync(join(proseDir, `${lmSlug}.html`)),
-        price:          { en: enOffer.price, ru: ruOffer.price },
+        price,
       });
       continue;
     }
 
-    // Entries from dialogue blocks (parenthetical=slug -> URL, dialogue=display text)
-    const enEntries = enSec ? extractEntries(enSec.tokens, itemLookup) : [];
-    const ruEntries = ruSec ? extractEntries(ruSec.tokens, itemLookup) : [];
+    // Entries from dialogue blocks — merge across all langs by slug
+    const entriesByLang = {};
+    for (const lang of LANGS) {
+      entriesByLang[lang] = secByLang[lang] ? extractEntries(secByLang[lang].tokens, itemLookup) : [];
+    }
 
-    // Merge en/ru entries by slug
-    const entries = enEntries.map(e => {
-      const ru = ruEntries.find(r => r.slug === e.slug);
-      return { slug: e.slug, label: { en: e.label, ru: ru?.label || e.label }, url: e.url };
+    const seenEntrySlugs = new Set();
+    const entryOrder = [];
+    for (const lang of LANGS) {
+      for (const e of entriesByLang[lang]) {
+        if (!seenEntrySlugs.has(e.slug)) { seenEntrySlugs.add(e.slug); entryOrder.push(e.slug); }
+      }
+    }
+
+    const entries = entryOrder.map(eSlug => {
+      const label = {};
+      let url = null;
+      for (const lang of LANGS) {
+        const match = entriesByLang[lang].find(e => e.slug === eSlug);
+        label[lang] = match?.label || '';
+        if (match?.url) url = match.url;
+      }
+      // Fill empty labels with first available
+      const fallback = LANGS.map(l => label[l]).find(l => l) || eSlug;
+      for (const lang of LANGS) { if (!label[lang]) label[lang] = fallback; }
+      return { slug: eSlug, label, url };
     });
+
+    const label = {}, desc = {};
+    for (const lang of LANGS) {
+      label[lang] = actionsByLang[lang][0] || '';
+      desc[lang] = actionsByLang[lang].slice(1).join(' ');
+    }
 
     landmarks.push({
       slug: lmSlug,
       type:        'Item',
       status:      first(item.status) || 'live',
-      label:       { en: enActions[0] || '', ru: ruActions[0] || '' },
-      description: { en: enActions.slice(1).join(' '), ru: ruActions.slice(1).join(' ') },
+      label,
+      description: desc,
       url:         first(item.url) || null,
       category:    first(item.category) || null,
       entries,
     });
   }
 
-  return { description, landmarks, offers };
+  const langs = LANGS.filter(l => {
+    const g = groupsByLang[l];
+    return g.description.length > 0 || g.sections.length > 0;
+  });
+
+  return { description, landmarks, offers, langs };
 }
 
 /* ── Main export ── */
@@ -150,14 +194,14 @@ export default function () {
   return places.map(p => {
     const slug = p.place;
     const label = placeLabels(slug);
-    const { description, landmarks, offers } = buildPlaceData(slug, itemLookup);
+    const { description, landmarks, offers, langs } = buildPlaceData(slug, itemLookup);
 
     return {
       slug,
       label,
       description,
       image:       placeImage(slug),
-      langs:       ['en', 'ru'],
+      langs,
       adjacent:    arr(p.adjacent).map(a => ({ slug: a, label: placeLabels(a) })),
       landmarks,
       offers,

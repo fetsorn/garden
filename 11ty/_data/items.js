@@ -14,10 +14,12 @@
  *   place.{slug, image, label.{en,ru}, adjacent[]},
  *   contextLabel.{en,ru}
  */
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import {
-  json, arr, first,
-  placeLabels, placeImage,
-  findProseFile, renderProse,
+  json, arr, first, LANGS,
+  placeLabels, placeImage, proseDir,
+  findProseFile, findHtmlPage, renderProse,
   datumFromFountainLang,
   buildLandmarkLabels,
 } from './resolve.js';
@@ -63,13 +65,14 @@ export default function () {
     }
   }
 
-  // Event-type items: have actdate, saydate, file, or a fountain prose file
+  // Event-type items: have actdate, saydate, file, prose, or standalone HTML
   const eventItems = allItems.filter(it =>
     it.actdate || it.saydate || it.file ||
-    findProseFile(it.item, 'en') || findProseFile(it.item, 'ru')
+    LANGS.some(l => findProseFile(it.item, l)) ||
+    findHtmlPage(it.item)
   );
 
-  return eventItems.map(it => {
+  const all = eventItems.map(it => {
     const slug = it.item;
     const cat = first(it.category);
     const feed = feedLookup[cat];
@@ -78,16 +81,16 @@ export default function () {
 
     // Datum from fountain (item-first)
     const datumByLang = {};
-    for (const lang of ['en', 'ru', 'zh']) {
+    for (const lang of LANGS) {
       datumByLang[lang] = datumFromFountainLang(slug, lang);
     }
     // Best datum: first non-null across languages
-    const datum = datumByLang.en || datumByLang.ru || datumByLang.zh || slug;
+    const datum = LANGS.map(l => datumByLang[l]).find(d => d) || slug;
 
     // Prose content from fountain/md/html
     const content = {};
     const langs = [];
-    for (const lang of ['en', 'ru', 'zh']) {
+    for (const lang of LANGS) {
       const file = findProseFile(slug, lang);
       if (file) {
         try {
@@ -99,7 +102,7 @@ export default function () {
     // Fallback langs from CSVS if no prose files found
     if (!langs.length) {
       const csvLangs = arr(it.lang);
-      langs.push(...(csvLangs.length ? csvLangs : ['en', 'ru']));
+      langs.push(...(csvLangs.length ? csvLangs : LANGS));
     }
 
     // Audio from file.reference
@@ -118,6 +121,12 @@ export default function () {
     // Context label: landmark label from place fountain
     const contextLabel = landmarkLabels[cat] || landmarkLabels[slug] || { en: '', ru: '' };
 
+    // Standalone HTML: passthrough full document, no template wrapping
+    const htmlFile = findHtmlPage(slug);
+    const htmlPassthrough = htmlFile
+      ? readFileSync(join(proseDir, htmlFile), 'utf8')
+      : null;
+
     return {
       slug,
       title:    datum,
@@ -135,8 +144,14 @@ export default function () {
       },
       audio,
       content:  Object.keys(content).length ? content : null,
+      htmlPassthrough,
       place,
       contextLabel,
     };
   });
+
+  return {
+    templated:   all.filter(it => !it.htmlPassthrough),
+    passthrough: all.filter(it => it.htmlPassthrough),
+  };
 }

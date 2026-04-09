@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <meta name="description" content="">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Source+Sans+Pro:wght@400;600&display=swap');
 .city-limits-rules {
@@ -117,6 +124,8 @@
     .city-limits-rules .sheet-label { min-width: auto; }
 }
 </style>
+</head>
+<body>
 <div class="city-limits-rules">
     <h1>City Limits</h1>
     <p class="tagline">A storytelling game in real cities. No dice, no prep.</p>
@@ -205,3 +214,91 @@
         <p><a href="https://fetsorn.codeberg.page">fetsorn.codeberg.page</a> · <a href="https://patreon.com/fetsorn">patreon.com/fetsorn</a> · <a href="https://fetsorn.itch.io/city-limits">itch.io</a></p>
     </div>
 </div>
+
+<div class="city-limits-rules">
+    <h1>Городские пределы</h1>
+    <p class="tagline">Ты носишь в себе легенды родного города. Стань легендой сам.</p>
+
+    <h2>Для игры нужно</h2>
+    <p>Не меньше двух человек. Видеосвязь или живая встреча. Доступ к картам города и интернету. Ни кубиков, ни подготовки, ни листов персонажей.</p>
+
+    <h2>Один из вас - мастер</h2>
+    <p>Мастер отвечает за мир. Если персонаж решает перейти дорогу, мастер решает - собьёт его машина или встретится на пути старая знакомая. Если персонаж идёт в магазин, мастер - это продавщица и все кто там работают.</p>
+    <p>Мир добр. Двери открываются, люди улыбаются. Но мир следует настоящим правилам - граница проходит между тем что физически и социально возможно, и тем что игрок считает возможным для себя.</p>
+
+    <h2>Создание персонажа</h2>
+    <p>Занимает две минуты. Придумайте имя, профессию, предысторию. Затем добавьте две вещи:</p>
+
+    <div class="rule-block">
+        <p><strong>Цель</strong> - краткосрочное желание, каприз. "Купить машину", "получить повышение", "найти чупа-чупс". Мастер награждает целью за прохождение испытаний.</p>
+        <p><strong>Линия развития</strong> - пять этапов роста личности, по которым персонаж пройдёт во время игры. Это может быть путь от зависимости к трезвости, от робости к уверенности, от одиночества к доверию.</p>
+    </div>
+
+    <div class="diagram">
+        <div class="diagram-stage active">Этап 1</div>
+        <span class="arrow">→</span>
+        <div class="diagram-stage">Этап 2</div>
+        <span class="arrow">→</span>
+        <div class="diagram-stage">Этап 3</div>
+        <span class="arrow">→</span>
+        <div class="diagram-stage">Этап 4</div>
+        <span class="arrow">→</span>
+        <div class="diagram-stage">Этап 5</div>
+    </div>
+
+    <h2>Пример персонажа</h2>
+    <div class="sheet">
+        <div class="sheet-title">Лист персонажа</div>
+        <div class="sheet-row"><span class="sheet-label">Имя</span><span>Марина</span></div>
+        <div class="sheet-row"><span class="sheet-label">Профессия</span><span>Архитектор</span></div>
+        <div class="sheet-row"><span class="sheet-label">Предыстория</span><span>Вернулась в родной город после десяти лет в Москве</span></div>
+        <div class="sheet-row"><span class="sheet-label">Цель</span><span>Открыть свою мастерскую</span></div>
+        <div class="sheet-row"><span class="sheet-label">Линия развития</span><span>От отчуждения к принадлежности</span></div>
+        <div class="sheet-row"><span class="sheet-label">Этапы</span><span>Чужая → Любопытная → Вовлечённая → Нужная → Своя</span></div>
+    </div>
+
+    <h2>Игровой цикл</h2>
+    <div class="steps">
+        <div class="step"><p>Мастер описывает место в городе. Игроки описывают что делают их персонажи.</p></div>
+        <div class="step"><p>Мастер даёт испытание, связанное с линией развития персонажа. Если персонаж идёт к щедрости - на дороге бездомный просящий подаяния. Если к смелости - незнакомец просит о помощи.</p></div>
+        <div class="step"><p>Персонаж реагирует. Если проходит испытание - приближается к цели и к следующему этапу развития. Если нет - цель отдаляется, но появляются новые возможности.</p></div>
+        <div class="step"><p>Группа голосует: достаточно ли испытаний пройдено для перехода на новый этап? Иногда сам игрок голосует против - значит ему нужно ещё поиграть на этом уровне.</p></div>
+    </div>
+
+    <h2>Место</h2>
+    <p>Параллельно персонажу, группа выбирает место в городе - настоящее место, часто заброшенное или забытое. У места тоже пять этапов развития. Чем выше уровень персонажа, тем легче развивать место - он более адекватный гражданин, более продуктивный.</p>
+
+    <div class="diagram">
+        <div class="diagram-stage active">Руины</div>
+        <span class="arrow">→</span>
+        <div class="diagram-stage">Очистка</div>
+        <span class="arrow">→</span>
+        <div class="diagram-stage">Ремонт</div>
+        <span class="arrow">→</span>
+        <div class="diagram-stage">Жизнь</div>
+        <span class="arrow">→</span>
+        <div class="diagram-stage">Достояние</div>
+    </div>
+
+    <div class="example">
+        Игроки в Волгограде выбрали заброшенный парк, в центре которого стоит концертный зал с дорическими колоннами и трёхметровыми дверями. Двери были запечатаны. Внутри оказался старик с фонарём, который ждал возможности восстановить здание. Игроки начали уборку, проектировали интерьер, обсуждали как сдать помещение в аренду. Ожидали сопротивления от города. Город был только за.
+    </div>
+
+    <h2>Конец сессии</h2>
+    <p>Когда персонаж доходит до пятого этапа, он может сменить линию развития или игрок создаёт нового персонажа. Место тоже может сменить линию или уступить место новому.</p>
+    <p>Каждая сессия - законченная история. Но город уже изменился - в вашей памяти.</p>
+
+    <hr class="divider">
+
+    <h2>Смена мастера</h2>
+    <p>Мастером становится тот, кто любит место действия и хочет его изменить. Любовь позволяет описать мир в деталях, а желание перемен даёт смелость позволить игрокам осуществить свои мечты. Игроки могут стать мастерами на время сцены, если знают район лучше остальных.</p>
+
+    <h2>Безопасность</h2>
+    <p>Игра происходит в настоящих городах и в современной жизни - чувствительные темы возникают естественно. Перед игрой договоритесь о границах. Во время игры знак X руками останавливает сцену без объяснений. Любой может выйти из игры в любой момент.</p>
+
+    <div class="rules-footer">
+        <p><a href="https://fetsorn.codeberg.page">fetsorn.codeberg.page</a> · <a href="https://boosty.to/fetsorn">boosty.to/fetsorn</a> · <a href="https://fetsorn.itch.io/city-limits">itch.io</a></p>
+    </div>
+</div>
+</body>
+</html>

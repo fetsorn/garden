@@ -1,6 +1,6 @@
 <nav>
   {% for adj in adjacentPlaces %}
-  <a href="../rooms/{{ adj.slug }}.html#{{ navLang }}">{{ adj.label[navLang] }}</a>
+  <a href="../spaces/{{ adj.slug }}.html#{{ navLang }}">{{ adj.label[navLang] }}</a>
   {% endfor %}
   {% include "partials/lang-switcher.njk" %}
 </nav>

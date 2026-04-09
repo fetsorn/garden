@@ -11,10 +11,10 @@ permalink: "all.html"
   <link rel="stylesheet" href="index.css">
 </head>
 <body class="all-index">
-  {% set pageLangs = ['en', 'ru'] %}
+  {% set pageLangs = site.langs %}
   {% include "partials/lang.njk" %}
 
-  {% set langs = ['en', 'ru'] %}
+  {% set langs = site.langs %}
   {% for lang in langs %}
   <div id="{{ lang }}" class="lang-{{ lang }}" lang="{{ lang }}">
 
@@ -26,7 +26,7 @@ permalink: "all.html"
 
     {% for place in places %}
     <section class="all-place">
-      <h2><a href="rooms/{{ place.slug }}.html#{{ lang }}">{{ place.label[lang] }}</a></h2>
+      <h2><a href="spaces/{{ place.slug }}.html#{{ lang }}">{{ place.label[lang] }}</a></h2>
       <ul>
         {% for lm in place.landmarks %}
         <li>
