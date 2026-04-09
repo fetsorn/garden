@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  {% set pageTitle = feed.slug %}
-  {% set pageDescription = feed.slug + " — " + site.title %}
+  {% set pageTitle = feed.label.en %}
+  {% set pageDescription = feed.label.en + " — " + site.title %}
   {% set pageLangs = feed.langs %}
   {% include "partials/head.njk" %}
 </head>
@@ -17,7 +17,7 @@
     </p>
 
     <article class="feed-body">
-      <h1>{{ feed.slug }}</h1>
+      <h1>{{ feed.label[lang] }}</h1>
 
       {% if feed.entries | length %}
       <ul class="feed">

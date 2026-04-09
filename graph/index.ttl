@@ -51,6 +51,7 @@ g:category      a owl:DatatypeProperty ;
 
 g:datum         a owl:DatatypeProperty ;
                 rdfs:domain g:item ;
+                rdfs:comment "Title/summary. Stored in item fountain file (first action token), not CSVS. See plan 0007." ;
                 rdfs:subPropertyOf dcterms:title .
 
 g:url           a owl:DatatypeProperty ;

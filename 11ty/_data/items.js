@@ -1,38 +1,59 @@
 /**
- * Item pages for event-type items (those with datum, file, or actdate).
- * These are the old "quarry events" — legends, readings, blog posts.
+ * Unified item pages — merges CSVS metadata with fountain prose (plan 0007).
  *
- * Place metadata resolved from slug (ADR-0024), not CSVS fields.
+ * Three sovereign sources, one join key (slug):
+ *   Item fountain ({slug}.{lang}.fountain) → datum (title), prose body
+ *   Place fountain ({place}.{lang}.fountain) → landmark labels (contextLabel)
+ *   CSVS (raw_items.json) → dates, names, rights, files, category, status
  *
  * item.njk expects:
  *   slug, title, category, langs, mainLang,
- *   event.{sayname, saydate, saycopyright, actname, actcopyright, datum},
+ *   event.{sayname, saydate, saycopyright, actname, actcopyright, actdate, city},
  *   audio.{hash, extension, mime},
+ *   content.{lang} (rendered prose HTML, may be null),
  *   place.{slug, image, label.{en,ru}, adjacent[]},
- *   landmarkLabel.{en,ru}
+ *   contextLabel.{en,ru}
  */
-import { json, arr, first, placeLabels, placeImage } from './resolve.js';
+import {
+  json, arr, first,
+  placeLabels, placeImage,
+  findProseFile, renderProse,
+  parseFountainTokens, groupBySection,
+} from './resolve.js';
 
 const MIME = {
-  ogg: 'audio/ogg',
-  mp3: 'audio/mpeg',
-  wav: 'audio/wav',
-  mp4: 'video/mp4',
+  mp3:  'audio/mpeg',
+  ogg:  'audio/ogg',
+  wav:  'audio/wav',
+  m4a:  'audio/mp4',
+  flac: 'audio/flac',
+  opus: 'audio/opus',
+  webm: 'audio/webm',
+  mp4:  'video/mp4',
 };
+
+/** Read datum (title) from item fountain: first action token before any section. */
+function datumFromFountain(slug, lang) {
+  const tokens = parseFountainTokens(`${slug}.${lang}.fountain`);
+  for (const t of tokens) {
+    if (t.type === 'section') break;
+    if (t.type === 'action') return t.text;
+  }
+  return null;
+}
 
 export default function () {
   const allItems = json('raw_items.json');
   const places   = json('raw_places.json');
 
-  // Place lookup — labels and image from slug, not CSVS
+  // Place lookup — labels and image from slug
   const placeLookup = {};
   for (const p of places) {
     const slug = p.place;
-    const label = placeLabels(slug);
     placeLookup[slug] = {
       slug,
       image:    placeImage(slug),
-      label,
+      label:    placeLabels(slug),
       adjacent: arr(p.adjacent).map(a => ({
         slug: a,
         label: placeLabels(a),
@@ -40,31 +61,70 @@ export default function () {
     };
   }
 
-  // Feed items (items with category + in_place) — to find landmark labels
-  const feedLookup = {};
-  for (const it of allItems) {
-    if (it.category && it.in_place) {
-      const cat = first(it.category);
-      feedLookup[cat] = it;
+  // Landmark labels from place fountain sections
+  const landmarkLabels = {};
+  for (const p of places) {
+    for (const lang of ['en', 'ru']) {
+      const groups = groupBySection(parseFountainTokens(`${p.place}.${lang}.fountain`));
+      for (const sec of groups.sections) {
+        if (!landmarkLabels[sec.slug]) landmarkLabels[sec.slug] = { en: '', ru: '' };
+        const firstAction = sec.tokens.find(t => t.type === 'action');
+        if (firstAction) landmarkLabels[sec.slug][lang] = firstAction.text;
+      }
     }
   }
 
-  // Event-type items: have datum, actdate, saydate, or file
+  // Feed lookup: items with category + in_place
+  const feedLookup = {};
+  for (const it of allItems) {
+    if (it.category && it.in_place) {
+      feedLookup[first(it.category)] = it;
+    }
+  }
+
+  // Event-type items: have actdate, saydate, file, or a fountain prose file
   const eventItems = allItems.filter(it =>
-    it.datum || it.actdate || it.saydate || it.file
+    it.actdate || it.saydate || it.file ||
+    findProseFile(it.item, 'en') || findProseFile(it.item, 'ru')
   );
 
   return eventItems.map(it => {
+    const slug = it.item;
     const cat = first(it.category);
     const feed = feedLookup[cat];
     const placeSlug = it.in_place || (feed ? feed.in_place : null);
     const place = placeLookup[placeSlug] || null;
 
+    // Datum from fountain (item-first)
+    const datumByLang = {};
+    for (const lang of ['en', 'ru', 'zh']) {
+      datumByLang[lang] = datumFromFountain(slug, lang);
+    }
+    // Best datum: first non-null across languages
+    const datum = datumByLang.en || datumByLang.ru || datumByLang.zh || slug;
+
+    // Prose content from fountain/md/html
+    const content = {};
+    const langs = [];
+    for (const lang of ['en', 'ru', 'zh']) {
+      const file = findProseFile(slug, lang);
+      if (file) {
+        try {
+          content[lang] = renderProse(file);
+          langs.push(lang);
+        } catch { /* skip unreadable */ }
+      }
+    }
+    // Fallback langs from CSVS if no prose files found
+    if (!langs.length) {
+      const csvLangs = arr(it.lang);
+      langs.push(...(csvLangs.length ? csvLangs : ['en', 'ru']));
+    }
+
     // Audio from file.reference
     let audio = null;
     if (it.file) {
-      const file = it.file;
-      const ref = file.reference;
+      const ref = it.file.reference;
       if (ref && ref.hash && ref.extension) {
         audio = {
           hash:      ref.hash,
@@ -74,12 +134,12 @@ export default function () {
       }
     }
 
-    // Lang from item or default
-    const langs = arr(it.lang).length ? arr(it.lang) : ['en', 'ru'];
+    // Context label: landmark label from place fountain
+    const contextLabel = landmarkLabels[cat] || landmarkLabels[slug] || { en: '', ru: '' };
 
     return {
-      slug:     it.item,
-      title:    first(it.datum) || it.item,
+      slug,
+      title:    datum,
       category: cat || null,
       langs,
       mainLang: langs[0],
@@ -89,15 +149,13 @@ export default function () {
         saycopyright: first(it.saycopyright) || '',
         actname:      arr(it.actname),
         actcopyright: first(it.actcopyright) || '',
-        datum:        first(it.datum) || '',
         actdate:      first(it.actdate) || '',
         city:         first(it.city) || '',
       },
       audio,
+      content:  Object.keys(content).length ? content : null,
       place,
-      landmarkLabel: feed
-        ? { en: feed.item, ru: feed.item }  // slug as label fallback
-        : { en: '', ru: '' },
+      contextLabel,
     };
   });
 }

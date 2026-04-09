@@ -92,9 +92,9 @@
         <h2 class="offer-name">{{ offer.label[lang] }}</h2>
         <p class="offer-scene">{{ offer.scene[lang] }}</p>
         <div class="offer-action">
-          {% if offer.slug %}
+          {% if offer.hasLandingPage %}
           <a href="../offers/{{ offer.slug }}.html#{{ lang }}" class="offer-cta">{{ offer.actionLabel[lang] }}</a>
-          {% else %}
+          {% elif offer.actionUrl %}
           <a href="{{ offer.actionUrl }}" class="offer-cta" target="_blank" rel="noopener">{{ offer.actionLabel[lang] }}</a>
           {% endif %}
           <span class="offer-price">{{ offer.price[lang] }}</span>

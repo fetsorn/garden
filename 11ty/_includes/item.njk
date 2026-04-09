@@ -2,11 +2,11 @@
 <html lang="{{ item.mainLang }}">
 <head>
   {% set pageTitle = item.title %}
-  {% set pageDescription = item.landmarkLabel[item.mainLang] + " — " + item.title %}
+  {% set pageDescription = item.contextLabel[item.mainLang] + " — " + item.title %}
   {% set pageLangs = item.langs %}
   {% include "partials/head.njk" %}
 </head>
-<body class="{% if item.mainLang != 'en' %}main-{{ item.mainLang }} {% endif %}place-{{ item.place.slug }}">
+<body class="{% if item.mainLang != 'en' %}main-{{ item.mainLang }} {% endif %}{% if item.place %}place-{{ item.place.slug }}{% endif %}">
   {% include "partials/lang.njk" %}
 
   {% for lang in item.langs %}
@@ -15,6 +15,7 @@
 
   {% for lang in item.langs %}
   <div class="lang-{{ lang }}" lang="{{ lang }}">
+    {% if item.place %}
     <header>
       <img src="../img/{{ item.place.image }}"
            alt="{{ item.place.label[lang] }}">
@@ -26,10 +27,17 @@
     {% set switcherLangs = item.langs %}
     {% include "partials/navbar.njk" %}
 
-    <p class="item-context">{{ item.landmarkLabel[lang] }} · {{ item.place.label[lang] }}</p>
+    <p class="item-context">{{ item.contextLabel[lang] }} · {{ item.place.label[lang] }}</p>
     <p class="item-back">
       <a href="../rooms/{{ item.place.slug }}.html#{{ lang }}">{% if lang == "ru" %}← назад{% elif lang == "zh" %}← 返回{% else %}← back{% endif %}</a>
     </p>
+    {% endif %}
+
+    {% if item.content and item.content[lang] %}
+    <article class="item-body prose-body">
+      {{ item.content[lang] | safe }}
+    </article>
+    {% endif %}
 
     {% if item.category == "legend" %}
     {% include "items/legend.njk" %}
@@ -42,7 +50,6 @@
     {% include "partials/footer.njk" %}
   </div>
   {% endfor %}
-
 
 </body>
 </html>

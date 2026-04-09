@@ -48,7 +48,7 @@ permalink: "index.html"
     var __pages=[
       {% for p in nav %}"rooms/{{ p.slug }}.html",{% endfor %}
       {% for f in feedPages %}"feeds/{{ f.slug }}.html",{% endfor %}
-      {% for p in prose %}"items/{{ p.slug }}.html",{% endfor %}
+      {% for it in items %}"items/{{ it.slug }}.html",{% endfor %}
     ];
     function __goRandom(){
       var url=__pages[Math.floor(Math.random()*__pages.length)];

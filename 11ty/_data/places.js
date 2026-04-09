@@ -15,10 +15,12 @@
  *   first action before any section = place label (h1)
  *   remaining actions before first section = place description
  */
+import { existsSync } from 'fs';
+import { join } from 'path';
 import {
   json, arr, first,
   parseFountainTokens, groupBySection,
-  placeLabels, placeImage,
+  placeLabels, placeImage, proseDir,
 } from './resolve.js';
 
 /* ── Extract structured data from section tokens ── */
@@ -99,12 +101,13 @@ function buildPlaceData(slug, itemLookup) {
       const ruOffer = ruSec ? extractOfferBlock(ruSec.tokens) : { cta: '', price: '' };
 
       offers.push({
-        slug:        lmSlug,
-        label:       { en: enActions[0] || '', ru: ruActions[0] || '' },
-        scene:       { en: enActions.slice(1).join(' '), ru: ruActions.slice(1).join(' ') },
-        actionLabel: { en: enOffer.cta || 'Learn more', ru: ruOffer.cta || '' },
-        actionUrl:   first(item.url) || null,
-        price:       { en: enOffer.price, ru: ruOffer.price },
+        slug:           lmSlug,
+        label:          { en: enActions[0] || '', ru: ruActions[0] || '' },
+        scene:          { en: enActions.slice(1).join(' '), ru: ruActions.slice(1).join(' ') },
+        actionLabel:    { en: enOffer.cta || 'Learn more', ru: ruOffer.cta || '' },
+        actionUrl:      first(item.url) || null,
+        hasLandingPage: existsSync(join(proseDir, `${lmSlug}.html`)),
+        price:          { en: enOffer.price, ru: ruOffer.price },
       });
       continue;
     }

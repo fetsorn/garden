@@ -4,7 +4,22 @@
  * A feed is an item with a `category` field.
  * Its page lists all other items sharing that category.
  */
-import { json, first, hasProse } from './resolve.js';
+import {
+  json, first, hasProse,
+  parseFountainTokens, groupBySection,
+} from './resolve.js';
+
+/** Read datum from item fountain: first action token before any section. */
+function datumFromFountain(slug) {
+  for (const lang of ['en', 'ru', 'zh']) {
+    const tokens = parseFountainTokens(`${slug}.${lang}.fountain`);
+    for (const t of tokens) {
+      if (t.type === 'section') break;
+      if (t.type === 'action') return t.text;
+    }
+  }
+  return null;
+}
 
 export default function () {
   const items = json('raw_items.json');
@@ -22,6 +37,20 @@ export default function () {
     }
   }
 
+  // Landmark labels from place fountain sections
+  const landmarkLabels = {};
+  const allPlaces = json('raw_places.json');
+  for (const p of allPlaces) {
+    for (const lang of ['en', 'ru']) {
+      const groups = groupBySection(parseFountainTokens(`${p.place}.${lang}.fountain`));
+      for (const sec of groups.sections) {
+        if (!landmarkLabels[sec.slug]) landmarkLabels[sec.slug] = { en: '', ru: '' };
+        const firstAction = sec.tokens.find(t => t.type === 'action');
+        if (firstAction) landmarkLabels[sec.slug][lang] = firstAction.text;
+      }
+    }
+  }
+
   return feeds.map(feed => {
     const cat = first(feed.category);
     // All items in this category except the feed item itself
@@ -36,7 +65,7 @@ export default function () {
       .map(it => ({
         slug:  it.item,
         date:  first(it.actdate) || first(it.saydate) || '',
-        name:  first(it.datum) || (Array.isArray(it.actname) ? it.actname.join(', ') : it.actname) || first(it.sayname) || it.item,
+        name:  datumFromFountain(it.item) || (Array.isArray(it.actname) ? it.actname.join(', ') : it.actname) || first(it.sayname) || it.item,
         url:   first(it.url) || null,
         hasProse: hasProse(it.item),
       }));
@@ -44,6 +73,7 @@ export default function () {
     return {
       slug:     feed.item,
       category: cat,
+      label:    landmarkLabels[feed.item] || { en: feed.item, ru: feed.item },
       langs:    ['en', 'ru'],
       entries,
     };
