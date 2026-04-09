@@ -71,6 +71,38 @@
   },
   {
     "_": "item",
+    "item": "english-lessons",
+    "category": "offer",
+    "in_place": "classroom",
+    "status": "live",
+    "url": "https://city-limits.payform.ru"
+  },
+  {
+    "_": "item",
+    "item": "patron",
+    "category": "offer",
+    "in_place": "parlor",
+    "status": "live",
+    "url": "https://city-limits.payform.ru"
+  },
+  {
+    "_": "item",
+    "item": "story-sessions",
+    "category": "offer",
+    "in_place": "city-limits",
+    "status": "live",
+    "url": "https://city-limits.payform.ru"
+  },
+  {
+    "_": "item",
+    "item": "translation",
+    "category": "offer",
+    "in_place": "legal-archive",
+    "status": "live",
+    "url": "mailto:fetsorn@gmail.com"
+  },
+  {
+    "_": "item",
     "item": "card-codeberg",
     "url": "https://codeberg.org/fetsorn"
   },

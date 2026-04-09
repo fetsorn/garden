@@ -21,7 +21,3 @@ reference,extension
 reference,name
 place,status
 place,adjacent
-offer,in_place
-offer,slug
-offer,status
-offer,action_url

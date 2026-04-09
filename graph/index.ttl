@@ -25,7 +25,8 @@ g:place a owl:Class ;
 
 g:offer a owl:Class ;
         rdfs:label "offer" ;
-        rdfs:comment "A purchasable action tied to a place. CTA label and price live in fountain." ;
+        rdfs:comment "An item with category 'offer'. A purchasable action tied to a place. CTA label and price live in fountain. url is the action link. Represented in CSVS as an item row, not a separate entity." ;
+        rdfs:subClassOf g:item ;
         rdfs:subClassOf schema:Offer .
 
 g:file  a owl:Class ;
@@ -46,7 +47,7 @@ g:in_place      a owl:ObjectProperty ;
 
 g:category      a owl:DatatypeProperty ;
                 rdfs:domain g:item ;
-                rdfs:comment "Tag that groups items into a feed. An item with category + in_place is a g:feed." .
+                rdfs:comment "Tag that groups items into a feed. An item with category + in_place is a g:feed. category='offer' marks a g:offer." .
 
 g:datum         a owl:DatatypeProperty ;
                 rdfs:domain g:item ;
@@ -67,27 +68,27 @@ g:actdate       a owl:DatatypeProperty ;
 
 g:saydate       a owl:DatatypeProperty ;
                 rdfs:domain g:item ;
-                rdfs:comment "Date as presented by the work. The 'say' series tracks what the work claims — cf. FRBR expression level, prov:wasAttributedTo." ;
+                rdfs:comment "Date of the work that tells of the event. The 'say' series tracks the work — cf. FRBR expression level, prov:wasAttributedTo." ;
                 rdfs:subPropertyOf dcterms:date .
 
 g:actname       a owl:DatatypeProperty ;
                 rdfs:domain g:item ;
-                rdfs:comment "Actual creator. Act series: prov:wasAssociatedWith." ;
+                rdfs:comment "Who participated in event. Act series: prov:wasAssociatedWith." ;
                 rdfs:subPropertyOf dcterms:creator .
 
 g:sayname       a owl:DatatypeProperty ;
                 rdfs:domain g:item ;
-                rdfs:comment "Credited creator as presented by the work. Say series: prov:wasAttributedTo." ;
+                rdfs:comment "Who tells of the event. Say series: prov:wasAttributedTo." ;
                 rdfs:subPropertyOf dcterms:creator .
 
 g:actcopyright  a owl:DatatypeProperty ;
                 rdfs:domain g:item ;
-                rdfs:comment "Actual rights holder. Act series: prov:wasAssociatedWith." ;
+                rdfs:comment "Holder of rights to the source event. Act series: prov:wasAssociatedWith." ;
                 rdfs:subPropertyOf dcterms:rights .
 
 g:saycopyright  a owl:DatatypeProperty ;
                 rdfs:domain g:item ;
-                rdfs:comment "Rights as presented by the work. Say series: prov:wasAttributedTo." ;
+                rdfs:comment "Holder of rights to the work that tells about the event. Say series: prov:wasAttributedTo." ;
                 rdfs:subPropertyOf dcterms:rights .
 
 g:city          a owl:DatatypeProperty ;
@@ -114,23 +115,6 @@ g:adjacent      a owl:ObjectProperty ;
 
 g:place_status  a owl:DatatypeProperty ;
                 rdfs:domain g:place .
-
-# --- offer properties ---
-
-g:action_url    a owl:DatatypeProperty ;
-                rdfs:domain g:offer ;
-                rdfs:subPropertyOf schema:url .
-
-g:slug          a owl:DatatypeProperty ;
-                rdfs:domain g:offer .
-
-g:offer_in_place a owl:ObjectProperty ;
-                 rdfs:domain g:offer ;
-                 rdfs:range  g:place ;
-                 rdfs:subPropertyOf schema:containedInPlace .
-
-g:offer_status  a owl:DatatypeProperty ;
-                rdfs:domain g:offer .
 
 # --- file / reference ---
 

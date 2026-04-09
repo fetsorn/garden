@@ -2,14 +2,14 @@
  * Place view models from CSVS + fountain token matching (ADR-0009, ADR-0024).
  *
  * Fountain files are the single source for all prose, labels, and order.
- * CSVS provides only: slug, url, in_place, category, status, action_url.
+ * CSVS provides only: slug, url, in_place, category, status.
  *
  * Token mapping:
- *   section            -> slug marker (matches CSVS item or offer)
+ *   section            -> slug marker (matches CSVS item)
  *   action (1st)       -> display label (h2)
  *   action (2nd+)      -> description text
  *   character block    -> for items: entries (parenthetical=slug, dialogue=label)
- *                         for offers: CTA (parenthetical=label, dialogue=price)
+ *                         for offers (category=offer): CTA (parenthetical=label, dialogue=price)
  *
  * Place convention (ADR-0024):
  *   first action before any section = place label (h1)
@@ -61,7 +61,7 @@ function extractEntries(tokens, itemLookup) {
 
 /* ── Build place data from en+ru fountain tokens ── */
 
-function buildPlaceData(slug, itemLookup, offerLookup) {
+function buildPlaceData(slug, itemLookup) {
   // Fountain files resolved from slug (ADR-0024)
   const enGroups = groupBySection(parseFountainTokens(`${slug}.en.fountain`));
   const ruGroups = groupBySection(parseFountainTokens(`${slug}.ru.fountain`));
@@ -87,30 +87,27 @@ function buildPlaceData(slug, itemLookup, offerLookup) {
     const enSec = enGroups.sections.find(s => s.slug === lmSlug);
     const ruSec = ruGroups.sections.find(s => s.slug === lmSlug);
 
-    const offer = offerLookup[lmSlug];
+    const item = itemLookup[lmSlug];
+    if (!item) continue;
 
-    if (offer) {
-      const enActions = enSec ? extractActions(enSec.tokens) : [];
-      const ruActions = ruSec ? extractActions(ruSec.tokens) : [];
+    const isOffer = arr(item.category).includes('offer');
+    const enActions = enSec ? extractActions(enSec.tokens) : [];
+    const ruActions = ruSec ? extractActions(ruSec.tokens) : [];
+
+    if (isOffer) {
       const enOffer = enSec ? extractOfferBlock(enSec.tokens) : { cta: '', price: '' };
       const ruOffer = ruSec ? extractOfferBlock(ruSec.tokens) : { cta: '', price: '' };
 
       offers.push({
-        slug:        first(offer.slug) || lmSlug,
+        slug:        lmSlug,
         label:       { en: enActions[0] || '', ru: ruActions[0] || '' },
         scene:       { en: enActions.slice(1).join(' '), ru: ruActions.slice(1).join(' ') },
         actionLabel: { en: enOffer.cta || 'Learn more', ru: ruOffer.cta || '' },
-        actionUrl:   first(offer.action_url) || null,
+        actionUrl:   first(item.url) || null,
         price:       { en: enOffer.price, ru: ruOffer.price },
       });
       continue;
     }
-
-    const item = itemLookup[lmSlug];
-    if (!item) continue;
-
-    const enActions = enSec ? extractActions(enSec.tokens) : [];
-    const ruActions = ruSec ? extractActions(ruSec.tokens) : [];
 
     // Entries from dialogue blocks (parenthetical=slug -> URL, dialogue=display text)
     const enEntries = enSec ? extractEntries(enSec.tokens, itemLookup) : [];
@@ -142,23 +139,15 @@ function buildPlaceData(slug, itemLookup, offerLookup) {
 export default function () {
   const places = json('raw_places.json');
   const items  = json('raw_items.json');
-  const offers = json('raw_offers.json');
 
   // Item lookup by slug
   const itemLookup = {};
   for (const it of items) itemLookup[it.item] = it;
 
-  // Offer lookup by slug
-  const offerLookup = {};
-  for (const o of offers) {
-    offerLookup[o.offer] = o;
-    if (o.slug) offerLookup[first(o.slug)] = o;
-  }
-
   return places.map(p => {
     const slug = p.place;
     const label = placeLabels(slug);
-    const { description, landmarks, offers: placeOffers } = buildPlaceData(slug, itemLookup, offerLookup);
+    const { description, landmarks, offers } = buildPlaceData(slug, itemLookup);
 
     return {
       slug,
@@ -168,7 +157,7 @@ export default function () {
       langs:       ['en', 'ru'],
       adjacent:    arr(p.adjacent).map(a => ({ slug: a, label: placeLabels(a) })),
       landmarks,
-      offers:      placeOffers,
+      offers,
     };
   });
 }
