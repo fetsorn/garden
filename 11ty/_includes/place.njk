@@ -34,7 +34,7 @@
 
     {% for lm in place.landmarks %}
 
-    {% if lm.category %}
+    {% if lm.isFeed %}
     <section id="{{ lang }}-{{ lm.slug }}" class="landmark landmark-feed status-{{ lm.status }}">
       <h2><a href="../feeds/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a></h2>
       <p class="landmark-description">{{ lm.description[lang] }}</p>

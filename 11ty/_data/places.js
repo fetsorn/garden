@@ -63,7 +63,7 @@ function extractEntries(tokens, itemLookup) {
 
 /* ── Build place data from en+ru fountain tokens ── */
 
-function buildPlaceData(slug, itemLookup) {
+function buildPlaceData(slug, itemLookup, feedSlugs) {
   // Fountain files resolved from slug, one per lang (ADR-0024)
   const groupsByLang = {};
   for (const lang of LANGS) {
@@ -168,7 +168,7 @@ function buildPlaceData(slug, itemLookup) {
       label,
       description: desc,
       url:         first(item.url) || null,
-      category:    first(item.category) || null,
+      isFeed:      feedSlugs.has(lmSlug),
       entries,
     });
   }
@@ -191,10 +191,15 @@ export default function () {
   const itemLookup = {};
   for (const it of items) itemLookup[it.item] = it;
 
+  // Feed slugs: items referenced by any in_feed relation
+  const feedSlugs = new Set(
+    items.map(it => first(it.in_feed)).filter(Boolean)
+  );
+
   return places.map(p => {
     const slug = p.place;
     const label = placeLabels(slug);
-    const { description, landmarks, offers, langs } = buildPlaceData(slug, itemLookup);
+    const { description, landmarks, offers, langs } = buildPlaceData(slug, itemLookup, feedSlugs);
 
     return {
       slug,

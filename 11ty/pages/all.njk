@@ -30,7 +30,7 @@ permalink: "all.html"
       <ul>
         {% for lm in place.landmarks %}
         <li>
-          {% if lm.category %}
+          {% if lm.isFeed %}
           <span class="all-type">Feed</span>
           <a href="feeds/{{ lm.slug }}.html#{{ lang }}">{{ lm.label[lang] }}</a>
           {% elif lm.url %}

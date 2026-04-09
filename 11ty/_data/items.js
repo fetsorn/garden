@@ -57,13 +57,9 @@ export default function () {
   // Landmark labels from place fountain sections
   const landmarkLabels = buildLandmarkLabels(places);
 
-  // Feed lookup: items with category + in_place
-  const feedLookup = {};
-  for (const it of allItems) {
-    if (it.category && it.in_place) {
-      feedLookup[first(it.category)] = it;
-    }
-  }
+  // Item lookup by slug (for in_feed → feed item resolution)
+  const itemLookup = {};
+  for (const it of allItems) itemLookup[it.item] = it;
 
   // Event-type items: have actdate, saydate, file, prose, or standalone HTML
   const eventItems = allItems.filter(it =>
@@ -74,8 +70,8 @@ export default function () {
 
   const all = eventItems.map(it => {
     const slug = it.item;
-    const cat = first(it.category);
-    const feed = feedLookup[cat];
+    const feedSlug = first(it.in_feed);
+    const feed = feedSlug ? itemLookup[feedSlug] : null;
     const placeSlug = it.in_place || (feed ? feed.in_place : null);
     const place = placeLookup[placeSlug] || null;
 
@@ -118,8 +114,8 @@ export default function () {
       }
     }
 
-    // Context label: landmark label from place fountain
-    const contextLabel = landmarkLabels[cat] || landmarkLabels[slug] || { en: '', ru: '' };
+    // Context label: landmark label from place fountain (feed or item slug)
+    const contextLabel = landmarkLabels[feedSlug] || landmarkLabels[slug] || { en: '', ru: '' };
 
     // Standalone HTML: passthrough full document, no template wrapping
     const htmlFile = findHtmlPage(slug);
@@ -130,7 +126,7 @@ export default function () {
     return {
       slug,
       title:    datum,
-      category: cat || null,
+      category: first(it.category) || null,
       langs,
       mainLang: langs[0],
       event: {
