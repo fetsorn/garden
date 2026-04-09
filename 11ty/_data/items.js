@@ -18,7 +18,8 @@ import {
   json, arr, first,
   placeLabels, placeImage,
   findProseFile, renderProse,
-  parseFountainTokens, groupBySection,
+  datumFromFountainLang,
+  buildLandmarkLabels,
 } from './resolve.js';
 
 const MIME = {
@@ -31,16 +32,6 @@ const MIME = {
   webm: 'audio/webm',
   mp4:  'video/mp4',
 };
-
-/** Read datum (title) from item fountain: first action token before any section. */
-function datumFromFountain(slug, lang) {
-  const tokens = parseFountainTokens(`${slug}.${lang}.fountain`);
-  for (const t of tokens) {
-    if (t.type === 'section') break;
-    if (t.type === 'action') return t.text;
-  }
-  return null;
-}
 
 export default function () {
   const allItems = json('raw_items.json');
@@ -62,17 +53,7 @@ export default function () {
   }
 
   // Landmark labels from place fountain sections
-  const landmarkLabels = {};
-  for (const p of places) {
-    for (const lang of ['en', 'ru']) {
-      const groups = groupBySection(parseFountainTokens(`${p.place}.${lang}.fountain`));
-      for (const sec of groups.sections) {
-        if (!landmarkLabels[sec.slug]) landmarkLabels[sec.slug] = { en: '', ru: '' };
-        const firstAction = sec.tokens.find(t => t.type === 'action');
-        if (firstAction) landmarkLabels[sec.slug][lang] = firstAction.text;
-      }
-    }
-  }
+  const landmarkLabels = buildLandmarkLabels(places);
 
   // Feed lookup: items with category + in_place
   const feedLookup = {};
@@ -98,7 +79,7 @@ export default function () {
     // Datum from fountain (item-first)
     const datumByLang = {};
     for (const lang of ['en', 'ru', 'zh']) {
-      datumByLang[lang] = datumFromFountain(slug, lang);
+      datumByLang[lang] = datumFromFountainLang(slug, lang);
     }
     // Best datum: first non-null across languages
     const datum = datumByLang.en || datumByLang.ru || datumByLang.zh || slug;

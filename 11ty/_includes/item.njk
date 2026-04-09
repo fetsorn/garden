@@ -10,16 +10,14 @@
   {% include "partials/lang.njk" %}
 
   {% for lang in item.langs %}
-  <div id="{{ lang }}"></div>
-  {% endfor %}
-
-  {% for lang in item.langs %}
-  <div class="lang-{{ lang }}" lang="{{ lang }}">
+  <div id="{{ lang }}" class="lang-{{ lang }}" lang="{{ lang }}">
     {% if item.place %}
+    {% if item.place.image %}
     <header>
       <img src="../img/{{ item.place.image }}"
            alt="{{ item.place.label[lang] }}">
     </header>
+    {% endif %}
 
     {% set adjacentPlaces = item.place.adjacent %}
     {% set navLang = lang %}

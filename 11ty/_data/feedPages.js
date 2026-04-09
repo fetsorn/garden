@@ -6,20 +6,9 @@
  */
 import {
   json, first, hasProse,
-  parseFountainTokens, groupBySection,
+  datumFromFountain,
+  buildLandmarkLabels,
 } from './resolve.js';
-
-/** Read datum from item fountain: first action token before any section. */
-function datumFromFountain(slug) {
-  for (const lang of ['en', 'ru', 'zh']) {
-    const tokens = parseFountainTokens(`${slug}.${lang}.fountain`);
-    for (const t of tokens) {
-      if (t.type === 'section') break;
-      if (t.type === 'action') return t.text;
-    }
-  }
-  return null;
-}
 
 export default function () {
   const items = json('raw_items.json');
@@ -38,18 +27,8 @@ export default function () {
   }
 
   // Landmark labels from place fountain sections
-  const landmarkLabels = {};
   const allPlaces = json('raw_places.json');
-  for (const p of allPlaces) {
-    for (const lang of ['en', 'ru']) {
-      const groups = groupBySection(parseFountainTokens(`${p.place}.${lang}.fountain`));
-      for (const sec of groups.sections) {
-        if (!landmarkLabels[sec.slug]) landmarkLabels[sec.slug] = { en: '', ru: '' };
-        const firstAction = sec.tokens.find(t => t.type === 'action');
-        if (firstAction) landmarkLabels[sec.slug][lang] = firstAction.text;
-      }
-    }
-  }
+  const landmarkLabels = buildLandmarkLabels(allPlaces);
 
   return feeds.map(feed => {
     const cat = first(feed.category);
@@ -75,6 +54,7 @@ export default function () {
       category: cat,
       label:    landmarkLabels[feed.item] || { en: feed.item, ru: feed.item },
       langs:    ['en', 'ru'],
+      place:    feed.in_place || null,
       entries,
     };
   });

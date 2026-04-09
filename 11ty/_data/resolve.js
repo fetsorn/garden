@@ -105,7 +105,51 @@ export function placeLabels(slug) {
   };
 }
 
-/** Place image filename — derived from slug. */
+const imgDir = join(__dirname, '..', 'theme', 'img');
+
+/** Place image filename — derived from slug. Returns null if file missing. */
 export function placeImage(slug) {
-  return `${slug}.jpg`;
+  const file = `${slug}.jpg`;
+  return existsSync(join(imgDir, file)) ? file : null;
+}
+
+/* ── shared data builders (used by items.js, feedPages.js) ── */
+
+/**
+ * Landmark labels from place fountain sections.
+ * @param {Array} places — raw_places.json entries (each has .place slug)
+ * @returns {{ [slug: string]: { en: string, ru: string } }}
+ */
+export function buildLandmarkLabels(places) {
+  const labels = {};
+  for (const p of places) {
+    for (const lang of ['en', 'ru']) {
+      const groups = groupBySection(parseFountainTokens(`${p.place}.${lang}.fountain`));
+      for (const sec of groups.sections) {
+        if (!labels[sec.slug]) labels[sec.slug] = { en: '', ru: '' };
+        const firstAction = sec.tokens.find(t => t.type === 'action');
+        if (firstAction) labels[sec.slug][lang] = firstAction.text;
+      }
+    }
+  }
+  return labels;
+}
+
+/** Read datum (title) from item fountain: first action token before any section. */
+export function datumFromFountainLang(slug, lang) {
+  const tokens = parseFountainTokens(`${slug}.${lang}.fountain`);
+  for (const t of tokens) {
+    if (t.type === 'section') break;
+    if (t.type === 'action') return t.text;
+  }
+  return null;
+}
+
+/** Datum from first available language. */
+export function datumFromFountain(slug) {
+  for (const lang of ['en', 'ru', 'zh']) {
+    const d = datumFromFountainLang(slug, lang);
+    if (d) return d;
+  }
+  return null;
 }
