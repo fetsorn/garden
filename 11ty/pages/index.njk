@@ -26,19 +26,28 @@ permalink: "index.html"
     <div class="gate-intro">
       <h1 class="gate-name">fetsorn</h1>
       <p class="gate-tagline">
-        {% if lang == 'en' %}I work with language.{% else %}Я работаю со словом.{% endif %}
+        {% if lang == 'en' %}Helping humans understand each other.
+        {% elif lang == 'ru' %}Помогаю людям понять друг друга.
+        {% elif lang == 'zh' %}帮助人类相互理解
+        {% else %}🤝{% endif %}
       </p>
     </div>
 
     <div class="gate-random">
       <button class="gate-random-btn" onclick="__goRandom()">
-        {% if lang == 'en' %}wander{% else %}куда-нибудь{% endif %}
+        {% if lang == 'en' %}wander
+        {% elif lang == 'ru' %}куда-нибудь
+        {% elif lang == 'zh' %}漫步
+        {% else %}🎲{% endif %}
       </button>
     </div>
 
     <footer>
       <a href="all.html">
-        {% if lang == 'en' %}index{% else %}карта сайта{% endif %}
+        {% if lang == 'en' %}index
+        {% elif lang == 'ru' %}карта сайта
+        {% elif lang == 'zh' %}地图
+        {% else %}🗺️{% endif %}
       </a>
     </footer>
   </div>
