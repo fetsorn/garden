@@ -467,30 +467,30 @@ existing nav aesthetic.
 
 ## File change summary
 
-| File | Phase | Change |
-|------|-------|--------|
-| `_data/lib.js` | 1, 4 | Add zh to LANGUAGES (phase 4); no phase 1 changes |
-| `_data/items.js` | 1 | One item per event, lang-map title, drop per-lang loop |
-| `_data/prose.js` | 1 | One doc per prose, lang-map content, drop per-lang loop |
-| `_data/rooms.js` | 2 | Use UUID for slug |
-| `_data/graph.js` | 2 | Expose room UUID, resolve door targets to UUID |
-| `_data/site.js` | 2 | Default room resolves to UUID |
-| `pages/items.njk` | 1 | Drop `{{ item.lang }}/` from permalink |
-| `pages/prose.njk` | 1 | Drop `{{ doc.lang }}/` from permalink |
-| `pages/rooms.njk` | — | No change (slug value changes upstream) |
-| `pages/index.njk` | 2 | Redirect target changes to UUID |
-| `_includes/item.njk` | 1 | Full rewrite — per-language loop, hash toggle |
-| `_includes/prose.njk` | 1 | Full rewrite — per-language loop, hash toggle |
-| `_includes/room.njk` | 1 | Update links: drop lang prefix, add hash |
-| `_includes/partials/navbar.njk` | 1 | Remove mode branching, loop over navLangs |
-| `_includes/partials/footer.njk` | 1 | Drop navPrefix, use hash-based support link |
-| `_includes/partials/head.njk` | 3 | Add JSON-LD and Content-Language meta |
-| `_includes/items/legend.njk` | 1 | `item.title` → `item.title[lang]` |
-| `_includes/items/poem-reading.njk` | 1 | `item.lang` → `lang`, title lang-map |
-| `_includes/items/default.njk` | 1 | `item.title` → `item.title[lang]` |
-| `theme/index.css` | 1 | Generalize lang toggle to N languages |
-| `graph/index.ttl` | 2 | Add `g:uuid` to rooms |
-| `eleventy.config.js` | — | No change |
+| File                               | Phase | Change                                                  |
+|------------------------------------|-------|---------------------------------------------------------|
+| `_data/lib.js`                     | 1, 4  | Add zh to LANGUAGES (phase 4); no phase 1 changes       |
+| `_data/items.js`                   | 1     | One item per event, lang-map title, drop per-lang loop  |
+| `_data/prose.js`                   | 1     | One doc per prose, lang-map content, drop per-lang loop |
+| `_data/rooms.js`                   | 2     | Use UUID for slug                                       |
+| `_data/graph.js`                   | 2     | Expose room UUID, resolve door targets to UUID          |
+| `_data/site.js`                    | 2     | Default room resolves to UUID                           |
+| `pages/items.njk`                  | 1     | Drop `{{ item.lang }}/` from permalink                  |
+| `pages/prose.njk`                  | 1     | Drop `{{ doc.lang }}/` from permalink                   |
+| `pages/rooms.njk`                  | —     | No change (slug value changes upstream)                 |
+| `pages/index.njk`                  | 2     | Redirect target changes to UUID                         |
+| `_includes/item.njk`               | 1     | Full rewrite — per-language loop, hash toggle           |
+| `_includes/prose.njk`              | 1     | Full rewrite — per-language loop, hash toggle           |
+| `_includes/room.njk`               | 1     | Update links: drop lang prefix, add hash                |
+| `_includes/partials/navbar.njk`    | 1     | Remove mode branching, loop over navLangs               |
+| `_includes/partials/footer.njk`    | 1     | Drop navPrefix, use hash-based support link             |
+| `_includes/partials/head.njk`      | 3     | Add JSON-LD and Content-Language meta                   |
+| `_includes/items/legend.njk`       | 1     | `item.title` → `item.title[lang]`                       |
+| `_includes/items/poem-reading.njk` | 1     | `item.lang` → `lang`, title lang-map                    |
+| `_includes/items/default.njk`      | 1     | `item.title` → `item.title[lang]`                       |
+| `theme/index.css`                  | 1     | Generalize lang toggle to N languages                   |
+| `graph/index.ttl`                  | 2     | Add `g:uuid` to rooms                                   |
+| `eleventy.config.js`               | —     | No change                                               |
 
 ## Verification
 

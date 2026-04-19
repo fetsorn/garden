@@ -1,5 +1,5 @@
 ---
-status: active
+status: done
 ---
 
 # 0007 — Move datum from CSVS to item fountain files

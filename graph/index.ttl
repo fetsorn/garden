@@ -8,26 +8,10 @@
 
 # --- Classes ---
 
-g:item  a owl:Class ;
-        rdfs:label "item" ;
-        rdfs:comment "A creative work: poem, recording, game session, feed. Prose lives in fountain files resolved by slug (ADR-0024)." ;
-        rdfs:subClassOf schema:CreativeWork .
-
-g:feed  a owl:Class ;
-        rdfs:label "feed" ;
-        rdfs:comment "An item with category and in_place. Its page lists all items sharing that category. Represented in CSVS as an item row with a category value, not as a separate entity." ;
-        rdfs:subClassOf g:item .
-
 g:place a owl:Class ;
         rdfs:label "place" ;
         rdfs:comment "A named room in the garden. Labels and descriptions live in fountain, not CSVS." ;
         rdfs:subClassOf schema:Place .
-
-g:offer a owl:Class ;
-        rdfs:label "offer" ;
-        rdfs:comment "An item with category 'offer'. A purchasable action tied to a place. CTA label and price live in fountain. url is the action link. Represented in CSVS as an item row, not a separate entity." ;
-        rdfs:subClassOf g:item ;
-        rdfs:subClassOf schema:Offer .
 
 g:file  a owl:Class ;
         rdfs:label "file" ;
@@ -37,75 +21,6 @@ g:file  a owl:Class ;
 g:reference a owl:Class ;
             rdfs:label "reference" ;
             rdfs:comment "A content-addressed blob (hash + extension). Compare RFC 6920 ni: URI scheme." .
-
-# --- item properties ---
-
-g:in_place      a owl:ObjectProperty ;
-                rdfs:domain g:item ;
-                rdfs:range  g:place ;
-                rdfs:subPropertyOf schema:containedInPlace .
-
-g:category      a owl:DatatypeProperty ;
-                rdfs:domain g:item ;
-                rdfs:comment "Tag that groups items into a feed. An item with category + in_place is a g:feed. category='offer' marks a g:offer." .
-
-g:datum         a owl:DatatypeProperty ;
-                rdfs:domain g:item ;
-                rdfs:comment "Title/summary. Stored in item fountain file (first action token), not CSVS. See plan 0007." ;
-                rdfs:subPropertyOf dcterms:title .
-
-g:url           a owl:DatatypeProperty ;
-                rdfs:domain g:item ;
-                rdfs:subPropertyOf schema:url .
-
-g:lang          a owl:DatatypeProperty ;
-                rdfs:domain g:item ;
-                rdfs:subPropertyOf dcterms:language .
-
-g:actdate       a owl:DatatypeProperty ;
-                rdfs:domain g:item ;
-                rdfs:comment "Actual date of the event. The 'act' series tracks what actually happened — cf. FRBR manifestation level, prov:wasAssociatedWith." ;
-                rdfs:subPropertyOf dcterms:date .
-
-g:saydate       a owl:DatatypeProperty ;
-                rdfs:domain g:item ;
-                rdfs:comment "Date of the work that tells of the event. The 'say' series tracks the work — cf. FRBR expression level, prov:wasAttributedTo." ;
-                rdfs:subPropertyOf dcterms:date .
-
-g:actname       a owl:DatatypeProperty ;
-                rdfs:domain g:item ;
-                rdfs:comment "Who participated in event. Act series: prov:wasAssociatedWith." ;
-                rdfs:subPropertyOf dcterms:creator .
-
-g:sayname       a owl:DatatypeProperty ;
-                rdfs:domain g:item ;
-                rdfs:comment "Who tells of the event. Say series: prov:wasAttributedTo." ;
-                rdfs:subPropertyOf dcterms:creator .
-
-g:actcopyright  a owl:DatatypeProperty ;
-                rdfs:domain g:item ;
-                rdfs:comment "Holder of rights to the source event. Act series: prov:wasAssociatedWith." ;
-                rdfs:subPropertyOf dcterms:rights .
-
-g:saycopyright  a owl:DatatypeProperty ;
-                rdfs:domain g:item ;
-                rdfs:comment "Holder of rights to the work that tells about the event. Say series: prov:wasAttributedTo." ;
-                rdfs:subPropertyOf dcterms:rights .
-
-g:city          a owl:DatatypeProperty ;
-                rdfs:domain g:item .
-
-g:status        a owl:DatatypeProperty ;
-                rdfs:domain g:item .
-
-g:project       a owl:ObjectProperty ;
-                rdfs:domain g:item ;
-                rdfs:range  p:Project ;
-                rdfs:comment "Link to crater project." .
-
-g:file_rel      a owl:ObjectProperty ;
-                rdfs:domain g:item ;
-                rdfs:range  g:file .
 
 # --- place properties ---
 
@@ -121,10 +36,6 @@ g:place_status  a owl:DatatypeProperty ;
 
 g:description   a owl:DatatypeProperty ;
                 rdfs:domain g:file .
-
-g:date          a owl:DatatypeProperty ;
-                rdfs:domain g:file ;
-                rdfs:subPropertyOf dcterms:date .
 
 g:reference_rel a owl:ObjectProperty ;
                 rdfs:domain g:file ;

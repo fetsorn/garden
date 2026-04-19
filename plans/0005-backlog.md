@@ -1,5 +1,5 @@
 ---
-status: active
+status: done
 ---
 
 # Garden backlog — draft sections to build
