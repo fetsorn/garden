@@ -1,0 +1,23 @@
+{
+  "name": "garden-clean",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Diorama build pipeline for the garden",
+  "scripts": {
+    "build": "npx @11ty/eleventy",
+    "test": "node test.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.2",
+    "prettier": "3.8.3"
+  },
+  "dependencies": {
+    "@fetsorn/csvs-js": "file:../../../codes/csvs-js",
+    "cheerio": "^1.0.0",
+    "fountain-js": "^1.2.4",
+    "markdown-it": "^14.1.1"
+  }
+}

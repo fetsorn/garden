@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <!-- Background -->
+  <rect width="400" height="500" fill="#f0e6d2"/>
+  
+  <!-- Paper with slight shadow -->
+  <rect x="50" y="30" width="300" height="440" fill="#fff" stroke="#ddd" stroke-width="2"/>
+  <rect x="55" y="35" width="300" height="440" fill="none" stroke="#ccc" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Header banner -->
+  <rect x="70" y="50" width="260" height="60" fill="#e74c3c" rx="5"/>
+  <text x="200" y="75" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#fff" text-anchor="middle">SALE!</text>
+  <text x="200" y="95" font-family="Arial, sans-serif" font-size="16" fill="#fff" text-anchor="middle">50% OFF</text>
+  
+  <!-- Product image placeholder -->
+  <rect x="120" y="130" width="160" height="160" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2" rx="5"/>
+  <circle cx="200" cy="190" r="40" fill="#3498db" opacity="0.3"/>
+  <rect x="170" y="220" width="60" height="50" fill="#3498db" opacity="0.3" rx="3"/>
+  
+  <!-- Product name -->
+  <text x="200" y="310" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2c3e50" text-anchor="middle">Premium Product</text>
+  
+  <!-- Description -->
+  <text x="200" y="335" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d" text-anchor="middle">High quality • Best value • Limited time</text>
+  
+  <!-- Price section -->
+  <rect x="100" y="350" width="200" height="50" fill="#f39c12" rx="5"/>
+  <text x="200" y="370" font-family="Arial, sans-serif" font-size="14" fill="#fff" text-anchor="middle">Original: $99.99</text>
+  <text x="200" y="390" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#fff" text-anchor="middle">NOW: $49.99</text>
+  
+  <!-- Call to action -->
+  <rect x="110" y="415" width="180" height="40" fill="#27ae60" rx="5"/>
+  <text x="200" y="440" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#fff" text-anchor="middle">BUY NOW!</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="90" cy="90" r="15" fill="#f1c40f" opacity="0.6"/>
+  <polygon points="320,80 335,70 330,90" fill="#f1c40f" opacity="0.6"/>
+  
+  <!-- Small text at bottom -->
+  <text x="200" y="485" font-family="Arial, sans-serif" font-size="8" fill="#95a5a6" text-anchor="middle">* Offer valid while supplies last. Terms and conditions apply.</text>
+  
+  <!-- Fold effect -->
+  <path d="M 350 30 L 350 100 L 320 130" fill="rgba(0,0,0,0.1)"/>
+</svg>

@@ -1,0 +1,74 @@
+---
+pagination:
+  data: places
+  size: 1
+  alias: place
+permalink: "/{{ place.slug }}.html"
+---
+{%- if place.type === "passthrough" %}
+{{ place.rawContent | safe }}
+{%- elif place.type === "markdown" %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ place.title[place.langs[0]] | safe }}</title>
+  <link rel="stylesheet" href="./index.css">
+  <script src="lang.js"></script>
+</head>
+<body>
+{%- for lang in place.langs %}
+  <article lang="{{ lang }}">
+    {{ place.renderedContent[lang] | safe }}
+  </article>
+{%- endfor %}
+  <footer>
+    <a href="./index.html">home</a>
+    <a href="./all.html">index</a>
+  </footer>
+</body>
+</html>
+{%- elif place.type === "diorama" %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ place.title[place.langs[0]] | safe }}</title>
+  <link rel="stylesheet" href="./index.css">
+  <script src="lang.js"></script>
+</head>
+<body>
+  <nav>
+    <ul>
+{%- for adj in place.adjacentPlaces %}
+      <li>
+        <a href="./{{ adj.slug }}.html">
+{%- if adj.langs %}
+{%- for lang in adj.langs %}
+          <span lang="{{ lang }}">{{ adj.title[lang] | safe }}</span>
+{%- endfor %}
+{%- else %}
+          {{ adj.slug }}
+{%- endif %}
+        </a>
+      </li>
+{%- endfor %}
+    </ul>
+    <div class="lang-toggle">
+{%- for lang in place.langs %}
+      <button data-lang="{{ lang }}" onclick="setLang('{{ lang }}')">{{ lang }}</button>
+{%- endfor %}
+    </div>
+  </nav>
+{%- for lang in place.langs %}
+  <article lang="{{ lang }}"></article>
+{%- endfor %}
+  <footer>
+    <a href="./index.html">home</a>
+    <a href="./all.html">index</a>
+  </footer>
+</body>
+</html>
+{%- endif %}
