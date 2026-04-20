@@ -27,10 +27,16 @@ function getDefault() {
 
 function pageLangs() {
   var langs = {};
-  document.querySelectorAll("[lang]").forEach(function (el) {
-    if (el.tagName === "HTML") return;
+  // only articles represent actual page content languages
+  document.querySelectorAll("article[lang]").forEach(function (el) {
     langs[el.getAttribute("lang")] = true;
   });
+  // home page has no articles, check main > [lang] instead
+  if (Object.keys(langs).length === 0) {
+    document.querySelectorAll("main > [lang]").forEach(function (el) {
+      langs[el.getAttribute("lang")] = true;
+    });
+  }
   return Object.keys(langs);
 }
 
