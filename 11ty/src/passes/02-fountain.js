@@ -3,7 +3,7 @@ import path from "node:path";
 import { load } from "cheerio";
 import { Fountain } from "fountain-js";
 
-const PROSE_DIR = path.resolve(import.meta.dirname, "../../../prose");
+const PROSE_DIR = path.resolve(import.meta.dirname, "../../../csvs/prose");
 
 // extract [[NOTE]] from scene headings or character names
 function extractBracketNote(text) {
@@ -115,9 +115,8 @@ export function fountainTransform(content, outputPath, catalog) {
 
   const $ = load(content);
 
-  for (const script of place.scripts) {
-    const lang = script.split(".").slice(-2, -1)[0];
-    const filePath = path.join(PROSE_DIR, script);
+  for (const lang of place.langs) {
+    const filePath = path.join(PROSE_DIR, `${slug}.${lang}`);
     const source = fs.readFileSync(filePath, "utf-8");
     const utterances = parseFountain(source);
     const sectionsHtml = renderUtterances(utterances);

@@ -1,5 +1,5 @@
 Title:
-    CROSSROADS
+    ПЕРЕПУТЬЕ
 Credit: Written by
 Author: fetsorn
 Source: Garden

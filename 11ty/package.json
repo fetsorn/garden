@@ -15,7 +15,7 @@
     "prettier": "3.8.3"
   },
   "dependencies": {
-    "@fetsorn/csvs-js": "file:../../../codes/csvs-js",
+    "@fetsorn/csvs-js": "^0.29.3",
     "cheerio": "^1.0.0",
     "fountain-js": "^1.2.4",
     "markdown-it": "^14.1.1"

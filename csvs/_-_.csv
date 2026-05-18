@@ -3,9 +3,9 @@ file,description
 file,reference
 item,file
 item,place
+place,type
 place,adjacent
 place,ambient
-place,script
 place,theme
 reference,extension
 reference,hash

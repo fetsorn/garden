@@ -4,7 +4,7 @@ import { query, pairs } from "./00-csvs.js";
 import { Fountain } from "fountain-js";
 import site from "../_data/site.js";
 
-const PROSE_DIR = path.resolve(import.meta.dirname, "../../../prose");
+const PROSE_DIR = path.resolve(import.meta.dirname, "../../../csvs/prose");
 
 let _catalog = null;
 
@@ -15,31 +15,12 @@ export async function getCatalog() {
 }
 
 async function buildCatalog() {
-  // place-script: place uuid → script filename
-  const scriptPairs = await pairs("place", "script");
+  // all place records (union across all place-* tablets)
+  const placeRecords = await query("place");
 
-  // group scripts by place uuid
-  const placeMap = new Map();
-  for (const [uuid, script] of scriptPairs) {
-    if (!placeMap.has(uuid)) placeMap.set(uuid, { uuid, scripts: [] });
-    placeMap.get(uuid).scripts.push(script);
-  }
-
-  // adjacency
-  const adjPairs = await pairs("place", "adjacent");
-  const adjMap = new Map();
-  for (const [from, to] of adjPairs) {
-    if (!adjMap.has(from)) adjMap.set(from, []);
-    adjMap.get(from).push(to);
-  }
-
-  // themes
-  const themePairs = await pairs("place", "theme");
-  const themeMap = new Map(themePairs);
-
-  // ambient: place → file id
-  const ambientPairs = await pairs("place", "ambient");
-  const ambientMap = new Map(ambientPairs);
+  // place-type for type lookup
+  const typePairs = await pairs("place", "type");
+  const typeMap = new Map(typePairs);
 
   // resolve ambient file → lfs url
   async function resolveFileUrl(fileId) {
@@ -67,52 +48,64 @@ async function buildCatalog() {
   const itemFilePairs = await pairs("item", "file");
   const itemFileMap = new Map(itemFilePairs);
 
+  // discover langs from prose directory: slug.lang files
+  const proseFiles = fs.readdirSync(PROSE_DIR);
+  const langsBySlug = new Map();
+  for (const file of proseFiles) {
+    const dotIdx = file.indexOf(".");
+    if (dotIdx === -1) continue; // no lang tag, skip
+    const slug = file.slice(0, dotIdx);
+    const lang = file.slice(dotIdx + 1);
+    if (!langsBySlug.has(slug)) langsBySlug.set(slug, []);
+    langsBySlug.get(slug).push(lang);
+  }
+
+  // map csvs type → internal type
+  const typeMapping = {
+    fountain: "diorama",
+    markdown: "markdown",
+    hypertext: "passthrough",
+  };
+
   // build each place
   const places = [];
-  for (const [uuid, place] of placeMap) {
-    const scripts = place.scripts;
-    const firstScript = scripts[0];
-    const ext = path.extname(firstScript);
+  for (const rec of placeRecords) {
+    const slug = rec.place;
+    const csvsType = typeMap.get(slug);
+    if (!csvsType) continue; // skip places without a type (stale refs)
+    const type = typeMapping[csvsType] || csvsType;
 
-    // determine type
-    let type;
-    if (ext === ".html") type = "passthrough";
-    else if (ext === ".md") type = "markdown";
-    else type = "diorama";
+    // adjacent (may be string or array)
+    const adjacent = Array.isArray(rec.adjacent)
+      ? rec.adjacent
+      : rec.adjacent
+        ? [rec.adjacent]
+        : [];
 
-    // derive slug: strip lang and extension
-    let slug;
-    if (type === "passthrough") {
-      slug = path.basename(firstScript, ".html");
-    } else if (type === "markdown") {
-      // e.g. legal.ru.md → legal
-      slug = firstScript.split(".")[0];
-    } else {
-      slug = firstScript.split(".")[0];
-    }
+    // theme
+    const theme = rec.theme || null;
 
-    // langs (for markdown and diorama)
-    let langs = null;
-    if (type === "diorama") {
-      langs = scripts.map((s) => s.split(".").slice(-2, -1)[0]);
-    } else if (type === "markdown") {
-      langs = scripts.map((s) => s.split(".").slice(-2, -1)[0]);
-    }
+    // langs from prose dir
+    const langs = langsBySlug.get(slug) || null;
 
     // titles from fountain/md metadata
     const title = {};
-    if (type === "diorama") {
-      for (const script of scripts) {
-        const lang = script.split(".").slice(-2, -1)[0];
-        const content = fs.readFileSync(path.join(PROSE_DIR, script), "utf-8");
+    if (type === "diorama" && langs) {
+      for (const lang of langs) {
+        const content = fs.readFileSync(
+          path.join(PROSE_DIR, `${slug}.${lang}`),
+          "utf-8",
+        );
         const fountain = new Fountain();
         const parsed = fountain.parse(content);
         title[lang] = parsed.title || slug;
       }
-    } else if (type === "markdown") {
-      for (const script of scripts) {
-        const lang = script.split(".").slice(-2, -1)[0];
-        const content = fs.readFileSync(path.join(PROSE_DIR, script), "utf-8");
+    } else if (type === "markdown" && langs) {
+      for (const lang of langs) {
+        const content = fs.readFileSync(
+          path.join(PROSE_DIR, `${slug}.${lang}`),
+          "utf-8",
+        );
         const firstHeading = content.match(/^#\s+(.+)$/m);
         title[lang] = firstHeading ? firstHeading[1] : slug;
       }
@@ -120,58 +113,61 @@ async function buildCatalog() {
 
     // raw content for passthrough
     let rawContent = null;
-    if (type === "passthrough") {
-      rawContent = fs.readFileSync(path.join(PROSE_DIR, firstScript), "utf-8");
+    if (type === "passthrough" && langs && langs.length) {
+      rawContent = fs.readFileSync(
+        path.join(PROSE_DIR, `${slug}.${langs[0]}`),
+        "utf-8",
+      );
     }
 
     // rendered markdown
     let renderedContent = null;
-    if (type === "markdown") {
+    if (type === "markdown" && langs) {
       const MarkdownIt = (await import("markdown-it")).default;
       const md = new MarkdownIt();
       renderedContent = {};
-      for (const script of scripts) {
-        const lang = script.split(".").slice(-2, -1)[0];
-        const content = fs.readFileSync(path.join(PROSE_DIR, script), "utf-8");
+      for (const lang of langs) {
+        const content = fs.readFileSync(
+          path.join(PROSE_DIR, `${slug}.${lang}`),
+          "utf-8",
+        );
         renderedContent[lang] = md.render(content);
       }
     }
 
     // ambient url
     let ambient = null;
-    const ambientFileId = ambientMap.get(uuid);
+    const ambientFileId = rec.ambient;
     if (ambientFileId) {
       const url = await resolveFileUrl(ambientFileId);
       if (url) ambient = { src: url };
     }
 
     places.push({
-      uuid,
       slug,
       type,
-      scripts,
       langs,
       title,
-      adjacent: (adjMap.get(uuid) || []),
-      theme: themeMap.get(uuid) || null,
+      adjacent,
+      theme,
       ambient,
       rawContent,
       renderedContent,
     });
   }
 
-  // resolve adjacent slugs for nav rendering
-  const slugByUuid = new Map(places.map((p) => [p.uuid, p]));
+  // resolve adjacent places for nav rendering
+  const placeBySlug = new Map(places.map((p) => [p.slug, p]));
   for (const place of places) {
     place.adjacentPlaces = place.adjacent
-      .map((uuid) => slugByUuid.get(uuid))
+      .map((slug) => placeBySlug.get(slug))
       .filter(Boolean)
       .map((p) => ({ slug: p.slug, title: p.title, langs: p.langs }));
   }
 
   return {
     places,
-    slugByUuid,
+    placeBySlug,
     portraitMap,
     itemPlaceMap,
     itemFileMap,

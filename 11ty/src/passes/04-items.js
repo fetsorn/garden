@@ -9,7 +9,7 @@ export function itemsTransform(content, outputPath, catalog) {
   if (!place || place.type !== "diorama") return content;
 
   const $ = load(content);
-  const { itemPlaceMap, itemFileMap, slugByUuid, resolveFileUrl } = catalog;
+  const { itemPlaceMap, itemFileMap, placeBySlug, resolveFileUrl } = catalog;
 
   const promises = [];
 
@@ -19,9 +19,9 @@ export function itemsTransform(content, outputPath, catalog) {
     const section = blockquote.closest("section");
 
     // item → place link
-    const targetPlaceUuid = itemPlaceMap.get(uuid);
-    if (targetPlaceUuid) {
-      const targetPlace = slugByUuid.get(targetPlaceUuid);
+    const targetPlaceSlug = itemPlaceMap.get(uuid);
+    if (targetPlaceSlug) {
+      const targetPlace = placeBySlug.get(targetPlaceSlug);
       if (targetPlace) {
         // wrap first <p> content in a link
         const firstP = blockquote.find("p").first();
