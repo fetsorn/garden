@@ -1,12 +1,8 @@
 character,portrait
-file,description
-file,reference
-item,file
+item,data
 item,place
 place,type
 place,adjacent
 place,ambient
 place,theme
-reference,extension
-reference,hash
-reference,name
+data,remote

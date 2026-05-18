@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { query, pairs } from "./00-csvs.js";
 import { Fountain } from "fountain-js";
-import site from "../_data/site.js";
 
 const PROSE_DIR = path.resolve(import.meta.dirname, "../../../csvs/prose");
 
@@ -22,18 +21,12 @@ async function buildCatalog() {
   const typePairs = await pairs("place", "type");
   const typeMap = new Map(typePairs);
 
-  // resolve ambient file → lfs url
-  async function resolveFileUrl(fileId) {
-    const fileRecs = await query("file", { file: fileId });
-    if (!fileRecs.length) return null;
-    const ref = fileRecs[0].reference;
-    const refId = typeof ref === "object" ? ref.reference : ref;
-    const refRecs = await query("reference", { reference: refId });
-    if (!refRecs.length) return null;
-    const rec = refRecs[0];
-    const hash = typeof rec.hash === "object" ? rec.hash.hash : rec.hash;
-    const ext = typeof rec.extension === "object" ? rec.extension.extension : rec.extension;
-    return `${site.lfsBase}/${hash}.${ext}`;
+  // resolve data hash → remote url
+  async function resolveDataUrl(hash) {
+    const dataRecs = await query("data", { data: hash });
+    if (!dataRecs.length) return null;
+    const remote = dataRecs[0].remote;
+    return typeof remote === "object" ? remote.remote : remote || null;
   }
 
   // character portraits
@@ -44,9 +37,9 @@ async function buildCatalog() {
   const itemPlacePairs = await pairs("item", "place");
   const itemPlaceMap = new Map(itemPlacePairs);
 
-  // item-file
-  const itemFilePairs = await pairs("item", "file");
-  const itemFileMap = new Map(itemFilePairs);
+  // item-data
+  const itemDataPairs = await pairs("item", "data");
+  const itemDataMap = new Map(itemDataPairs);
 
   // discover langs from prose directory: slug.lang files
   const proseFiles = fs.readdirSync(PROSE_DIR);
@@ -135,12 +128,10 @@ async function buildCatalog() {
       }
     }
 
-    // ambient url
+    // ambient url (now stored directly as a remote URL)
     let ambient = null;
-    const ambientFileId = rec.ambient;
-    if (ambientFileId) {
-      const url = await resolveFileUrl(ambientFileId);
-      if (url) ambient = { src: url };
+    if (rec.ambient) {
+      ambient = { src: rec.ambient };
     }
 
     places.push({
@@ -170,7 +161,7 @@ async function buildCatalog() {
     placeBySlug,
     portraitMap,
     itemPlaceMap,
-    itemFileMap,
-    resolveFileUrl,
+    itemDataMap,
+    resolveDataUrl,
   };
 }

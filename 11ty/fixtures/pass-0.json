@@ -1,76 +1,95 @@
 {
-    "places": [
-        {
-            "slug": "20260413",
-            "type": "diorama",
-            "langs": ["ru"],
-            "title": {
-                "ru": "Я помню время когда поле разговоров..."
-            },
-            "adjacent": [],
-            "theme": null,
-            "ambient": null
-        },
-        {
-            "slug": "cat",
-            "type": "diorama",
-            "langs": ["en"],
-            "title": {
-                "en": "JACK & MAYA"
-            },
-            "adjacent": ["crossroads"],
-            "theme": "modern",
-            "ambient": "fcb7fad9-242b-4c37-a397-d587d2903c90"
-        },
-        {
-            "slug": "crossroads",
-            "type": "diorama",
-            "langs": ["en", "ru"],
-            "title": {
-                "en": "CROSSROADS",
-                "ru": "ПЕРЕПУТЬЕ"
-            },
-            "adjacent": [
-                "wanwei",
-                "cat",
-                "legal",
-                "english-lessons",
-                "20260413"
-            ],
-            "theme": "beige",
-            "ambient": "fcb7fad9-242b-4c37-a397-d587d2903c90"
-        },
-        {
-            "slug": "english-lessons",
-            "type": "passthrough",
-            "langs": ["en"],
-            "adjacent": [],
-            "theme": null,
-            "ambient": null
-        },
-        {
-            "slug": "legal",
-            "type": "markdown",
-            "langs": ["ru"],
-            "title": {
-                "ru": "Публичная оферта на оказание услуг"
-            },
-            "adjacent": [],
-            "theme": "print",
-            "ambient": null
-        },
-        {
-            "slug": "wanwei",
-            "type": "diorama",
-            "langs": ["en", "ru", "zh"],
-            "title": {
-                "en": "Villa On Mount Zhong Nan",
-                "ru": "Дом в горах Чжуннань",
-                "zh": "终南别业"
-            },
-            "adjacent": ["crossroads"],
-            "theme": "ancient",
-            "ambient": "fcb7fad9-242b-4c37-a397-d587d2903c90"
-        }
-    ]
+  "places": [
+    {
+      "slug": "20260413",
+      "type": "diorama",
+      "langs": [
+        "ru"
+      ],
+      "title": {
+        "ru": "Я помню время когда поле разговоров..."
+      },
+      "adjacent": [],
+      "theme": null,
+      "ambient": null
+    },
+    {
+      "slug": "cat",
+      "type": "diorama",
+      "langs": [
+        "en"
+      ],
+      "title": {
+        "en": "JACK & MAYA"
+      },
+      "adjacent": [
+        "crossroads"
+      ],
+      "theme": "modern",
+      "ambient": "https://example.com/street.ogg"
+    },
+    {
+      "slug": "crossroads",
+      "type": "diorama",
+      "langs": [
+        "en",
+        "ru"
+      ],
+      "title": {
+        "en": "CROSSROADS",
+        "ru": "ПЕРЕПУТЬЕ"
+      },
+      "adjacent": [
+        "wanwei",
+        "cat",
+        "legal",
+        "english-lessons",
+        "20260413"
+      ],
+      "theme": "beige",
+      "ambient": "https://example.com/street.ogg"
+    },
+    {
+      "slug": "english-lessons",
+      "type": "passthrough",
+      "langs": [
+        "en"
+      ],
+      "adjacent": [],
+      "theme": null,
+      "ambient": null
+    },
+    {
+      "slug": "legal",
+      "type": "markdown",
+      "langs": [
+        "ru"
+      ],
+      "title": {
+        "ru": "Публичная оферта на оказание услуг"
+      },
+      "adjacent": [],
+      "theme": "print",
+      "ambient": null
+    },
+    {
+      "slug": "wanwei",
+      "type": "diorama",
+      "langs": [
+        "en",
+        "ru",
+        "zh"
+      ],
+      "title": {
+        "en": "Villa On Mount Zhong Nan",
+        "ru": "Дом в горах Чжуннань",
+        "zh": "终南别业"
+      },
+      "adjacent": [
+        "crossroads"
+      ],
+      "theme": "ancient",
+      "ambient": "https://example.com/river.ogg"
+    }
+  ]
 }

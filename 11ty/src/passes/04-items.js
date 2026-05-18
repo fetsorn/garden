@@ -9,7 +9,7 @@ export function itemsTransform(content, outputPath, catalog) {
   if (!place || place.type !== "diorama") return content;
 
   const $ = load(content);
-  const { itemPlaceMap, itemFileMap, placeBySlug, resolveFileUrl } = catalog;
+  const { itemPlaceMap, itemDataMap, placeBySlug, resolveDataUrl } = catalog;
 
   const promises = [];
 
@@ -18,9 +18,9 @@ export function itemsTransform(content, outputPath, catalog) {
     const blockquote = $(this);
     const section = blockquote.closest("section");
 
-    // item → place link
+    // item → place link (skip self-links on canonical page)
     const targetPlaceSlug = itemPlaceMap.get(uuid);
-    if (targetPlaceSlug) {
+    if (targetPlaceSlug && targetPlaceSlug !== slug) {
       const targetPlace = placeBySlug.get(targetPlaceSlug);
       if (targetPlace) {
         // wrap first <p> content in a link
@@ -32,13 +32,13 @@ export function itemsTransform(content, outputPath, catalog) {
       }
     }
 
-    // item → file attachment
-    const fileId = itemFileMap.get(uuid);
-    if (fileId) {
-      // resolve file url asynchronously — collect promises
+    // item → data attachment
+    const dataHash = itemDataMap.get(uuid);
+    if (dataHash) {
+      // resolve data hash to remote url asynchronously
       promises.push(
         (async () => {
-          const url = await catalog.resolveFileUrl(fileId);
+          const url = await resolveDataUrl(dataHash);
           if (url) {
             const fileName = path.basename(url);
             section.append(
