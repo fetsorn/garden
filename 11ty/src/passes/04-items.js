@@ -9,21 +9,17 @@ export function itemsTransform(content, outputPath, catalog) {
   if (!place || place.type !== "diorama") return content;
 
   const $ = load(content);
-  const { itemPlaceMap, itemDataMap, placeBySlug, resolveDataUrl } = catalog;
-
-  const promises = [];
+  const { placeBySlug, itemRemoteMap } = catalog;
 
   $("blockquote[data-uuid]").each(function () {
-    const uuid = $(this).attr("data-uuid");
+    const itemSlug = $(this).attr("data-uuid");
     const blockquote = $(this);
     const section = blockquote.closest("section");
 
-    // item → place link (skip self-links on canonical page)
-    const targetPlaceSlug = itemPlaceMap.get(uuid);
-    if (targetPlaceSlug && targetPlaceSlug !== slug) {
-      const targetPlace = placeBySlug.get(targetPlaceSlug);
+    // item slug → place link (skip self-links on canonical page)
+    if (itemSlug !== slug) {
+      const targetPlace = placeBySlug.get(itemSlug);
       if (targetPlace) {
-        // wrap first <p> content in a link
         const firstP = blockquote.find("p").first();
         if (firstP.length) {
           const text = firstP.html();
@@ -32,29 +28,15 @@ export function itemsTransform(content, outputPath, catalog) {
       }
     }
 
-    // item → data attachment
-    const dataHash = itemDataMap.get(uuid);
-    if (dataHash) {
-      // resolve data hash to remote url asynchronously
-      promises.push(
-        (async () => {
-          const url = await resolveDataUrl(dataHash);
-          if (url) {
-            const fileName = path.basename(url);
-            section.append(
-              `  <details>\n        <summary>attachments</summary>\n        <a href="${url}">${fileName}</a>\n      </details>`
-            );
-          }
-        })()
+    // item slug → remote attachment
+    const url = itemRemoteMap.get(itemSlug);
+    if (url) {
+      const fileName = path.basename(url);
+      section.append(
+        `  <details>\n        <summary>attachments</summary>\n        <a href="${url}">${fileName}</a>\n      </details>`
       );
     }
   });
-
-  // if we have async work, we need to handle it
-  // note: 11ty transforms can be async in v3
-  if (promises.length) {
-    return Promise.all(promises).then(() => $.html());
-  }
 
   return $.html();
 }

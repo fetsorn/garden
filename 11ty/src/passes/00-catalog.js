@@ -21,25 +21,13 @@ async function buildCatalog() {
   const typePairs = await pairs("place", "type");
   const typeMap = new Map(typePairs);
 
-  // resolve data hash → remote url
-  async function resolveDataUrl(hash) {
-    const dataRecs = await query("data", { data: hash });
-    if (!dataRecs.length) return null;
-    const remote = dataRecs[0].remote;
-    return typeof remote === "object" ? remote.remote : remote || null;
-  }
-
   // character portraits
   const portraitPairs = await pairs("character", "portrait");
   const portraitMap = new Map(portraitPairs);
 
-  // item-place
-  const itemPlacePairs = await pairs("item", "place");
-  const itemPlaceMap = new Map(itemPlacePairs);
-
-  // item-data
-  const itemDataPairs = await pairs("item", "data");
-  const itemDataMap = new Map(itemDataPairs);
+  // item-remote: item slug → URL
+  const itemRemotePairs = await pairs("item", "remote");
+  const itemRemoteMap = new Map(itemRemotePairs);
 
   // discover langs from prose directory: slug.lang files
   const proseFiles = fs.readdirSync(PROSE_DIR);
@@ -160,8 +148,6 @@ async function buildCatalog() {
     places,
     placeBySlug,
     portraitMap,
-    itemPlaceMap,
-    itemDataMap,
-    resolveDataUrl,
+    itemRemoteMap,
   };
 }

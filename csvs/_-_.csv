@@ -1,8 +1,6 @@
 character,portrait
-item,data
-item,place
+item,remote
 place,type
 place,adjacent
 place,ambient
 place,theme
-data,remote
