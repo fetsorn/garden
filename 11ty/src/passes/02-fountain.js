@@ -1,29 +1,29 @@
-import fs from "node:fs";
 import path from "node:path";
 import { load } from "cheerio";
 import { Fountain } from "fountain-js";
 
-const PROSE_DIR = path.resolve(import.meta.dirname, "../../../csvs/prose");
+// ── fountain parsing (for items) ──────────────────────────────────
 
-// extract [[NOTE]] from scene headings or character names
 function extractBracketNote(text) {
   const match = text.match(/\[\[([^\]]+)\]\]/);
   return match ? match[1].toLowerCase() : null;
 }
 
-// extract canonical character id: "ОБЪЯВЛЕНИЕ [[AD]]" → "ad", "JACK" → "jack"
 function extractCharacter(text) {
   const note = extractBracketNote(text);
   if (note) return note;
-  // strip fountain @ prefix for forced characters
   const clean = text.replace(/^@/, "").trim();
   return clean.toLowerCase();
 }
 
-// parse a fountain file into utterance objects
 function parseFountain(content) {
-  const fountain = new Fountain();
-  const parsed = fountain.parse(content, true);
+  let parsed;
+  try {
+    const fountain = new Fountain();
+    parsed = fountain.parse(content, true);
+  } catch {
+    return [];
+  }
   const tokens = parsed.tokens || [];
 
   const utterances = [];
@@ -33,9 +33,9 @@ function parseFountain(content) {
   let currentUuid = null;
 
   for (const token of tokens) {
+    if (!token || !token.type) continue;
     switch (token.type) {
       case "section":
-        // # mood directive
         mood = (token.text || "").replace(/<[^>]+>/g, "").trim().toLowerCase();
         break;
 
@@ -46,12 +46,17 @@ function parseFountain(content) {
       }
 
       case "character":
-        currentCharacter = extractCharacter((token.text || "").replace(/<[^>]+>/g, ""));
+        currentCharacter = extractCharacter(
+          (token.text || "").replace(/<[^>]+>/g, ""),
+        );
         currentUuid = null;
         break;
 
       case "parenthetical":
-        currentUuid = (token.text || "").replace(/<[^>]+>/g, "").replace(/[()]/g, "").trim();
+        currentUuid = (token.text || "")
+          .replace(/<[^>]+>/g, "")
+          .replace(/[()]/g, "")
+          .trim();
         break;
 
       case "dialogue":
@@ -62,21 +67,33 @@ function parseFountain(content) {
             mood,
             location,
             text: (token.text || "").replace(/<[^>]+>/g, ""),
-            isLyrics: false,
           });
         }
         break;
 
       case "lyrics":
         if (currentCharacter) {
-          // append lyrics to last utterance if same character
-          const last = utterances[utterances.length - 1];
-          if (last && last.character === currentCharacter && last.uuid === currentUuid) {
-            if (!last.lyricsLines) last.lyricsLines = [];
-            // fountain-js returns all lyrics as one token, newline-separated
-            const lines = (token.text || "").replace(/<[^>]+>/g, "").split("\n");
-            last.lyricsLines.push(...lines);
+          // attach to last utterance, or create one if lyrics come first
+          let last = utterances[utterances.length - 1];
+          if (
+            !last ||
+            last.character !== currentCharacter ||
+            last.uuid !== currentUuid
+          ) {
+            utterances.push({
+              character: currentCharacter,
+              uuid: currentUuid,
+              mood,
+              location,
+              text: "",
+            });
+            last = utterances[utterances.length - 1];
           }
+          if (!last.lyricsLines) last.lyricsLines = [];
+          const lines = (token.text || "")
+            .replace(/<[^>]+>/g, "")
+            .split("\n");
+          last.lyricsLines.push(...lines);
         }
         break;
     }
@@ -85,46 +102,100 @@ function parseFountain(content) {
   return utterances;
 }
 
-// render utterances to section HTML
-function renderUtterances(utterances) {
-  return utterances
-    .map((u) => {
-      const classes = [u.mood, u.location].filter(Boolean).join(" ");
-      const uuidAttr = u.uuid ? ` data-uuid="${u.uuid}"` : "";
+// ── place with items: render parsed fountain ──────────────────────
 
-      let blockquoteContent = `\n        <p>${u.text}</p>`;
+function renderItemUtterances(place, lang, catalog) {
+  const sections = [];
+
+  for (const item of place.items) {
+    if (!item.prose[lang]) continue;
+
+    const utterances = parseFountain(item.prose[lang]);
+    for (const u of utterances) {
+      const classes = [u.mood, u.location].filter(Boolean).join(" ");
+      let extra = "";
+      if (item.remote) {
+        extra = `\n      <audio class="item-audio" src="${item.remote}"></audio>\n      <button class="item-play" onclick="toggleItemAudio(this)">&#9654;</button>`;
+      }
+
+      let blockquoteContent = "";
+      if (u.text) {
+        blockquoteContent += `\n        <p>${u.text}</p>`;
+      }
       if (u.lyricsLines && u.lyricsLines.length) {
         blockquoteContent += `\n        <p class="lyrics">${u.lyricsLines.join("<br>")}</p>`;
       }
 
-      return `    <section class="${classes}">
+      sections.push(`    <section class="${classes}">
       <figure data-character="${u.character}"><figcaption>${u.character}</figcaption></figure>
-      <blockquote${uuidAttr}>${blockquoteContent}
-      </blockquote>
-    </section>`;
-    })
-    .join("\n");
+      <blockquote>${blockquoteContent}
+      </blockquote>${extra}
+    </section>`);
+    }
+  }
+
+  return sections.join("\n");
 }
+
+// ── place with interior: render utterances from child places ──────
+
+function renderInteriorUtterances(place, lang, catalog) {
+  const sections = [];
+
+  for (const child of place.interior) {
+    if (!child.prose[lang]) continue;
+
+    const character = child.author || child.slug;
+    const text = child.prose[lang];
+
+    // peek for audio
+    const audioResults = catalog.peekAudio(child, lang);
+    const audioUrl =
+      audioResults.length > 0 ? audioResults[0].remote : null;
+
+    let extra = "";
+    if (audioUrl) {
+      extra = `\n      <audio class="item-audio" src="${audioUrl}"></audio>\n      <button class="item-play" onclick="toggleItemAudio(this)">&#9654;</button>`;
+    }
+
+    sections.push(`    <section>
+      <figure data-character="${character}"><figcaption>${character}</figcaption></figure>
+      <blockquote data-uuid="${child.slug}">
+        <p>${text}</p>
+      </blockquote>${extra}
+    </section>`);
+  }
+
+  return sections.join("\n");
+}
+
+// ── transform ────────────────────────────────────────────────────────
 
 export function fountainTransform(content, outputPath, catalog) {
   if (!outputPath || !outputPath.endsWith(".html")) return content;
 
   const slug = path.basename(outputPath, ".html");
-  const place = catalog.places.find((p) => p.slug === slug);
-  if (!place || place.type !== "diorama") return content;
+  const place = catalog.placeBySlug.get(slug);
+  if (!place) return content;
 
   const $ = load(content);
 
   for (const lang of place.langs) {
-    const filePath = path.join(PROSE_DIR, `${slug}.${lang}`);
-    const source = fs.readFileSync(filePath, "utf-8");
-    const utterances = parseFountain(source);
-    const sectionsHtml = renderUtterances(utterances);
-
     const article = $(`article[lang="${lang}"]`);
-    if (article.length) {
-      article.html("\n" + sectionsHtml + "\n  ");
+    if (!article.length) continue;
+
+    let html;
+    if (place.items.length > 0) {
+      // place has items — render parsed fountain
+      html = renderItemUtterances(place, lang, catalog);
+    } else if (place.interior.length > 0) {
+      // place has interior places — render as utterances
+      html = renderInteriorUtterances(place, lang, catalog);
+    } else {
+      continue;
     }
+
+    article.html("\n" + html + "\n  ");
   }
 
   return $.html();

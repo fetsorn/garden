@@ -1,4 +1,8 @@
-character,portrait
+item,remote
 place,adjacent
 place,ambient
+place,author
+place,interior
+place,item
+place,passthrough
 place,theme

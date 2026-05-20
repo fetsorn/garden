@@ -36,6 +36,7 @@ export default async function (eleventyConfig) {
   });
 
   // static assets
+  eleventyConfig.addPassthroughCopy({ "src/public": "/" });
   eleventyConfig.addPassthroughCopy({ "src/portraits": "/portraits" });
   eleventyConfig.addPassthroughCopy({ "src/themes": "/themes" });
   eleventyConfig.addPassthroughCopy({ "src/assets/index.css": "/index.css" });

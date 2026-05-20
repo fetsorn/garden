@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { query, pairs } from "./00-csvs.js";
-import { Fountain } from "fountain-js";
 
 const PROSE_DIR = path.resolve(import.meta.dirname, "../../../csvs/prose");
 
@@ -13,45 +12,51 @@ export async function getCatalog() {
   return _catalog;
 }
 
-// detect type from prose file content
-function sniffType(content) {
-  const trimmed = content.trimStart();
-  if (trimmed.startsWith("<!") || trimmed.startsWith("<html")) return "passthrough";
-  if (trimmed.startsWith("#")) return "markdown";
-  return "diorama";
-}
-
-// extract a title page token value by type
-function fountainMeta(parsed, key) {
-  const token = parsed.tokens.find((t) => t.is_title && t.type === key);
-  return token ? token.text : null;
-}
-
 async function buildCatalog() {
-  // place records (pages with adjacency)
-  const placeRecords = await query("place");
+  // ── read all tablets ───────────────────────────────────────────────
 
-  // adjacency map
   const adjPairs = await pairs("place", "adjacent");
+  const interiorPairs = await pairs("place", "interior");
+  const placeItemPairs = await pairs("place", "item");
+  const authorPairs = await pairs("place", "author");
+  const itemRemotePairs = await pairs("item", "remote");
+  const themePairs = await pairs("place", "theme");
+  const ambientPairs = await pairs("place", "ambient");
+  const passthroughPairs = await pairs("place", "passthrough");
+
+  // ── build maps ─────────────────────────────────────────────────────
+
   const adjMap = new Map();
   for (const [from, to] of adjPairs) {
     if (!adjMap.has(from)) adjMap.set(from, []);
     adjMap.get(from).push(to);
   }
 
-  // themes
-  const themePairs = await pairs("place", "theme");
+  const interiorMap = new Map();
+  for (const [parent, child] of interiorPairs) {
+    if (!interiorMap.has(parent)) interiorMap.set(parent, []);
+    interiorMap.get(parent).push(child);
+  }
+
+  const placeItemMap = new Map();
+  for (const [place, item] of placeItemPairs) {
+    if (!placeItemMap.has(place)) placeItemMap.set(place, []);
+    placeItemMap.get(place).push(item);
+  }
+
+  const authorMap = new Map(authorPairs);
+  const itemRemoteMap = new Map(itemRemotePairs);
   const themeMap = new Map(themePairs);
-
-  // ambient
-  const ambientPairs = await pairs("place", "ambient");
   const ambientMap = new Map(ambientPairs);
+  const passthroughMap = new Map(passthroughPairs);
 
-  // character portraits
-  const portraitPairs = await pairs("character", "portrait");
-  const portraitMap = new Map(portraitPairs);
+  // ── collect item slugs ────────────────────────────────────────────
 
-  // discover all pages from prose directory: slug.lang files
+  const itemSlugs = new Set();
+  for (const [, item] of placeItemPairs) itemSlugs.add(item);
+
+  // ── discover prose files ──────────────────────────────────────────
+
   const proseFiles = fs.readdirSync(PROSE_DIR);
   const langsBySlug = new Map();
   for (const file of proseFiles) {
@@ -63,107 +68,104 @@ async function buildCatalog() {
     langsBySlug.get(slug).push(lang);
   }
 
-  // audio map: slug → { lang: url } for all items with Audio: metadata
-  const audioMap = new Map();
+  // ── build items ───────────────────────────────────────────────────
 
-  // build pages for all slugs that have prose
-  const pages = [];
-  for (const [slug, langs] of langsBySlug) {
-    const firstLang = langs[0];
-    const firstFile = path.join(PROSE_DIR, `${slug}.${firstLang}`);
-    const firstContent = fs.readFileSync(firstFile, "utf-8");
-    const type = sniffType(firstContent);
-
-    // adjacency (only places have it)
-    const adjacent = adjMap.get(slug) || [];
-
-    // theme
-    const theme = themeMap.get(slug) || null;
-
-    // titles and audio from fountain metadata
-    const title = {};
-    if (type === "diorama") {
-      for (const lang of langs) {
-        const content = fs.readFileSync(
-          path.join(PROSE_DIR, `${slug}.${lang}`),
-          "utf-8",
-        );
-        const fountain = new Fountain();
-        const parsed = fountain.parse(content, true);
-        title[lang] = parsed.title || slug;
-
-        // extract Audio: metadata
-        const audioUrl = fountainMeta(parsed, "audio");
-        if (audioUrl) {
-          if (!audioMap.has(slug)) audioMap.set(slug, {});
-          audioMap.get(slug)[lang] = audioUrl;
-        }
-      }
-    } else if (type === "markdown") {
-      for (const lang of langs) {
-        const content = fs.readFileSync(
-          path.join(PROSE_DIR, `${slug}.${lang}`),
-          "utf-8",
-        );
-        const firstHeading = content.match(/^#\s+(.+)$/m);
-        title[lang] = firstHeading ? firstHeading[1] : slug;
-      }
+  const itemBySlug = new Map();
+  for (const slug of itemSlugs) {
+    const langs = langsBySlug.get(slug) || [];
+    const prose = {};
+    for (const lang of langs) {
+      prose[lang] = fs.readFileSync(
+        path.join(PROSE_DIR, `${slug}.${lang}`),
+        "utf-8",
+      );
     }
-
-    // raw content for passthrough
-    let rawContent = null;
-    if (type === "passthrough") {
-      rawContent = firstContent;
-    }
-
-    // rendered markdown
-    let renderedContent = null;
-    if (type === "markdown") {
-      const MarkdownIt = (await import("markdown-it")).default;
-      const md = new MarkdownIt();
-      renderedContent = {};
-      for (const lang of langs) {
-        const content = fs.readFileSync(
-          path.join(PROSE_DIR, `${slug}.${lang}`),
-          "utf-8",
-        );
-        renderedContent[lang] = md.render(content);
-      }
-    }
-
-    // ambient url
-    let ambient = null;
-    const ambientUrl = ambientMap.get(slug);
-    if (ambientUrl) {
-      ambient = { src: ambientUrl };
-    }
-
-    pages.push({
+    itemBySlug.set(slug, {
       slug,
-      type,
       langs,
-      title,
-      adjacent,
-      theme,
-      ambient,
-      rawContent,
-      renderedContent,
+      prose,
+      remote: itemRemoteMap.get(slug) || null,
     });
   }
 
-  // resolve adjacent pages for nav rendering
-  const placeBySlug = new Map(pages.map((p) => [p.slug, p]));
-  for (const page of pages) {
-    page.adjacentPlaces = page.adjacent
-      .map((slug) => placeBySlug.get(slug))
+  // ── build places (everything that isn't an item) ──────────────────
+
+  const places = [];
+  const placeBySlug = new Map();
+
+  for (const [slug, langs] of langsBySlug) {
+    if (itemSlugs.has(slug)) continue;
+
+    const prose = {};
+    for (const lang of langs) {
+      prose[lang] = fs.readFileSync(
+        path.join(PROSE_DIR, `${slug}.${lang}`),
+        "utf-8",
+      );
+    }
+
+    const place = {
+      slug,
+      langs,
+      prose,
+      author: authorMap.get(slug) || null,
+      adjacent: adjMap.get(slug) || [],
+      interiorSlugs: interiorMap.get(slug) || [],
+      itemSlugs: placeItemMap.get(slug) || [],
+      interior: [],  // resolved later
+      items: [],     // resolved later
+      theme: themeMap.get(slug) || null,
+      ambient: ambientMap.get(slug) || null,
+      passthrough: passthroughMap.get(slug) || null,
+    };
+
+    places.push(place);
+    placeBySlug.set(slug, place);
+  }
+
+  // ── resolve references ────────────────────────────────────────────
+
+  for (const place of places) {
+    place.interior = place.interiorSlugs
+      .map((s) => placeBySlug.get(s))
+      .filter(Boolean);
+
+    place.items = place.itemSlugs
+      .map((s) => itemBySlug.get(s))
+      .filter(Boolean);
+
+    place.adjacentPlaces = place.adjacent
+      .map((s) => placeBySlug.get(s))
       .filter(Boolean)
-      .map((p) => ({ slug: p.slug, title: p.title, langs: p.langs }));
+      .map((p) => ({ slug: p.slug, prose: p.prose, langs: p.langs }));
+  }
+
+  // ── peek: find playable items recursively ─────────────────────────
+
+  function peekAudio(place, lang, visited = new Set()) {
+    if (visited.has(place.slug)) return [];
+    visited.add(place.slug);
+    const results = [];
+
+    // direct items
+    for (const item of place.items) {
+      if (item.remote && item.prose[lang]) {
+        results.push({ slug: item.slug, remote: item.remote });
+      }
+    }
+
+    // recurse into interior places
+    for (const child of place.interior) {
+      results.push(...peekAudio(child, lang, visited));
+    }
+
+    return results;
   }
 
   return {
-    places: pages,
+    places,
     placeBySlug,
-    portraitMap,
-    audioMap,
+    itemBySlug,
+    peekAudio,
   };
 }

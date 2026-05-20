@@ -14,17 +14,16 @@ export async function query(collection, constraints = {}) {
   });
 }
 
-// convenience: get all pairs from a two-column tablet
-// TODO might be faster to read straight from tablet
+// read all pairs from a two-column tablet directly (fast path)
 export async function pairs(trunk, leaf) {
-  const records = await query(trunk);
+  const filePath = path.join(CSVS_DIR, `${trunk}-${leaf}.csv`);
+  const content = fs.readFileSync(filePath, "utf-8");
   const result = [];
-  for (const rec of records) {
-    const trunkVal = rec[trunk];
-    const leafVals = Array.isArray(rec[leaf]) ? rec[leaf] : rec[leaf] ? [rec[leaf]] : [];
-    for (const lv of leafVals) {
-      result.push([trunkVal, typeof lv === "object" ? lv[leaf] : lv]);
-    }
+  for (const line of content.split("\n")) {
+    if (!line) continue;
+    const commaIdx = line.indexOf(",");
+    if (commaIdx === -1) continue;
+    result.push([line.slice(0, commaIdx), line.slice(commaIdx + 1)]);
   }
   return result;
 }
