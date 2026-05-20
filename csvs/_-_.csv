@@ -6,3 +6,6 @@ place,interior
 place,item
 place,passthrough
 place,theme
+place,access
+place,translator
+item,narrator

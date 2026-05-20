@@ -23,6 +23,7 @@ async function buildCatalog() {
   const themePairs = await pairs("place", "theme");
   const ambientPairs = await pairs("place", "ambient");
   const passthroughPairs = await pairs("place", "passthrough");
+  const accessPairs = await pairs("place", "access");
 
   // ── build maps ─────────────────────────────────────────────────────
 
@@ -49,6 +50,7 @@ async function buildCatalog() {
   const themeMap = new Map(themePairs);
   const ambientMap = new Map(ambientPairs);
   const passthroughMap = new Map(passthroughPairs);
+  const accessMap = new Map(accessPairs);
 
   // ── collect item slugs ────────────────────────────────────────────
 
@@ -117,6 +119,7 @@ async function buildCatalog() {
       theme: themeMap.get(slug) || null,
       ambient: ambientMap.get(slug) || null,
       passthrough: passthroughMap.get(slug) || null,
+      access: accessMap.get(slug) || null,
     };
 
     places.push(place);
