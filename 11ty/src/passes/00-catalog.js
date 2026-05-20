@@ -13,13 +13,34 @@ export async function getCatalog() {
   return _catalog;
 }
 
-async function buildCatalog() {
-  // all place records (union across all place-* tablets)
-  const placeRecords = await query("place");
+// detect type from prose file content
+function sniffType(content) {
+  const trimmed = content.trimStart();
+  if (trimmed.startsWith("<!") || trimmed.startsWith("<html")) return "passthrough";
+  if (trimmed.startsWith("#")) return "markdown";
+  return "diorama";
+}
 
-  // place-type for type lookup
-  const typePairs = await pairs("place", "type");
-  const typeMap = new Map(typePairs);
+async function buildCatalog() {
+  // place records (pages with adjacency)
+  const placeRecords = await query("place");
+  const placeSet = new Set(placeRecords.map((r) => r.place));
+
+  // adjacency map
+  const adjPairs = await pairs("place", "adjacent");
+  const adjMap = new Map();
+  for (const [from, to] of adjPairs) {
+    if (!adjMap.has(from)) adjMap.set(from, []);
+    adjMap.get(from).push(to);
+  }
+
+  // themes
+  const themePairs = await pairs("place", "theme");
+  const themeMap = new Map(themePairs);
+
+  // ambient
+  const ambientPairs = await pairs("place", "ambient");
+  const ambientMap = new Map(ambientPairs);
 
   // character portraits
   const portraitPairs = await pairs("character", "portrait");
@@ -29,49 +50,35 @@ async function buildCatalog() {
   const itemRemotePairs = await pairs("item", "remote");
   const itemRemoteMap = new Map(itemRemotePairs);
 
-  // discover langs from prose directory: slug.lang files
+  // discover all pages from prose directory: slug.lang files
   const proseFiles = fs.readdirSync(PROSE_DIR);
   const langsBySlug = new Map();
   for (const file of proseFiles) {
     const dotIdx = file.indexOf(".");
-    if (dotIdx === -1) continue; // no lang tag, skip
+    if (dotIdx === -1) continue;
     const slug = file.slice(0, dotIdx);
     const lang = file.slice(dotIdx + 1);
     if (!langsBySlug.has(slug)) langsBySlug.set(slug, []);
     langsBySlug.get(slug).push(lang);
   }
 
-  // map csvs type → internal type
-  const typeMapping = {
-    fountain: "diorama",
-    markdown: "markdown",
-    hypertext: "passthrough",
-  };
+  // build pages for all slugs that have prose
+  const pages = [];
+  for (const [slug, langs] of langsBySlug) {
+    const firstLang = langs[0];
+    const firstFile = path.join(PROSE_DIR, `${slug}.${firstLang}`);
+    const firstContent = fs.readFileSync(firstFile, "utf-8");
+    const type = sniffType(firstContent);
 
-  // build each place
-  const places = [];
-  for (const rec of placeRecords) {
-    const slug = rec.place;
-    const csvsType = typeMap.get(slug);
-    if (!csvsType) continue; // skip places without a type (stale refs)
-    const type = typeMapping[csvsType] || csvsType;
-
-    // adjacent (may be string or array)
-    const adjacent = Array.isArray(rec.adjacent)
-      ? rec.adjacent
-      : rec.adjacent
-        ? [rec.adjacent]
-        : [];
+    // adjacency (only places have it)
+    const adjacent = adjMap.get(slug) || [];
 
     // theme
-    const theme = rec.theme || null;
+    const theme = themeMap.get(slug) || null;
 
-    // langs from prose dir
-    const langs = langsBySlug.get(slug) || null;
-
-    // titles from fountain/md metadata
+    // titles
     const title = {};
-    if (type === "diorama" && langs) {
+    if (type === "diorama") {
       for (const lang of langs) {
         const content = fs.readFileSync(
           path.join(PROSE_DIR, `${slug}.${lang}`),
@@ -81,7 +88,7 @@ async function buildCatalog() {
         const parsed = fountain.parse(content);
         title[lang] = parsed.title || slug;
       }
-    } else if (type === "markdown" && langs) {
+    } else if (type === "markdown") {
       for (const lang of langs) {
         const content = fs.readFileSync(
           path.join(PROSE_DIR, `${slug}.${lang}`),
@@ -94,16 +101,13 @@ async function buildCatalog() {
 
     // raw content for passthrough
     let rawContent = null;
-    if (type === "passthrough" && langs && langs.length) {
-      rawContent = fs.readFileSync(
-        path.join(PROSE_DIR, `${slug}.${langs[0]}`),
-        "utf-8",
-      );
+    if (type === "passthrough") {
+      rawContent = firstContent;
     }
 
     // rendered markdown
     let renderedContent = null;
-    if (type === "markdown" && langs) {
+    if (type === "markdown") {
       const MarkdownIt = (await import("markdown-it")).default;
       const md = new MarkdownIt();
       renderedContent = {};
@@ -116,13 +120,14 @@ async function buildCatalog() {
       }
     }
 
-    // ambient url (now stored directly as a remote URL)
+    // ambient url
     let ambient = null;
-    if (rec.ambient) {
-      ambient = { src: rec.ambient };
+    const ambientUrl = ambientMap.get(slug);
+    if (ambientUrl) {
+      ambient = { src: ambientUrl };
     }
 
-    places.push({
+    pages.push({
       slug,
       type,
       langs,
@@ -135,17 +140,17 @@ async function buildCatalog() {
     });
   }
 
-  // resolve adjacent places for nav rendering
-  const placeBySlug = new Map(places.map((p) => [p.slug, p]));
-  for (const place of places) {
-    place.adjacentPlaces = place.adjacent
+  // resolve adjacent pages for nav rendering
+  const placeBySlug = new Map(pages.map((p) => [p.slug, p]));
+  for (const page of pages) {
+    page.adjacentPlaces = page.adjacent
       .map((slug) => placeBySlug.get(slug))
       .filter(Boolean)
       .map((p) => ({ slug: p.slug, title: p.title, langs: p.langs }));
   }
 
   return {
-    places,
+    places: pages,
     placeBySlug,
     portraitMap,
     itemRemoteMap,

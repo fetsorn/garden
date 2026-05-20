@@ -28,12 +28,11 @@ export function itemsTransform(content, outputPath, catalog) {
       }
     }
 
-    // item slug → remote attachment
+    // item slug → play button
     const url = itemRemoteMap.get(itemSlug);
     if (url) {
-      const fileName = path.basename(url);
       section.append(
-        `  <details>\n        <summary>attachments</summary>\n        <a href="${url}">${fileName}</a>\n      </details>`
+        `  <audio class="item-audio" src="${url}"></audio>\n      <button class="item-play" onclick="toggleItemAudio(this)">&#9654;</button>`
       );
     }
   });

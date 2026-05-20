@@ -114,3 +114,32 @@ document.addEventListener("DOMContentLoaded", function () {
   var lang = getDefault();
   setLang(lang);
 });
+
+// item audio play/pause
+function toggleItemAudio(btn) {
+  var section = btn.closest("section");
+  var audio = section.querySelector(".item-audio");
+  if (!audio) return;
+  // pause any other playing item audio
+  document.querySelectorAll(".item-play.playing").forEach(function (other) {
+    if (other !== btn) {
+      var otherAudio = other.closest("section").querySelector(".item-audio");
+      if (otherAudio) otherAudio.pause();
+      other.classList.remove("playing");
+      other.innerHTML = "\u25B6";
+    }
+  });
+  if (audio.paused) {
+    audio.play();
+    btn.classList.add("playing");
+    btn.innerHTML = "\u275A\u275A";
+  } else {
+    audio.pause();
+    btn.classList.remove("playing");
+    btn.innerHTML = "\u25B6";
+  }
+  audio.onended = function () {
+    btn.classList.remove("playing");
+    btn.innerHTML = "\u25B6";
+  };
+}

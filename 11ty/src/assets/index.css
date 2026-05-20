@@ -142,24 +142,36 @@ blockquote a:hover {
   line-height: 1.8;
 }
 
-/* attachments */
+/* item audio player */
 
-details {
-  margin-top: 0.25rem;
-  margin-left: 60px;
+.item-audio {
+  display: none;
 }
 
-details summary {
-  font-size: 0.8rem;
-  color: #888;
+.item-play {
+  flex-shrink: 0;
+  align-self: center;
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 0.7rem;
   cursor: pointer;
+  color: #555;
+  transition: all 0.2s;
+  line-height: 1;
 }
 
-details a {
-  display: block;
-  font-size: 0.85rem;
-  color: #555;
-  padding: 0.25rem 0;
+.item-play:hover {
+  border-color: #222;
+  color: #222;
+}
+
+.item-play.playing {
+  border-color: #222;
+  background: #222;
+  color: #fff;
 }
 
 /* ambient */
