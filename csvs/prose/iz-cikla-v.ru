@@ -1,9 +1,10 @@
 Title:
-    Iz cikla V sorokovom godu
+    Iz cikla <<V sorokovom godu>>
 Credit: Read by
 Author: unknown
 Narrator: norcivilian
 Source: Garden
+Audio: http://fetsorn.storage.yandexcloud.net/sha256/e90447a12c23b835059081d7d5e590e0fc35880f8b74549dee003bb77f6ddd60.ogg
 Draft date: 07/12/2025
 Contact:
     fetsorn@gmail.com

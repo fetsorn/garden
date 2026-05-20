@@ -4,6 +4,7 @@ Credit: Read by
 Author: unknown
 Narrator: norcivilian
 Source: Garden
+Audio: http://fetsorn.storage.yandexcloud.net/sha256/8789bc592b73714ce968a33dc3db027e1af86f2f87204c8f94c1b36bfed67133.ogg
 Draft date: 11/08/2025
 Contact:
     fetsorn@gmail.com

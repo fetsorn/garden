@@ -9,7 +9,7 @@ export function itemsTransform(content, outputPath, catalog) {
   if (!place || place.type !== "diorama") return content;
 
   const $ = load(content);
-  const { placeBySlug, itemRemoteMap } = catalog;
+  const { placeBySlug, audioMap } = catalog;
 
   $("blockquote[data-uuid]").each(function () {
     const itemSlug = $(this).attr("data-uuid");
@@ -28,12 +28,19 @@ export function itemsTransform(content, outputPath, catalog) {
       }
     }
 
-    // item slug → play button
-    const url = itemRemoteMap.get(itemSlug);
-    if (url) {
-      section.append(
-        `  <audio class="item-audio" src="${url}"></audio>\n      <button class="item-play" onclick="toggleItemAudio(this)">&#9654;</button>`
-      );
+    // item slug → play button (from fountain Audio: metadata)
+    const itemAudio = audioMap.get(itemSlug);
+    if (itemAudio) {
+      // find which lang this section is inside
+      const article = section.closest("article[lang]");
+      const lang = article.length ? article.attr("lang") : null;
+      // pick matching lang, or first available
+      const url = (lang && itemAudio[lang]) || Object.values(itemAudio)[0];
+      if (url) {
+        section.append(
+          `  <audio class="item-audio" src="${url}"></audio>\n      <button class="item-play" onclick="toggleItemAudio(this)">&#9654;</button>`
+        );
+      }
     }
   });
 

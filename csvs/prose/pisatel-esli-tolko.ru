@@ -1,9 +1,10 @@
 Title:
-    Pisatel, esli tolko on volna, a okean Rossiya, ne mozhet b
+    <<Pisatel, esli tolko on volna, a okean Rossiya, ne mozhet b
 Credit: Read by
 Author: unknown
 Narrator: norcivilian
 Source: Garden
+Audio: http://fetsorn.storage.yandexcloud.net/sha256/94d0d50b0714b963f1a24f5d42bbed858af0658f4335a947ad39016259e47143.ogg
 Draft date: 16/10/2025
 Contact:
     fetsorn@gmail.com

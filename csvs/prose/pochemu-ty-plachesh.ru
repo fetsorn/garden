@@ -1,9 +1,10 @@
 Title:
-    Pochemu ty plachesh?
+    <<Pochemu ty plachesh?>>
 Credit: Read by
 Author: unknown
 Narrator: norcivilian
 Source: Garden
+Audio: http://fetsorn.storage.yandexcloud.net/sha256/ebaee1a75b588ceebce1459257914f5ef4fbc092081463c11ce97170531b9eb0.ogg
 Draft date: 11/02/2026
 Contact:
     fetsorn@gmail.com

@@ -21,10 +21,15 @@ function sniffType(content) {
   return "diorama";
 }
 
+// extract a title page token value by type
+function fountainMeta(parsed, key) {
+  const token = parsed.tokens.find((t) => t.is_title && t.type === key);
+  return token ? token.text : null;
+}
+
 async function buildCatalog() {
   // place records (pages with adjacency)
   const placeRecords = await query("place");
-  const placeSet = new Set(placeRecords.map((r) => r.place));
 
   // adjacency map
   const adjPairs = await pairs("place", "adjacent");
@@ -46,10 +51,6 @@ async function buildCatalog() {
   const portraitPairs = await pairs("character", "portrait");
   const portraitMap = new Map(portraitPairs);
 
-  // item-remote: item slug → URL
-  const itemRemotePairs = await pairs("item", "remote");
-  const itemRemoteMap = new Map(itemRemotePairs);
-
   // discover all pages from prose directory: slug.lang files
   const proseFiles = fs.readdirSync(PROSE_DIR);
   const langsBySlug = new Map();
@@ -61,6 +62,9 @@ async function buildCatalog() {
     if (!langsBySlug.has(slug)) langsBySlug.set(slug, []);
     langsBySlug.get(slug).push(lang);
   }
+
+  // audio map: slug → { lang: url } for all items with Audio: metadata
+  const audioMap = new Map();
 
   // build pages for all slugs that have prose
   const pages = [];
@@ -76,7 +80,7 @@ async function buildCatalog() {
     // theme
     const theme = themeMap.get(slug) || null;
 
-    // titles
+    // titles and audio from fountain metadata
     const title = {};
     if (type === "diorama") {
       for (const lang of langs) {
@@ -85,8 +89,15 @@ async function buildCatalog() {
           "utf-8",
         );
         const fountain = new Fountain();
-        const parsed = fountain.parse(content);
+        const parsed = fountain.parse(content, true);
         title[lang] = parsed.title || slug;
+
+        // extract Audio: metadata
+        const audioUrl = fountainMeta(parsed, "audio");
+        if (audioUrl) {
+          if (!audioMap.has(slug)) audioMap.set(slug, {});
+          audioMap.get(slug)[lang] = audioUrl;
+        }
       }
     } else if (type === "markdown") {
       for (const lang of langs) {
@@ -153,6 +164,6 @@ async function buildCatalog() {
     places: pages,
     placeBySlug,
     portraitMap,
-    itemRemoteMap,
+    audioMap,
   };
 }

@@ -11,10 +11,6 @@ const TRANSCRIPT_DIR = path.resolve(
   "../../../minds/estate/prose/20260518-asahi/mm/lodes/downloads/Telegram Desktop/ChatExport_2026-05-18/voice_messages",
 );
 const PROSE_DIR = path.resolve(import.meta.dirname, "../csvs/prose");
-const ITEM_REMOTE_CSV = path.resolve(
-  import.meta.dirname,
-  "../csvs/item-remote.csv",
-);
 const STAGE_FOUNTAIN = path.resolve(PROSE_DIR, "stage.en");
 const REMOTE_BASE = "http://fetsorn.storage.yandexcloud.net/sha256";
 
@@ -148,7 +144,7 @@ Credit: Read by
 Author: unknown
 Narrator: norcivilian
 Source: Garden
-Draft date: ${draftDate}
+Audio: ${item.remoteUrl}${draftDate ? `\nDraft date: ${draftDate}` : ""}
 Contact:
     fetsorn@gmail.com
 
@@ -168,13 +164,7 @@ ${dialogueBlock}
 }
 console.log(`wrote ${items.length} fountain files`);
 
-// 2. Append to item-remote.csv
-const remoteLines = items.map((i) => `${i.slug},${i.remoteUrl}`).join("\n");
-const existing = fs.readFileSync(ITEM_REMOTE_CSV, "utf-8").trimEnd();
-fs.writeFileSync(ITEM_REMOTE_CSV, existing + "\n" + remoteLines + "\n");
-console.log(`appended ${items.length} lines to item-remote.csv`);
-
-// 3. Append entries to stage.en fountain
+// 2. Append entries to stage.en fountain
 const stageEntries = items
   .map(
     (i) => `

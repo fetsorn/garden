@@ -1,9 +1,10 @@
 Title:
-    Valentin Gaft Babochka
+    Valentin Gaft <<Babochka>>
 Credit: Read by
 Author: unknown
 Narrator: norcivilian
 Source: Garden
+Audio: http://fetsorn.storage.yandexcloud.net/sha256/c4e40a766e176767f43df853851e3dae84110ffb1a359363f677e39fa70db708.ogg
 Draft date: 02/01/2026
 Contact:
     fetsorn@gmail.com
