@@ -7,5 +7,6 @@ place,item
 place,passthrough
 place,theme
 place,access
-place,translator
+item,author
 item,narrator
+item,date
