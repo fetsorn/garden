@@ -1,5 +1,5 @@
 Title:
-    <<Pochemu ty plachesh?>>
+    Pochemu ty plachesh?
 Credit: Read by
 Author: unknown
 Narrator: norcivilian

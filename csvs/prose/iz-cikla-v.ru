@@ -1,5 +1,5 @@
 Title:
-    Iz cikla <<V sorokovom godu>>
+    Iz cikla V sorokovom godu
 Credit: Read by
 Author: unknown
 Narrator: norcivilian

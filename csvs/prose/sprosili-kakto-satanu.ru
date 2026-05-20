@@ -1,5 +1,5 @@
 Title:
-    Sprosili kak-to satanu <<Chto ty tak dolgo delal v vannoy?>>
+    Sprosili kak-to satanu Chto ty tak dolgo delal v vannoy?
 Credit: Read by
 Author: unknown
 Narrator: norcivilian

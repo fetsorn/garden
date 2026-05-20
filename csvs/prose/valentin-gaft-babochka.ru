@@ -1,5 +1,5 @@
 Title:
-    Valentin Gaft <<Babochka>>
+    Valentin Gaft Babochka
 Credit: Read by
 Author: unknown
 Narrator: norcivilian

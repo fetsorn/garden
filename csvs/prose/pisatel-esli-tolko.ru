@@ -1,5 +1,5 @@
 Title:
-    <<Pisatel, esli tolko on volna, a okean Rossiya, ne mozhet b
+    Pisatel, esli tolko on volna, a okean Rossiya, ne mozhet b
 Credit: Read by
 Author: unknown
 Narrator: norcivilian
