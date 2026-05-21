@@ -139,10 +139,37 @@ function renderItemUtterances(place, lang, catalog) {
 
 // ── place with interior: render utterances from child places ──────
 
+function getLatestItemDate(place, catalog) {
+  const items = catalog.placeBySlug.get(place.slug)?.itemSlugs || [];
+  let latest = null;
+  for (const itemSlug of items) {
+    const item = catalog.itemBySlug.get(itemSlug);
+    if (item?.date && (!latest || item.date > latest)) {
+      latest = item.date;
+    }
+  }
+  return latest;
+}
+
+function getSortDate(place, catalog) {
+  return getLatestItemDate(place, catalog) || place.date || "";
+}
+
 function renderInteriorUtterances(place, lang, catalog) {
+  // sort interior places by item date (falling back to place date), newest first
+  // places with no date at all go to the bottom
+  const sorted = [...place.interior].sort((a, b) => {
+    const dateA = getSortDate(a, catalog);
+    const dateB = getSortDate(b, catalog);
+    if (dateA && dateB) return dateB.localeCompare(dateA);
+    if (dateA) return -1;
+    if (dateB) return 1;
+    return 0;
+  });
+
   const sections = [];
 
-  for (const child of place.interior) {
+  for (const child of sorted) {
     if (!child.prose[lang]) continue;
 
     const character = child.author || child.slug;
@@ -158,11 +185,22 @@ function renderInteriorUtterances(place, lang, catalog) {
       extra = `\n      <audio class="item-audio" src="${audioUrl}"></audio>\n      <button class="item-play" onclick="toggleItemAudio(this)">&#9654;</button>`;
     }
 
+    // dates: item date (what was recorded) and place date (the poem/text)
+    const itemDate = getLatestItemDate(child, catalog);
+    const placeDate = child.date;
+    let dateHtml = "";
+    if (itemDate || placeDate) {
+      const parts = [];
+      if (itemDate) parts.push(`<time class="item-date">${itemDate}</time>`);
+      if (placeDate) parts.push(`<time class="place-date">${placeDate}</time>`);
+      dateHtml = `\n      <div class="dates">${parts.join(" ")}</div>`;
+    }
+
     sections.push(`    <section>
       <figure data-character="${character}"><figcaption>${character}</figcaption></figure>
       <blockquote data-uuid="${child.slug}">
         <p>${text}</p>
-      </blockquote>${extra}
+      </blockquote>${extra}${dateHtml}
     </section>`);
   }
 

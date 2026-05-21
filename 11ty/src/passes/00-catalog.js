@@ -20,6 +20,8 @@ async function buildCatalog() {
   const placeItemPairs = await pairs("place", "item");
   const authorPairs = await pairs("place", "author");
   const itemRemotePairs = await pairs("item", "remote");
+  const itemDatePairs = await pairs("item", "date");
+  const placeDatePairs = await pairs("place", "date");
   const themePairs = await pairs("place", "theme");
   const ambientPairs = await pairs("place", "ambient");
   const passthroughPairs = await pairs("place", "passthrough");
@@ -47,6 +49,21 @@ async function buildCatalog() {
 
   const authorMap = new Map(authorPairs);
   const itemRemoteMap = new Map(itemRemotePairs);
+
+  // item-date: keep latest date per item (some items may have multiple)
+  const itemDateMap = new Map();
+  for (const [item, date] of itemDatePairs) {
+    const prev = itemDateMap.get(item);
+    if (!prev || date > prev) itemDateMap.set(item, date);
+  }
+
+  // place-date: keep latest date per place
+  const placeDateMap = new Map();
+  for (const [place, date] of placeDatePairs) {
+    const prev = placeDateMap.get(place);
+    if (!prev || date > prev) placeDateMap.set(place, date);
+  }
+
   const themeMap = new Map(themePairs);
   const ambientMap = new Map(ambientPairs);
   const passthroughMap = new Map(passthroughPairs);
@@ -87,6 +104,7 @@ async function buildCatalog() {
       langs,
       prose,
       remote: itemRemoteMap.get(slug) || null,
+      date: itemDateMap.get(slug) || null,
     });
   }
 
@@ -117,6 +135,7 @@ async function buildCatalog() {
       interior: [],  // resolved later
       items: [],     // resolved later
       theme: themeMap.get(slug) || null,
+      date: placeDateMap.get(slug) || null,
       ambient: ambientMap.get(slug) || null,
       passthrough: passthroughMap.get(slug) || null,
       access: accessMap.get(slug) || null,
