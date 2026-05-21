@@ -1,6 +1,8 @@
 crossroads,concert
+crossroads,lounge
 crossroads,stage
 crossroads,theatre
 stage,crossroads
 theatre,crossroads
 concert,crossroads
+lounge,crossroads
