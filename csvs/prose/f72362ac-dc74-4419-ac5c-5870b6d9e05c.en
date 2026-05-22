@@ -1,0 +1,120 @@
+FETSORN
+So I was looking for the origins of video games that I like. It came down to crawlers and arpgs in 90s, text adventures in the 80s, and then to games written in [TUTOR](https://en.wikipedia.org/wiki/TUTOR#Structure_of_a_TUTOR_lesson) for the [PLATO](https://en.wikipedia.org/wiki/PLATO_(computer_system)) system.
+
+FETSORN
+there were some languages based on TUTOR - [cT](https://vpython.org/contents/cTsource/cToverview.html), vPython, [GlowScript](https://www.glowscript.org/#/user/GlowScriptDemos/folder/Examples/)
+
+FETSORN
+But it's easy enough to run an emulator of a PLATO system and work with TUTOR directly
+
+FETSORN
+VERY IMPORTANT! This is the "The TUTOR language" [book](https://eric.ed.gov/?id=ED124149) that has everything on the language
+
+FETSORN
+Early on I found a [user guide](http://www.bitsavers.org/pdf/cdc/plato/97405900C_PLATO_Users_Guide_Apr81.pdf) that seemed outdated, and a [wiki](https://emulation.gametechwiki.com/index.php/PLATO_Computer_System)
+
+FETSORN
+There's a [cyber1](https://www.cyber1.org/faq.asp) service that runs a PLATO CYBIS network. There's also IRATA [network](https://irata.online/users/confirmation)
+
+FETSORN
+I [looked](https://github.com/search?q=plato+emulator) for a way to run my own CYBIS. Some failed attempts: [platoterm99](https://github.com/tschak909/platoterm99), [platoterm-plan9](https://github.com/tschak909/platoterm-plan9).
+
+FETSORN
+after failures I tried to figure out which emulators I would actually need to assemble the network myself.
+
+FETSORN
+[StackExchange: Did communication between a PLATO terminal and mainframe use pushes?](https://retrocomputing.stackexchange.com/questions/18136/did-communication-between-a-plato-terminal-and-mainframe-use-pushes).
+
+FETSORN
+[Bradrico Rigg: Run your own mainframe using Hercules mainframe emulator and MVS 3.8j tk4](https://bradricorigg.medium.com/run-your-own-mainframe-using-hercules-mainframe-emulator-and-mvs-3-8j-tk4-55fa7c982553).
+
+FETSORN
+[IBM: What is a Mainframe Simulator](https://ibmmainframes.com/about8.html).
+
+FETSORN
+[CppCyber: Desktop Cyber with Dual Mainframe/Dual CPU support](https://github.com/drsinder/CppCyber/wiki)
+
+FETSORN
+I looked for "plato mainframe cybis" on Reddit, and found that people mainly [used](https://www.reddit.com/r/mainframe/comments/jkgkev/a_mainframe_by_any_other_name_197080s_plato_iv_on/) cyber1, or [tried](https://www.reddit.com/r/EmulationOnPC/comments/ky6o87/cyber1org_vs_cybisplato_specifically_for/) to.
+
+FETSORN
+Forums led me to broken links for some of the parts of the system I would need to emulate. A [CybisRelease.zip](https://web.archive.org/web/20200113033420/http://www.control-data.info/CybisRelease.html), a DtCYBER.binaries.zip, pterm.
+
+FETSORN
+I just had to find a fresh website with links to latest releases of these, so I [searched](https://www.qwant.com/?q=download+cybisrelease1.zip&client=brz-brave&t=web) "download cybisrelease1.zip"
+
+FETSORN
+And found the control data [group](https://cdc.sjzoppi.com/doku.php?id=cybis:operation:installing
+)
+
+FETSORN
+They linked to CODEX website which had all the latest [releases](https://codex.sjzoppi.com/doku.php?id=utilities:start)
+
+FETSORN
+They also had some useful [manuals](https://codex.sjzoppi.com/x-dist/cybis_operation_and_usage_manual.pdf) with instructions on how to load these emulator utilities
+
+FETSORN
+I had trouble running DtCyber on MacOS - it couldn't link libX11. First I looked for another distribution of [Desktop Cyber](https://github.com/kej715/DtCyber)
+
+FETSORN
+Then installed libx11 in a nix shell and failed to run dtcyber.
+
+FETSORN
+Then I searched for "macos libx11", stackoverflow [advised](https://stackoverflow.com/questions/46281150/how-to-install-libx11-dev-on-mac-os-x-sierra) to install [XQuartz](https://www.xquartz.org/). I remember using it a while back for wine, I think.
+
+FETSORN
+I installed it and the dtcyber script worked.
+
+FETSORN
+Then it was just like the in the CYBIS usage manual. You run dtcyber, install PLATO from the images, and login to CYBIS with an author account.
+
+IMAGE
+https://i.imgur.com/PR0dG7l.png
+
+FETSORN
+I reached the PLATO screen with lessons.
+
+IMAGE
+https://i.imgur.com/bVp4Hyc.png
+
+FETSORN
+The manual said that f9 and f10 are DATA and STOP buttons,
+so I figured that f8 is BACK and f6 is HELP, or something like that
+From there I went to read various HELP screens on my own.
+
+IMAGE
+https://i.imgur.com/1Co29Tf.png
+
+FETSORN
+The CYBIS manual mentioned that there were two TUTOR lessons for study mytut1 and mytut2.
+
+IMAGE
+https://i.imgur.com/vPYkLVa.png
+
+FETSORN
+I learned to edit them, debugged errors.
+
+IMAGE
+https://i.imgur.com/eIqbES4.png
+
+FETSORN
+Turned out that first 8 characters of each line were a command, and values had to be indented further.
+Turned out that editing was akin to sed, you had to write i9 to edit 9th line.
+This was also the time to return to "The TUTOR language" textbook to look for some code examples.
+
+IMAGE
+https://i.imgur.com/ee8iysi.png
+
+FETSORN
+And eventually I put a "HELLO WORLD" on the screen.
+
+IMAGE
+https://i.imgur.com/f158mxx.png
+https://i.imgur.com/gVm2ged.png
+
+FETSORN
+At this point I started wondering if TUTOR is [Turing complete](https://math.stackexchange.com/questions/112011/how-to-prove-a-programming-language-is-turing-complete)
+
+FETSORN
+And also of course - if I can edit tutor code as a text file
+And also I couldn't find the dnd or pedit game in the PLATO system, other games were shipped.
