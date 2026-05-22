@@ -11,21 +11,27 @@ permalink: "/all.html"
   <script src="lang.js"></script>
 </head>
 <body>
-  <main>
-    <h1>index</h1>
-    <ul>
-{%- for place in places %}
-{%- if place.access === "public" %}
-      <li>
-        <a href="./{{ place.slug }}.html">
-{%- for lang in place.langs %}
-          <span lang="{{ lang }}">{{ place.prose[lang] | truncate(40) }}</span>
+  <nav>
+    <div class="lang-toggle">
+{%- for lang in langs %}
+      <button data-lang="{{ lang }}" onclick="setLang('{{ lang }}')">{{ lang }}</button>
 {%- endfor %}
-        </a>
+    </div>
+  </nav>
+  <main>
+    <h1></h1>
+{%- for lang in langs %}
+    <ul lang="{{ lang }}" class="index-list">
+{%- for node in index_tree %}
+{%- if node.prose[lang] %}
+      <li style="padding-left: {{ node.depth * 1.5 }}rem">
+        <a href="./{{ node.slug }}.html">{{ node.prose[lang] | truncate(40) }}</a>
+{%- for w in node.warnings %} <span class="warning-tag" data-warning="{{ w.slug }}">{{ w.labels[lang] or w.slug }}</span>{%- endfor %}
       </li>
 {%- endif %}
 {%- endfor %}
     </ul>
+{%- endfor %}
   </main>
   <footer>
     <a href="./crossroads.html">home</a>

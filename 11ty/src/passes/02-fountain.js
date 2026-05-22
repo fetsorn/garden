@@ -216,6 +216,15 @@ function renderInteriorUtterances(place, lang, catalog) {
 
     let extra = renderRemote(audioUrl);
 
+    // warnings
+    let warningHtml = "";
+    if (child.warnings.length > 0) {
+      const tags = child.warnings
+        .map((w) => `<span class="warning-tag" data-warning="${w}">${catalog.warningLabel(w, lang)}</span>`)
+        .join(" ");
+      warningHtml = `\n      <div class="warnings">${tags}</div>`;
+    }
+
     // dates: item date (what was recorded) and place date (the poem/text)
     const itemDate = getLatestItemDate(child, catalog);
     const placeDate = child.date;
@@ -231,7 +240,7 @@ function renderInteriorUtterances(place, lang, catalog) {
       <figure data-character="${character}"><figcaption>${character}</figcaption></figure>
       <blockquote data-uuid="${child.slug}">
         ${md.render(text)}
-      </blockquote>${extra}${dateHtml}
+      </blockquote>${extra}${warningHtml}${dateHtml}
     </section>`);
   }
 

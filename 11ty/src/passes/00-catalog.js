@@ -26,6 +26,7 @@ async function buildCatalog() {
   const ambientPairs = await pairs("place", "ambient");
   const passthroughPairs = await pairs("place", "passthrough");
   const accessPairs = await pairs("place", "access");
+  const warningPairs = await pairs("place", "warning");
 
   // ── build maps ─────────────────────────────────────────────────────
 
@@ -68,6 +69,12 @@ async function buildCatalog() {
   const ambientMap = new Map(ambientPairs);
   const passthroughMap = new Map(passthroughPairs);
   const accessMap = new Map(accessPairs);
+
+  const warningMap = new Map();
+  for (const [place, warning] of warningPairs) {
+    if (!warningMap.has(place)) warningMap.set(place, []);
+    warningMap.get(place).push(warning);
+  }
 
   // ── collect item slugs ────────────────────────────────────────────
 
@@ -139,6 +146,7 @@ async function buildCatalog() {
       ambient: ambientMap.get(slug) || null,
       passthrough: passthroughMap.get(slug) || null,
       access: accessMap.get(slug) || null,
+      warnings: warningMap.get(slug) || [],
     };
 
     places.push(place);
@@ -197,10 +205,31 @@ async function buildCatalog() {
     return results;
   }
 
+  // ── warning labels (slug → { lang: label }) ────────────────────
+
+  const warningLabelCache = new Map();
+
+  function warningLabel(slug, lang) {
+    if (!warningLabelCache.has(slug)) {
+      const langs = langsBySlug.get(slug) || [];
+      const prose = {};
+      for (const l of langs) {
+        prose[l] = fs.readFileSync(
+          path.join(PROSE_DIR, `${slug}.${l}`),
+          "utf-8",
+        ).trim();
+      }
+      warningLabelCache.set(slug, prose);
+    }
+    const prose = warningLabelCache.get(slug);
+    return prose[lang] || prose["en"] || slug;
+  }
+
   return {
     places,
     placeBySlug,
     itemBySlug,
     peekAudio,
+    warningLabel,
   };
 }

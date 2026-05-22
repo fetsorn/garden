@@ -39,7 +39,7 @@ permalink: "/{{ place.slug }}.html"
 {%- endfor %}
   <footer>
     <a href="./crossroads.html">home</a>
-{%- if place.access === "public" %}
+{%- if place.access !== "private" %}
     <a href="./all.html">index</a>
 {%- endif %}
   </footer>

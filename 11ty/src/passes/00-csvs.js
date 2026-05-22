@@ -17,6 +17,7 @@ export async function query(collection, constraints = {}) {
 // read all pairs from a two-column tablet directly (fast path)
 export async function pairs(trunk, leaf) {
   const filePath = path.join(CSVS_DIR, `${trunk}-${leaf}.csv`);
+  if (!fs.existsSync(filePath)) return [];
   const content = fs.readFileSync(filePath, "utf-8");
   const result = [];
   for (const line of content.split("\n")) {

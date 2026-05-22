@@ -184,6 +184,31 @@ blockquote :not(pre) > code {
   font-variant-numeric: tabular-nums;
 }
 
+/* warnings */
+
+.warnings {
+  width: 100%;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.warning-tag {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  background: #f0f0f0;
+  color: #666;
+  white-space: nowrap;
+}
+
+.warning-tag[data-warning="favorite"] {
+  background: #fff8e1;
+  color: #f59e0b;
+}
+
 /* item audio player */
 
 .item-audio {
@@ -278,6 +303,26 @@ blockquote :not(pre) > code {
   border-color: #222;
   background: #222;
   color: #fff;
+}
+
+/* index list */
+
+.index-list {
+  list-style: none;
+}
+
+.index-list li {
+  margin-bottom: 0.25rem;
+}
+
+.index-list a {
+  color: #555;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.index-list a:hover {
+  color: #222;
 }
 
 /* footer */
