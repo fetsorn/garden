@@ -216,6 +216,39 @@ blockquote :not(pre) > code {
   color: #fff;
 }
 
+/* item video */
+
+.item-video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+
+/* item image */
+
+.item-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+
+/* item link */
+
+.item-link {
+  flex-shrink: 0;
+  align-self: center;
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: #555;
+  transition: color 0.2s;
+}
+
+.item-link:hover {
+  color: #222;
+}
+
 /* ambient */
 
 #ambient {

@@ -118,6 +118,27 @@ function parseFountain(content) {
   return utterances;
 }
 
+// ── remote type detection ─────────────────────────────────────────
+
+const AUDIO_EXT = /\.(ogg|mp3|m4a|flac|wav|aac|opus)$/i;
+const VIDEO_EXT = /\.(mp4|mkv|webm|mov|avi)$/i;
+const IMAGE_EXT = /\.(jpg|jpeg|png|gif|webp|svg|avif)$/i;
+
+function renderRemote(url) {
+  if (!url) return "";
+  if (AUDIO_EXT.test(url)) {
+    return `\n      <audio class="item-audio" src="${url}"></audio>\n      <button class="item-play" onclick="toggleItemAudio(this)">&#9654;</button>`;
+  }
+  if (VIDEO_EXT.test(url)) {
+    return `\n      <video class="item-video" src="${url}" controls preload="metadata"></video>`;
+  }
+  if (IMAGE_EXT.test(url)) {
+    return `\n      <img class="item-image" src="${url}" loading="lazy">`;
+  }
+  // plain link
+  return `\n      <a class="item-link" href="${url}" target="_blank" rel="noopener">&#128279;</a>`;
+}
+
 // ── place with items: render parsed fountain ──────────────────────
 
 function renderItemUtterances(place, lang, catalog) {
@@ -129,10 +150,7 @@ function renderItemUtterances(place, lang, catalog) {
     const utterances = parseFountain(item.prose[lang]);
     for (const u of utterances) {
       const classes = [u.mood, u.location].filter(Boolean).join(" ");
-      let extra = "";
-      if (item.remote) {
-        extra = `\n      <audio class="item-audio" src="${item.remote}"></audio>\n      <button class="item-play" onclick="toggleItemAudio(this)">&#9654;</button>`;
-      }
+      let extra = renderRemote(item.remote);
 
       let blockquoteContent = "";
       if (u.text) {
@@ -196,10 +214,7 @@ function renderInteriorUtterances(place, lang, catalog) {
     const audioUrl =
       audioResults.length > 0 ? audioResults[0].remote : null;
 
-    let extra = "";
-    if (audioUrl) {
-      extra = `\n      <audio class="item-audio" src="${audioUrl}"></audio>\n      <button class="item-play" onclick="toggleItemAudio(this)">&#9654;</button>`;
-    }
+    let extra = renderRemote(audioUrl);
 
     // dates: item date (what was recorded) and place date (the poem/text)
     const itemDate = getLatestItemDate(child, catalog);
