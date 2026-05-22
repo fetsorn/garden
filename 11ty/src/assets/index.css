@@ -136,6 +136,34 @@ blockquote a:hover {
   text-decoration-color: #222;
 }
 
+blockquote img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+
+blockquote pre {
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding: 0.75rem;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+blockquote code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.85em;
+}
+
+blockquote :not(pre) > code {
+  background: #f0f0f0;
+  padding: 0.15em 0.3em;
+  border-radius: 3px;
+}
+
 /* lyrics */
 
 .lyrics {

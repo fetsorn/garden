@@ -40,6 +40,7 @@ export default async function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/portraits": "/portraits" });
   eleventyConfig.addPassthroughCopy({ "src/themes": "/themes" });
   eleventyConfig.addPassthroughCopy({ "src/assets/index.css": "/index.css" });
+  eleventyConfig.addPassthroughCopy({ "node_modules/highlight.js/styles/github.css": "/hljs.css" });
   eleventyConfig.addPassthroughCopy({ "src/assets/lang.js": "/lang.js" });
   eleventyConfig.addPassthroughCopy({ "src/assets/robots.txt": "/robots.txt" });
 

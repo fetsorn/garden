@@ -67,50 +67,36 @@ I installed it and the dtcyber script worked.
 
 FETSORN
 Then it was just like the in the CYBIS usage manual. You run dtcyber, install PLATO from the images, and login to CYBIS with an author account.
-
-IMAGE
-https://i.imgur.com/PR0dG7l.png
+![image](https://i.imgur.com/PR0dG7l.png)
 
 FETSORN
 I reached the PLATO screen with lessons.
-
-IMAGE
-https://i.imgur.com/bVp4Hyc.png
+![image](https://i.imgur.com/bVp4Hyc.png)
 
 FETSORN
 The manual said that f9 and f10 are DATA and STOP buttons,
 so I figured that f8 is BACK and f6 is HELP, or something like that
 From there I went to read various HELP screens on my own.
-
-IMAGE
-https://i.imgur.com/1Co29Tf.png
+![image](https://i.imgur.com/1Co29Tf.png)
 
 FETSORN
 The CYBIS manual mentioned that there were two TUTOR lessons for study mytut1 and mytut2.
-
-IMAGE
-https://i.imgur.com/vPYkLVa.png
+![image](https://i.imgur.com/vPYkLVa.png)
 
 FETSORN
 I learned to edit them, debugged errors.
-
-IMAGE
-https://i.imgur.com/eIqbES4.png
+![image](https://i.imgur.com/eIqbES4.png)
 
 FETSORN
 Turned out that first 8 characters of each line were a command, and values had to be indented further.
 Turned out that editing was akin to sed, you had to write i9 to edit 9th line.
 This was also the time to return to "The TUTOR language" textbook to look for some code examples.
-
-IMAGE
-https://i.imgur.com/ee8iysi.png
+![image](https://i.imgur.com/ee8iysi.png)
 
 FETSORN
 And eventually I put a "HELLO WORLD" on the screen.
-
-IMAGE
-https://i.imgur.com/f158mxx.png
-https://i.imgur.com/gVm2ged.png
+![image](https://i.imgur.com/f158mxx.png)
+![image](https://i.imgur.com/gVm2ged.png)
 
 FETSORN
 At this point I started wondering if TUTOR is [Turing complete](https://math.stackexchange.com/questions/112011/how-to-prove-a-programming-language-is-turing-complete)

@@ -1,6 +1,22 @@
 import path from "node:path";
 import { load } from "cheerio";
 import { Fountain } from "fountain-js";
+import MarkdownIt from "markdown-it";
+import hljs from "highlight.js";
+
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  breaks: true,
+  highlight(str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(str, { language: lang }).value;
+      } catch {}
+    }
+    return hljs.highlightAuto(str).value;
+  },
+});
 
 // ── fountain parsing (for items) ──────────────────────────────────
 
@@ -120,7 +136,7 @@ function renderItemUtterances(place, lang, catalog) {
 
       let blockquoteContent = "";
       if (u.text) {
-        blockquoteContent += `\n        <p>${u.text}</p>`;
+        blockquoteContent += `\n        ${md.render(u.text)}`;
       }
       if (u.lyricsLines && u.lyricsLines.length) {
         blockquoteContent += `\n        <p class="lyrics">${u.lyricsLines.join("<br>")}</p>`;
@@ -199,7 +215,7 @@ function renderInteriorUtterances(place, lang, catalog) {
     sections.push(`    <section>
       <figure data-character="${character}"><figcaption>${character}</figcaption></figure>
       <blockquote data-uuid="${child.slug}">
-        <p>${text}</p>
+        ${md.render(text)}
       </blockquote>${extra}${dateHtml}
     </section>`);
   }

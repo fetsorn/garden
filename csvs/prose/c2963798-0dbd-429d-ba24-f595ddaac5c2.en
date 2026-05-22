@@ -8,20 +8,19 @@ csvs is a plain text database that uses git for storage and rollbacks. The NodeJ
 
 NASIM
 Early September I picked up the org-mode export feature. Internally in csvs-nodejs each database is represented as a JSON object. So this entry
-
-CODE
+```csv
 | datum     | uuid     |    actdate |    saydate | actname | sayname | files  |
 | some text | 48c475bd | 1599-01-01 | 1599-01-01 | william | mary   | 7e7b8e |
-
-CODE
+```
+```csv
 | files  | uuid     | filename        | filehash  |
 | 7e7b8e | b8c80611 | "firstpic.jpg"  | 8236ea5a0 |
 | 7e7b8e | e92071cb | "secondpic.jpg" | 0aa477f97 |
+```
 
 NASIM
 is represented as this JSON object
-
-CODE
+```json
 {
   "_": "datum",
   "UUID": "48c475bd",
@@ -49,14 +48,14 @@ CODE
     ]
   }
 }
+```
 
 NASIM
 Another way to represent database entries is org-mode markup format. org-mode is a more complex alternative to markdown or YAML which allows storing multiple plain text entries along with front matter metadata for each.
 
 NASIM
 The same entry in org-mode looks like this
-
-CODE
+```orgmode
 . *
 :PROPERTIES:
 :uuid: 48c475bd
@@ -67,6 +66,7 @@ CODE
 :files: (:_ 'files' :UUID '7e7b8e' :items ((:_ 'file' :UUID 'b8c80611' :filename 'firstpic.jpg' :filehash '8236ea5a0')(:_ 'file' :UUID 'e92071cb' :filename 'secondpic.jpg' :filehash '0aa477f97')))
 :END:
 some text
+```
 
 NASIM
 According to the specification, this command has to read the database and output a valid org-mode file
@@ -97,8 +97,7 @@ In October I worked on reporting database schema and stats. The schema for each 
 NASIM
 Each key in the schema object represents a database entity, and if entity has a parent, its name is specified in the “trunk” field.
 A branch without a trunk is called a root. Multiple roots are allowed. A branch that has a trunk is called a leaf.
-
-CODE
+```json
 {
   "datum": {
     "type": "string"
@@ -122,14 +121,14 @@ CODE
     "type": "string"
   }
 }
+```
 
 NASIM
 Each branch has a type — “string”, “number”, “object” or “array”. Values of type “array” have multiple leaves of type “object”.
 
 NASIM
 I took up the task to add a --stats flag that would show the schema in the form of a tree.
-
-CODE
+```txt
 csvs -i ./database --stats
 entries: 65
 datum
@@ -138,6 +137,7 @@ datum
 |- files
   |- file
      |- filename
+```
 
 NASIM
 First I built a nested object representation of the schema, and then printed a tree line with indentation for each level of nesting. The PR was accepted soon after.
@@ -146,8 +146,7 @@ First I built a nested object representation of the schema, and then printed a t
 
 NASIM
 The org-mode format does not specify a database schema, but it can be inferred from the structure of JSON objects returned from the parser. In case entries omit metadata, I looked for the one with the largest number of properties and printed as a tree and submitted the the PR.
-
-CODE
+```txt
 csvs -i ./data.bi.org --stats
 datum
 |- actdate
@@ -155,6 +154,7 @@ datum
 |- files
   |- file
      |- filename
+```
 
 # Conclusion
 
