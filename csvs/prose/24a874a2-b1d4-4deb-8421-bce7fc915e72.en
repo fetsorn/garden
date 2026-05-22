@@ -1,0 +1,50 @@
+VINONA
+Many years ago I studied at the Polytechnic University and didn’t know exactly what to do. I dug into html, css and js, wrote several simple telegram bots in Python (they have since sunk into oblivion), then did the same in Java.
+
+VINONA
+I managed to do a lot of things, but I saw that I was stuck in the tutorial hell. I got a job as a frontend developer but the impostor syndrome got the better of me and I moved to customer support.
+
+VINONA
+During the 2020 pandemic, I found myself again in the Linux information bubble and took the deep dive. Since then I have been studying system administration and programming in the background.
+
+VINONA
+This year, I decided to find some community and consistent tasks. I searched for "web development for beginners" and found a mentor. At first we discussed coding React, but then the mentor asked what I was interested in, and I said that I was generally interested in software development, and shared my thoughts about rust and C++. The mentor suggested I take my dreams off the backburner, and I started writing Rust for the Retina project at Norcivilian Labs.
+
+VINONA
+Retina is a service for identifying retinopathy, an eye illness, from photos. The backend had already implemented the convolutional neural network, and we were writing the desktop and mobile client for it.
+
+VINONA
+At first I needed to set everything up to participate in the project which runs on Nix. I installed NixOS, configured it, and checked into the project on GitLab. I immediately ran into a bug with the cross-platform development shell and we had to fix the pattern matching in the Nix flake. After everything was up and running, I took on the first task — implementation of the login request.
+
+VINONA
+The REST API had already been implemented on the Retina server and our front-end engineer had already designed the screen layout. You can read his story here.
+
+VINONA
+Now I needed to create the right requests in Rust. I used the reqwest crate. crate is a library, just like using std::vector in C++. I created a request using the hashmap data structure built into Rust. The request endpoint accepted plain text, not json, so I converted the hashmap structure to a string. Then I made the request and processed the response. The reponse was given as a JSON structure, so I had to deserialize it. I created a Login struct and, output the response into it using the .json() method and returned the token string according to the documentation.
+
+VINONA
+When the task was complete, I ran the application to make sure it was working correctly and logged the response with the println! command, which printed the token to the system terminal. Since Retina runs on Tauri and uses a browser engine, I also logged the data in javascript developer console. Then I deleted all the lines for logs, committed changes and sent the merge request.
+
+VINONA
+At this point I started reading Programming with Rust by Jim Blendy - a really good book! The books are very dense and provide knowledge, but this is largely achieved at the cost of time.
+
+VINONA
+The next task I took was signup. This task was similar and I implemented it in the same way. On client side, the user fills out the registration form, the client calls my Rust function using the tauri `invoke` command, and passed the form input data. I receive the data from the client, deserialize it into a request body, and send a POST request using reqwest. In response I get data consisting of just one field “ok”, I deserialize it and return the result. Another task was ready, thus creating a new record on the server so that the user can signup.
+
+VINONA
+Here I encountered a 500 error, because the password I tested was too simple, and the server validation rejected it. I changed the password and everything was ready.
+
+VINONA
+Next was the user profile screen. I took the token from the client and had to get the user's profile data, so that when the client clicks on their profile, they see data about themselves. The story went the same way: I moved the old JavaScript code into the browser.js class and added a check that would call the new Rust code instead when on desktop. in Rust I created the function `get_user_data`, deserialized the token from the client, passed the required fields into the request body, including the token and operation name from the documentation. I received the response and deserialized it into a struct. Tauri takes care of the serialization of return values, so it arrived to the client as json. Another PR was ready.
+
+VINONA
+There is a meme in Rust that every codebase consists of unwraps. This is a method built into Rust that handles errors by panicking and closing the application. There is also a check that panics when a value inside the parentheses is not true or when the internals are not equal. This method is unsuitable for most cases because we don’t want the program to close, we want it to handle the errors in a try catch fashion. Rust has a special Result type for this, and some methods return a Result, which can be processed using pattern matching. We check whether it is `ok` or `err`, and either take the response value or handle the error. That’s why it’s called unwrap - we open, unpack the result and take the value. The Result type is generic and the type of the value inside it depends on the function that returns it.
+
+VINONA
+At first I wrote, so to speak, in draft mode, and used unwraps everywhere. Now I took up a task to refactor the code and add proper error handling. I changed all function signatures to return `Result<string,string>` and removed the unwraps. I created an intermediate variable to hold the Result, pattern matched using `match`, which is similar to the case switch in Java. If everything is ok, I write the value to another variable, and if an error comes, I return the error. Because of strict typing I make sure that the error type is a string. Now it is not the program that ends, but only the command. The user does not see the program crash, but sees an error inside the program itself. With that, the refactor was complete.
+
+VINONA
+My next task is to send the retinal image to the server for AI processing. The story here is the same, I make a request that, in addition to a token, accepts a picture and in response I receive data that I send to the client.
+
+VINONA
+Considering that I get pretty tired at my main job, I worked quite calmly and consistently. During this time, I managed to understand at my own level the basic concepts of Rust, such as ownership and borrowing, the features, the project itself in terms of what parst the code has, where to look, how the front end works, and the architecture. I use Linux, vim and bash for development and at home. I plan to continue putting different parts of Rust into practice, increase the complexity of the tasks, and get a better grasp of SQL and Docker, because they are usually asked in vacancies.

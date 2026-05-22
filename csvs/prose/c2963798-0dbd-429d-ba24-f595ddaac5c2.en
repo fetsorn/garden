@@ -1,0 +1,162 @@
+NASIM
+This autumn I decided to dedicate a portion of my time to an open source project. I chose to work on a NodeJS app for csvs databases because I previously participated in the project and know their stack well.
+
+NASIM
+csvs is a plain text database that uses git for storage and rollbacks. The NodeJS CLI utility synchronizes csvs databases with each other and with data in other formats — JSON, filesystem directories, social media backups. I took up the task of integrating the org-mode data format and providing reports on database statistics.
+
+# Org-mode export
+
+NASIM
+Early September I picked up the org-mode export feature. Internally in csvs-nodejs each database is represented as a JSON object. So this entry
+
+CODE
+| datum     | uuid     |    actdate |    saydate | actname | sayname | files  |
+| some text | 48c475bd | 1599-01-01 | 1599-01-01 | william | mary   | 7e7b8e |
+
+CODE
+| files  | uuid     | filename        | filehash  |
+| 7e7b8e | b8c80611 | "firstpic.jpg"  | 8236ea5a0 |
+| 7e7b8e | e92071cb | "secondpic.jpg" | 0aa477f97 |
+
+NASIM
+is represented as this JSON object
+
+CODE
+{
+  "_": "datum",
+  "UUID": "48c475bd",
+  "datum": "some text",
+  "actdate": "1599-01-01",
+  "saydate": "1599-01-01",
+  "actname": "william",
+  "sayname": "mary",
+  "files": {
+    "_": "files",
+    "UUID": "7e7b8e",
+    "items": [
+      {
+        "_": "file",
+        "UUID": "b8c80611",
+        "filename": "firstpic.jpg",
+        "filehash": "8236ea5a0"
+      },
+      {
+        "_": "file",
+        "UUID": "e92071cb",
+        "filename": "secondpic.jpg",
+        "filehash": "0aa477f97"
+      }
+    ]
+  }
+}
+
+NASIM
+Another way to represent database entries is org-mode markup format. org-mode is a more complex alternative to markdown or YAML which allows storing multiple plain text entries along with front matter metadata for each.
+
+NASIM
+The same entry in org-mode looks like this
+
+CODE
+. *
+:PROPERTIES:
+:uuid: 48c475bd
+:actdate: 1599-01-01
+:saydate: 1599-01-01
+:actname: william
+:sayname: mary
+:files: (:_ 'files' :UUID '7e7b8e' :items ((:_ 'file' :UUID 'b8c80611' :filename 'firstpic.jpg' :filehash '8236ea5a0')(:_ 'file' :UUID 'e92071cb' :filename 'secondpic.jpg' :filehash '0aa477f97')))
+:END:
+some text
+
+NASIM
+According to the specification, this command has to read the database and output a valid org-mode file
+csvs -i /path/to/database -t biorg
+
+NASIM
+The import of a csvs database has already been handled and the cli returned a NodeJS stream of JSON entries. To support org-mode export I needed to add a WriteableStream that would turn each JSON entry into org-mode text and output that to stdout.
+
+# Org-mode import
+
+NASIM
+Now I needed to parse that org-mode file and import it back into the CLI.
+
+NASIM
+the org-mode-parser library did well at converting org-mode entries into JSON, and before long the first PR the first PR was ready.
+
+NASIM
+Arrays were stored as Emacs Lisp property lists so I had to parse them separately. I learned from reading around the net that parsing involves tokenization, and building an abstract syntax tree. I found functions for each step in manila/node-lisp-parser and adapted them to plists.
+
+NASIM
+I submitted the second PR and proceeded to statistics reports.
+
+# Csvs stats
+
+NASIM
+In October I worked on reporting database schema and stats. The schema for each csvs database is stored in a metadir.json according to fetsorn/csvs-spec.
+
+NASIM
+Each key in the schema object represents a database entity, and if entity has a parent, its name is specified in the “trunk” field.
+A branch without a trunk is called a root. Multiple roots are allowed. A branch that has a trunk is called a leaf.
+
+CODE
+{
+  "datum": {
+    "type": "string"
+  },
+  "saydate": {
+    "trunk": "datum"
+  },
+  "sayname": {
+    "trunk": "datum"
+  },
+  "files": {
+    "trunk": "datum",
+    "type": "array"
+  },
+  "file": {
+    "trunk": "files",
+    "type": "object"
+  },
+  "filename": {
+    "trunk": "file",
+    "type": "string"
+  }
+}
+
+NASIM
+Each branch has a type — “string”, “number”, “object” or “array”. Values of type “array” have multiple leaves of type “object”.
+
+NASIM
+I took up the task to add a --stats flag that would show the schema in the form of a tree.
+
+CODE
+csvs -i ./database --stats
+entries: 65
+datum
+|- actdate
+|- actname
+|- files
+  |- file
+     |- filename
+
+NASIM
+First I built a nested object representation of the schema, and then printed a tree line with indentation for each level of nesting. The PR was accepted soon after.
+
+# Biorg stats
+
+NASIM
+The org-mode format does not specify a database schema, but it can be inferred from the structure of JSON objects returned from the parser. In case entries omit metadata, I looked for the one with the largest number of properties and printed as a tree and submitted the the PR.
+
+CODE
+csvs -i ./data.bi.org --stats
+datum
+|- actdate
+|- actname
+|- files
+  |- file
+     |- filename
+
+# Conclusion
+
+NASIM
+While working on this project I learned to interact with the filesystem, got to know how to deal with NodeJS streams, and wrote my first parser. Thanks to my team at NobleScript and @fetsorn for supporting the initiative to develop open source and for the help with finding solutions.

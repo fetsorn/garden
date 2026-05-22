@@ -2,9 +2,9 @@ crossroads,concert
 crossroads,lounge
 crossroads,stage
 crossroads,theatre
-crossroads,library
+crossroads,laboratory
 stage,crossroads
 theatre,crossroads
 concert,crossroads
 lounge,crossroads
-library,crossroads
+laboratory,crossroads

@@ -1,0 +1,43 @@
+NASIM
+I work at Noble Scripts, where we develop a template generator for Shopify-powered apps. Thanks to the 20% rule, I dedicate my spare time to working at Norcivilian Labs (NL). NL focuses on building open-source software and providing teaching and mentorship to engineers. I previously collaborated with NL in the autumn, which provided me with inspiration and a wealth of new experiences. You can find a detailed report on that month in my previous post link to report.
+
+NASIM
+In December, our UX designer created two dozen issues aimed at enhancing the user interface. Under the guidance of my mentor, I undertook tasks to address these issues. They encompassed creating a new search bar component, rectifying several bugs in the sidebar HTML form (referred to as “profile”), and enhancing accessibility on the overview screen.
+
+NASIM
+Immediately prior to commencing this sprint, I conducted a significant refactor of the project structure for the future development branch. This involved relocating all files, renaming folders, and rectifying imports and connections between components in accordance with the specifications. My pull request comprised 300 changes! However, during this process, I encountered minor bugs which I promptly addressed by creating GitLab issues and resolving them iteratively.
+
+# Search bar
+
+NASIM
+The refactor initiative commenced with the search bar. By default, Evenor retrieves all records from the CSV database, while the search bar facilitates filtering of these search results. We previously had a search bar that appended search queries to a list.
+
+NASIM
+The enhanced component now features a list of editable search queries.
+
+NASIM
+I introduced a “plus” button that displays a list of categories for data search within the database. However, upon entering a search query, the characters in the URL bar failed to update. We employ URLSearchParams to mirror search activity within the app for user accessibility. Upon completing this task, I discovered a bug in the search stream implementation. We utilize a stream in Evenor to fetch data from the database in the Electron thread and pass it to the renderer thread as messages. Each time a new search bar initiated a stream, the previous stream was supposed to be interrupted and cancelled. However, this interruption did not occur swiftly enough, resulting in some data from the first stream bleeding into the subsequent one. Collaborating with my mentor, we refined the logic of interruption using AbortSignal and elevated the interrupt function in the execution queue to rectify the streams.
+
+NASIM
+Additionally, I implemented functionality to provide suggestions in input fields within the profile based on values from the search bar. Thus, when a user searches for a name like “Bob” and adds a new record, the input field for the name suggests “Bob” as a value.
+
+# Profile
+
+NASIM
+Within the Evenor profile, users can view and edit selected database records. Certain elements of this view were only relevant to developers and could be concealed by default to avoid user distraction. Initially, I concealed the database schema, which depicts all primary data, in the default screen, opting to display it solely in the optional “settings” screen. We differentiate between the default and settings screens based on the value of a repoUUID variable. On the default screen, the UUID is hardcoded as “root,” while within project settings, it equals the project’s UUID. I made exceptions to display the component only when project settings were open, concealed the label showing the project UUID under a spoiler, and added a plain text description with i18n internationalization.
+
+NASIM
+Subsequently, I modified the “upload file” button to be hidden after file upload completion. Similarly, I hid a dropdown listing all possible array values for the array data type within a record, as it was not currently in use. Lastly, I replaced a dropdown with a button in cases where the dropdown could only have one field, such as when the array record field contained only one type of element.
+
+# Overview
+
+NASIM
+The overview component lists all database records. Evenor offers several options for the overview, and I implemented one last summer resembling an interactive list, which required enhancements. I added buttons for “edit record,” “delete record,” and “add record,” along with a tooltip providing a brief record description without needing to open it in the profile.
+
+NASIM
+Furthermore, I debugged and corrected radio buttons that adjusted the overview type, ensuring they remained synchronized when changing projects by subscribing to the repoUUID variable in a useEffect within the radio buttons.
+
+# Conclusion
+
+NASIM
+Over the past two months, I’ve experienced significant growth in my skills. I’ve learned to trace code execution paths and document them in GitLab issues, sought guidance from my mentor through open-ended questions, and referenced library documentation online. Having a clear plan of action facilitated my work, and whenever confusion arose, revisiting the plan helped me regain clarity. Implementing the search bar posed the greatest challenge, and learning to articulate questions and make notes proved to be a valuable skill.

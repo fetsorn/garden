@@ -1,0 +1,41 @@
+KZLEKS
+Over the past 10 years, I have changed a dozen different professions and places of work. For the most part, I worked in the service industry. At the same time, I managed my musical project and spent everything I earned on its development. Back then I had a total of hundreds of thousands of plays. Then I found myself on another continent, after many trials I returned home and got a job as a product manager in a team that writes open source applications.
+
+KZLEKS
+In February, I worked on evenor, an application for storing notes and media files that runs on technology that I initially did not understand without any technical background. Worked on product positioning - looking for competitors, organizing documentation and asking questions to narrow down the target audience. I helped write the NLNet grant proposal, and some of what I wrote is still on the team's website.
+
+KZLEKS
+Norcivilian Labs is a reader-supported publication. To receive new posts and support my work, consider becoming a free or paid subscriber.
+
+KZLEKS
+Then I joined the retina project. This application interacts with a neural network and provides medical reports on the condition of the eyes. Doctors mainly need this to save time on diagnostic tests; they can upload a photo from their phone or computer and voila - they have data for a medical report. Ultimately, this application expands access to necessary medical facilities, patients stand in queues less, and spend less money and time searching for medical care. It's simple, there is an application available to everyone.
+
+KZLEKS
+I conducted a competitor market analysis and created a client portrait. At first I thought that there were no analogues to such an application, and we were probably the only ones on the market. After research, it turned out that there are several similar products. However, we have a competitive advantage - we analyze not only diabetic retinopathy like all our competitors, but a whole range of retinal diseases. The guys gain experience working with neuron and coding applications, as well as experience creating an Apple application from scratch.
+
+KZLEKS
+Then there were user scenarios, user stories. I got access to a test version of the application, compared it with the customer's requirements - their website and presentation of how they see the application. Based on this data, this analysis, I wrote the requirements. Then I put myself in the user’s shoes, assessed what functions were needed in the application, and if this was not in either the stakeholder’s version or ours, I simply included it as additional ideas. For example, in a test application for Android I had to re-enter the application several times and I formulated that the user should always be able to click on the “back” button. I carefully studied the customer’s presentation to understand what he himself sees in this project and in the final release of the application, from which I compiled 17 requirements. Based on the requirements, I could now build a roadmap.
+
+KZLEKS
+First, I studied a bunch of articles about how to create these roadmaps in general. Various products talked about how these maps were compiled in various projects. Then I started assigning tasks to the engineers. All our team work is done in GitLab, and communication happens publicly in Zulip. You're probably wondering how I learned all this. It was hard, I initially did not understand the functionality, but naturally, like a good zoomer, I looked at tutorials on using GitLab, studied the most popular features, asked a bunch of questions from my mentor - why a merge request, what is it - and figured it out. As a result, I created a dozen issues, put labels and GitLab Milestone on them. I divided all conceptions into “core” and “ideas”. I recommend everyone to use labels, it doesn’t require much effort and makes the process easier for everyone on the team. When creating tasks, I included all the necessary screenshots in the description so that engineers could understand what they needed to do. For example, one day I found the necessary icons in the project’s cloud storage and transferred them to the engineer along with the task. I also notified everyone about blockers and approximate deadlines.
+
+KZLEKS
+Once the roadmap was complete, I needed to create a Gantt chart. We use ganttlab.com and it generates a schedule based on the due dates that I assign to each task in GitLab. Building a Gantt chart involves several steps, and setting the right deadlines is a lengthy process. At first, I simply roughly estimated the time frame after preliminary communication with the engineers. Then, after a few weeks, I assessed how much time was actually spent on tasks, moved the deadlines and after that I practically never had to move them. Now there is a completely different Gantt than it was at the beginning, when I first started working. Below you can see several options for the gantt. I sent the final version of the diagram to the customer and engineers.
+
+IMAGE
+Before
+
+IMAGE
+after
+
+KZLEKS
+Later I reached out to the ladieswho.tech community, invited a designer to join our team, and updated the resume using the team’s methods. We plan to redesign the interface and publish retina on all marketplaces.
+
+KZLEKS
+Now I decided to share some tips that I myself would have found useful a few months ago. First of all, I recommend talking to a mentor to everyone. The ability to ask open questions was very useful to me. At the beginning, everything was unexpected for me, when I studied these applications, everything was very complicated and it was not clear to me what was what, what function was needed for what, who the user was, who would use it, what is it for? I asked a bunch of clarifying questions and in the end everything became clear. In addition, I recorded all the brainstorming, questions and answers in notes in the cloud storage and referred to them again many times.
+
+KZLEKS
+After six months of working as a product manager, I am inspired, resourceful and ready for new projects.
+
+KZLEKS
+Norcivilian Labs is a reader-supported publication. To receive new posts and support my work, consider becoming a free or paid subscriber.
