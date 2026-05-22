@@ -145,6 +145,14 @@ async function buildCatalog() {
     placeBySlug.set(slug, place);
   }
 
+  // ── build interior backlinks (child → parents) ──────────────────
+
+  const parentMap = new Map();
+  for (const [parent, child] of interiorPairs) {
+    if (!parentMap.has(child)) parentMap.set(child, []);
+    parentMap.get(child).push(parent);
+  }
+
   // ── resolve references ────────────────────────────────────────────
 
   for (const place of places) {
@@ -156,7 +164,12 @@ async function buildCatalog() {
       .map((s) => itemBySlug.get(s))
       .filter(Boolean);
 
-    place.adjacentPlaces = place.adjacent
+    // adjacent + backlinks from parents that have this place as interior
+    const adjSlugs = new Set(place.adjacent);
+    const backlinks = (parentMap.get(place.slug) || [])
+      .filter((s) => !adjSlugs.has(s));
+
+    place.adjacentPlaces = [...place.adjacent, ...backlinks]
       .map((s) => placeBySlug.get(s))
       .filter(Boolean)
       .map((p) => ({ slug: p.slug, prose: p.prose, langs: p.langs }));
