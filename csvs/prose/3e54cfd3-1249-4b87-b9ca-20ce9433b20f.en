@@ -1,19 +1,19 @@
 SOFIA
 Do you remember yesterday?
 
-FETSORN
+ANTIPHON
 Barely. I think that I do, but when I begin to speak it comes out blank. And the day before yesterday? Don't bother.
 
 SOFIA
 So what, do you just forget?
 
-FETSORN
+ANTIPHON
 No, I keep record. I write things down.
 
 SOFIA
 How can you keep record of everything?
 
-FETSORN
+ANTIPHON
 Not everything. I pick the important things. Like
 ```
 2017-03-15 Grandmother told me about the winter of 1943. She said the river froze.
@@ -22,37 +22,39 @@ Not everything. I pick the important things. Like
 SOFIA
 How do you decide what is worth keeping?
 
-FETSORN
+ANTIPHON
 Well, I think about events. An event has a person, a location, a time, a description in prose. If I can find such details, it is worth keeping.
 
 SOFIA
 And what date is that story, 2017 or 1943?
 
-FETSORN
+ANTIPHON
 Both. There are two stories in each event. There is what happened - the winter, the river, grandmother was there. And there is what is happening when I hear the story.
 
 SOFIA
 Do you call them happened and happening?
 
-FETSORN
+ANTIPHON
 Act date and say date. Ot host and guest. Imagine a fireplace. Someone is telling a story by the fire. The things that happened to them belong to the host, to the act. But the guest is here, listening to them say, now.
 
 SOFIA
 That's a lot to keep up with. How can you show it?
 
-FETSORN
+ANTIPHON
 I can write a table.
-| event | granma story |
-| actdate | 1943 |
-| actname | granma |
-| saydate | 2017-03-15 |
-| sayname | fetsorn |
-| prose | Grandmother told me about the winter of 1943. She said the river froze |
+| branch  | value                                   |
+| ------- | -----------                             |
+| event   | granma story                            |
+| actdate | 1943                                    |
+| actname | granma                                  |
+| saydate | 2017-03-15                              |
+| sayname | fetsorn                                 |
+| prose   | Grandmother told me ... the river froze |
 
 SOFIA
 And how do you store that writing? That's a lot of paper.
 
-FETSORN
+ANTIPHON
 I teach the computer to understand it. The same event can be written in a way that computer understands
 ```
 {
@@ -69,14 +71,14 @@ I teach the computer to understand it. The same event can be written in a way th
 SOFIA
 And where does the computer put this? On some website? In the cloud?
 
-FETSORN
+ANTIPHON
 Sometimes I don't have the Internet, so it has to be clear skies, no cloud. Offline, on my device.
 
 SOFIA
 So, in some program, like Microsoft Word?
 
-FETSORN
-Programs break. And even when I don't have Word the story should be useful. So, plain text, like Notepad. It will work on any computer, even in a hundred years.
+ANTIPHON
+Programs break. And the story should be useful even when I don't have Word installed. So, plain text, like Notepad. It will work on any computer, even in a hundred years.
 
 SOFIA
 So you save these lines in a text file. That'd be hard to read, like
@@ -85,7 +87,7 @@ So you save these lines in a text file. That'd be hard to read, like
 { _: event, event: uncle's wedding }
 ```
 
-FETSORN
+ANTIPHON
 I break each event in pairs: event-actdate, event-saydate. I keep each pair in a file separated by comma. I call them tablets.
 ~```
 ~event-actdate.csv
@@ -114,18 +116,18 @@ I break each event in pairs: event-actdate, event-saydate. I keep each pair in a
 SOFIA
 And you have these tablets with lots of events in a folder somewhere? How do you find one event, do you just read the files?
 
-FETSORN
+ANTIPHON
 Sometimes I do just read them. To find events for 2025 I open event-actdate.csv, see that one about uncle's wedding, and look at its prose. Other times I use a program that looks at the files for me and finds what I need.
 
 SOFIA
 And what do you tell the program, "find me an event from 2025"?
 
-FETSORN
+ANTIPHON
 Yeah,
 `_=event&actdate=2025`
 or
 `{ _: event, actdate: 2025 }`
-It finds the event about uncle, gathers details for it and returns
+The programs finds the event about uncle, gathers details and returns
 ```
 {
   _: event,
@@ -141,31 +143,32 @@ It finds the event about uncle, gathers details for it and returns
 SOFIA
 And what is this program, where can I buy it?
 
-FETSORN
+ANTIPHON
 It's free, anyone can use it, and even change it, as long as they tell me what they've changed.
 
 SOFIA
 And what if your program breaks?
 
-FETSORN
-I have a big list of examples, they all work correctly, so it probably works well.
+ANTIPHON
+I have a big list of examples, they all work correctly, so it probably works well. And even if it breaks - the tables are text files that I can read.
 
 SOFIA
 That must have been hard to write such a program. Are you an engineer?
 
-FETSORN
+ANTIPHON
 The program can be very simple - it just reads the tablet and finds the line that you need. One can write more complicated code if they want to make it faster, or to support more interesting queries like "find first two events from March of any year". I am a self-taught engineer, and I document my attempts, so others can learn from my mistakes and try their own hand at writing a better one. One day it will be as fast and as smart as it can be.
 
 SOFIA
 So you have your program and anyone who reads your events has to use it?
 
-FETSORN
+ANTIPHON
 There is also another way, it looks like a book with buttons.
+
 SOFIA
 So your program has two modes, one that takes queries and one that opens as a book?
 
-FETSORN
-No, to keep it clean every program should do one thing well. The first program is called panrec, and there is a second one called mindbook.
+ANTIPHON
+No, to keep it clean every program should do one thing well. The first program makes the queries, and there is a second one that shows the book.
 
 SOFIA
 And what does the book show, the computer lines?
@@ -174,7 +177,7 @@ And what does the book show, the computer lines?
 { _: event, event: uncle's wedding }
 ```
 
-FETSORN
+ANTIPHON
 The book shows normal lines, like in the beginning
 ```
 2023-05-17 Granma told me about the winter of 1943. She said the river froze.
@@ -184,78 +187,77 @@ The book shows normal lines, like in the beginning
 SOFIA
 And how do you search for one event?
 
-FETSORN
+ANTIPHON
 I can put "2025" in the search bar and it will show me the uncle wedding. I can also edit an event, to change its date for example.
 
 SOFIA
 And it runs on the phone?
 
-FETSORN
-Mindbook runs inside of event editor - evenor. And evenor runs everywhere - computer, phone, browser. If I install the application, it stores the files on my device. If I open the website, it puts them in the browser memory.
+ANTIPHON
+Mindbook runs inside of event editor, and it runs everywhere - computer, phone, browser. If I install the application, it stores the files on my device. If I open the website, it puts them in the browser memory.
 
 SOFIA
 Alright, so you write down a bunch of events on your computer. Can you show them to others? Do you send the files over email?
 
-FETSORN
+ANTIPHON
 I can. But it's easier to use version control. It's like giving each group of tablets a passport, so that it can travel around to other people's computers. I call a folder with a passport - a mind.
 
 SOFIA
 And how do you send that mind around?
 
-FETSORN
+ANTIPHON
 Every computer knows about version control, so I can just give my friend a link and their computer will know how to get my mind and show it as a book. And if they change something, I will see the changes!
 
 SOFIA
 So you store all events in one mind? What if you want to share only some of the events?
 
-FETSORN
+ANTIPHON
 I have made about fifty minds by now. Every time I want to share some group of events, I create another mind.
-
 
 SOFIA
 So what kinds of things do you store there. Memories about yesterday?
 
-FETSORN
+ANTIPHON
 Memories, books, movies, poems, music, letters, plans, family trees - anything really.
 
 SOFIA
 And how do you keep track of fifty minds? Do you remember them all?
 
-FETSORN
+ANTIPHON
 No, I have a mind that tracks all the other minds. I call it a mindzoo. It opens in a book just the same. I can say "find me the minds about my ancestors" and it will show the ones about my granma and granpa.
 
 SOFIA
 So every time a friend wants to look at your poems they have to open the book?
 
-FETSORN
+ANTIPHON
 They can also open the library website that builds from the mind. I call it the garden. It's just a page with some stories, art, music that I want to share. There's hundreds of them.
 
 SOFIA
 If that website has hundreds of songs and poems, did you add each of them by hand?
 
-FETSORN
+ANTIPHON
 Some. I also have a program that reads all the files on a hard drive, transcribes them into text and adds them to a mind. And another program that takes backups from Telegram or Whatsapp and turns that into a mind too.
 
 SOFIA
 So when you need to remember something from yesterday you open a mind on your phone and search for it?
 
-FETSORN
+ANTIPHON
 Yeah. I also search for plans I made for this week. Before a concert I look at the lyrics that I want to sing.
 
 SOFIA
 This sounds useful. Do you use it alone?
 
-FETSORN
+ANTIPHON
 Mostly. Sometimes I give a mind as a gift. When we play roleplaying games, I keep the stories of our adventures in a mind. When a person in my family passes away, I make one in their memory. Other times people ask me to find their ancestors, so I give them a mind with their family history. And then, I live my life with the mindbook, so people use the minds through me.
 
 SOFIA
 And then _they_ have to remember what _you_ did yesterday.
 
-FETSORN
+ANTIPHON
 Exactly. Some have good enough memory to remember by heart. Others forget and it is fine. The more I work with memory, the more I understand how good it is to forget. Healthy, I think.
 
 SOFIA
 So do you remember yesterday then?...
 
-FETSORN
+ANTIPHON
 With all that in mind, I do.
