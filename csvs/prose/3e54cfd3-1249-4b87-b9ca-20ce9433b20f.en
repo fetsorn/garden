@@ -15,7 +15,7 @@ How can you keep record of everything?
 
 ANTIPHON
 Not everything. I pick the important things. Like
-```
+```txt
 2017-03-15 Grandmother told me about the winter of 1943. She said the river froze.
 ```
 
@@ -56,7 +56,7 @@ And how do you store that writing? That's a lot of paper.
 
 ANTIPHON
 I teach the computer to understand it. The same event can be written in a [way](norcivilianlabs.org/csvs/specs/store_object_notation.html) that computer understands
-```
+```json
 {
   _: event,
   event: granma story,
@@ -82,7 +82,7 @@ Programs break. And the story should be useful even when I don't have Word insta
 
 SOFIA
 So you save these lines in a text file. That'd be hard to read, like
-```
+```json
 { _: event, event: granma story }
 { _: event, event: uncle's wedding }
 ```
@@ -128,7 +128,7 @@ Yeah,
 or
 `{ _: event, actdate: 2025 }`
 The programs finds the event about uncle, gathers details and returns
-```
+```json
 {
   _: event,
   event: uncle's wedding
@@ -172,14 +172,14 @@ No, to keep it clean every program should do one thing well. The [first](https:/
 
 SOFIA
 And what does the book show, the computer lines?
-```
+```json
 { _: event, event: granma story }
 { _: event, event: uncle's wedding }
 ```
 
 ANTIPHON
 The book shows normal lines, like in the beginning
-```
+```txt
 2023-05-17 Granma told me about the winter of 1943. She said the river froze.
 2025 Uncle rented out an Italian restaurant for the celebration.
 ```
