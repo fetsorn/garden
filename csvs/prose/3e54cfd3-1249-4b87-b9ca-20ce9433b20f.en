@@ -89,29 +89,29 @@ So you save these lines in a text file. That'd be hard to read, like
 
 ANTIPHON
 I [break](https://dl.acm.org/doi/epdf/10.1145/318898.318923) each event in pairs: event-actdate, event-saydate. I keep each pair in a [file](https://norcivilianlabs.org/csvs/specs/comma_separated_value_store.html) separated by comma. I call them tablets.
-~```
-~event-actdate.csv
-~granma story,1943
-~uncle's wedding,2025
-~
-~event-saydate.csv
-~granma story,2017-03-15
-~uncle's wedding,2025
-~
-~event-actname.csv
-~granma story,granma
-~uncle's wedding,uncle
-~
-~event-sayname.csv
-~granma story,fetsorn
-~uncle's wedding,fetsorn
-~
-~prose/granma story
-~Grandmother told me about the winter of 1943. She said the river froze
-~
-~prose/uncle's wedding
-~Uncle rented out an Italian restaurant for the celebration
-~```
+```txt
+event-actdate.csv
+granma story,1943
+uncle's wedding,2025
+#
+event-saydate.csv
+granma story,2017-03-15
+uncle's wedding,2025
+#
+event-actname.csv
+granma story,granma
+uncle's wedding,uncle
+#
+event-sayname.csv
+granma story,fetsorn
+uncle's wedding,fetsorn
+#
+@/granma story
+Grandmother told me about the winter of 1943. She said the river froze
+#
+@/uncle's wedding
+Uncle rented out an Italian restaurant for the celebration
+```
 
 SOFIA
 And you have these tablets with lots of events in a folder somewhere? How do you find one event, do you just read the files?
