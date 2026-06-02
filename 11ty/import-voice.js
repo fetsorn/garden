@@ -10,7 +10,7 @@ const TRANSCRIPT_DIR = path.resolve(
   import.meta.dirname,
   "../../../minds/estate/prose/20260518-asahi/mm/lodes/downloads/Telegram Desktop/ChatExport_2026-05-18/voice_messages",
 );
-const PROSE_DIR = path.resolve(import.meta.dirname, "../csvs/prose");
+const PROSE_DIR = path.resolve(import.meta.dirname, "../csvs/@");
 const STAGE_FOUNTAIN = path.resolve(PROSE_DIR, "stage.en");
 const REMOTE_BASE = "http://fetsorn.storage.yandexcloud.net/sha256";
 
@@ -157,10 +157,7 @@ NORCIVILIAN
 ${dialogueBlock}
 `;
 
-  fs.writeFileSync(
-    path.join(PROSE_DIR, `${item.slug}.${item.lang}`),
-    fountain,
-  );
+  fs.writeFileSync(path.join(PROSE_DIR, `${item.slug}.${item.lang}`), fountain);
 }
 console.log(`wrote ${items.length} fountain files`);
 

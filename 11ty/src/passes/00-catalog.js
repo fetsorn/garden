@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { query, pairs } from "./00-csvs.js";
 
-const PROSE_DIR = path.resolve(import.meta.dirname, "../../../csvs/prose");
+const PROSE_DIR = path.resolve(import.meta.dirname, "../../../csvs/@");
 
 let _catalog = null;
 
@@ -139,8 +139,8 @@ async function buildCatalog() {
       adjacent: adjMap.get(slug) || [],
       interiorSlugs: interiorMap.get(slug) || [],
       itemSlugs: placeItemMap.get(slug) || [],
-      interior: [],  // resolved later
-      items: [],     // resolved later
+      interior: [], // resolved later
+      items: [], // resolved later
       theme: themeMap.get(slug) || null,
       date: placeDateMap.get(slug) || null,
       ambient: ambientMap.get(slug) || null,
@@ -168,14 +168,13 @@ async function buildCatalog() {
       .map((s) => placeBySlug.get(s))
       .filter(Boolean);
 
-    place.items = place.itemSlugs
-      .map((s) => itemBySlug.get(s))
-      .filter(Boolean);
+    place.items = place.itemSlugs.map((s) => itemBySlug.get(s)).filter(Boolean);
 
     // adjacent + backlinks from parents that have this place as interior
     const adjSlugs = new Set(place.adjacent);
-    const backlinks = (parentMap.get(place.slug) || [])
-      .filter((s) => !adjSlugs.has(s));
+    const backlinks = (parentMap.get(place.slug) || []).filter(
+      (s) => !adjSlugs.has(s),
+    );
 
     place.adjacentPlaces = [...place.adjacent, ...backlinks]
       .map((s) => placeBySlug.get(s))
@@ -214,10 +213,9 @@ async function buildCatalog() {
       const langs = langsBySlug.get(slug) || [];
       const prose = {};
       for (const l of langs) {
-        prose[l] = fs.readFileSync(
-          path.join(PROSE_DIR, `${slug}.${l}`),
-          "utf-8",
-        ).trim();
+        prose[l] = fs
+          .readFileSync(path.join(PROSE_DIR, `${slug}.${l}`), "utf-8")
+          .trim();
       }
       warningLabelCache.set(slug, prose);
     }

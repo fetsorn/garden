@@ -12,7 +12,7 @@ import path from "node:path";
 import { transliterate } from "transliteration";
 
 const CSVS_DIR = path.resolve(import.meta.dirname, "../csvs");
-const PROSE_DIR = path.resolve(CSVS_DIR, "prose");
+const PROSE_DIR = path.resolve(CSVS_DIR, "@");
 const SHA_FILE = path.resolve(
   import.meta.dirname,
   "../../../../staging/2026/20260518-asahi-sha256sum",
@@ -102,7 +102,11 @@ adjacent.push(
 
 // ── 2. existing themes and ambients ──────────────────────────────────
 
-placeTheme.push(["crossroads", "beige"], ["wanwei", "ancient"], ["cat", "modern"]);
+placeTheme.push(
+  ["crossroads", "beige"],
+  ["wanwei", "ancient"],
+  ["cat", "modern"],
+);
 // legal was "print" theme — legal is now a leaf, keep it
 placeTheme.push(["legal", "print"]);
 
@@ -115,8 +119,10 @@ placeAmbient.push(
 // ── 3. feeds ─────────────────────────────────────────────────────────
 
 // crossroads: feed, interior → english-lessons, legal
-proseFiles["crossroads.en"] = "Market stall features a large white banner saying \"Lived experience of English\"";
-proseFiles["crossroads.ru"] = "К лавке прибит большой белый лист, на нём написано - \"Живой опыт английского языка\".";
+proseFiles["crossroads.en"] =
+  'Market stall features a large white banner saying "Lived experience of English"';
+proseFiles["crossroads.ru"] =
+  'К лавке прибит большой белый лист, на нём написано - "Живой опыт английского языка".';
 placeAuthor.push(["crossroads", "fetsorn"]);
 placeDate.push(["crossroads", "19/4/2026"]);
 interior.push(["crossroads", "english-lessons"], ["crossroads", "legal"]);
@@ -212,8 +218,16 @@ const shaLines = fs
   .filter((l) => l.includes("voice_messages/"));
 
 const usedSlugs = new Set([
-  "crossroads", "stage", "theatre", "concert",
-  "wanwei", "cat", "english-lessons", "legal", "plato", "20260413",
+  "crossroads",
+  "stage",
+  "theatre",
+  "concert",
+  "wanwei",
+  "cat",
+  "english-lessons",
+  "legal",
+  "plato",
+  "20260413",
 ]);
 
 let importCount = 0;
