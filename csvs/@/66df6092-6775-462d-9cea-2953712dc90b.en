@@ -1,0 +1,50 @@
+SOFIA
+Can you describe your world?
+
+ANTIPHON
+Barely, with a lot of text. Granma was born in 1925. Father was born to granma in 1950. Mother was born in 1951. My brother was born to father and mother in 1987. I was born to them in 1990. I find it hard to explain the larger family without an interface.
+
+SOFIA
+So what, do you use social networks or genealogy software that have already decided how to show this for you?
+
+ANTIPHON
+Nah, I don't like that they decide for me. And when they change the interface, or close down, I always end up with the short end of the stick. I decide for myself what I want to speak about.
+```txt
+Father was born in 1950
+I was born to father and mother in 1990.
+```
+
+SOFIA
+So what, do you just write prose, like a lot of notes?
+
+ANTIPHON
+Nah, each event has prose and some details, so 1950 is a date, father is a name of that event, and mother is the name of some other event. I can hide prose under "is...", details under "with..." and lists under "and...". It reads like a sentence. I will show the type of each thing in brackets for now.
+```txt
+father(event) is: Father was born(prose) with: 1950(date)
+me(event) is: I was born(prose) with: 1990(date) father(name) and: mother(name)
+// same hidden
+me(event) is... with...
+granma-story(event) is: Granma told me about the winter of 1943. She said the river froze.(prose) with: 2023-05-17(date) granma(name)
+```
+
+SOFIA
+So you have a list of these sentences.
+
+ANTIPHON
+Nah, I need to connect them to each other. I put one event in the center, everything it references to left, and everything that references it to the right. I can click on father and see father's center instead.
+```
+father is... with: 1950
+        me is: I was born with: 1990
+mother is... with: 1951
+// choose father
+granma is... with: 1925   me is... with...
+        father is... with: 1950
+                          brother is... with...
+```
+
+SOFIA
+So can you describe your world?
+
+ANTIPHON
+With this book, I can.
+
