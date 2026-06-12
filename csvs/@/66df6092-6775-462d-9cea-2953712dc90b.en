@@ -34,12 +34,12 @@ ANTIPHON
 Nah, I need to connect them to each other. I put one event in the center, everything it references to left, and everything that references it to the right. I can click on father and see father's center instead.
 ```
 father is... with: 1950
-        me is: I was born with: 1990
+________me is: I was born with: 1990
 mother is... with: 1951
 // choose father
 granma is... with: 1925   me is... with...
-        father is... with: 1950
-                          brother is... with...
+________father is... with: 1950
+__________________________brother is... with...
 ```
 
 SOFIA
